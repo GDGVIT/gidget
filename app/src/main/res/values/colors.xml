@@ -7,4 +7,9 @@
     <color name="teal_700">#FF018786</color>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+    <color name="lightGrey">#D3D3D3</color>
+    <color name="blue">#61B1FF</color>
+    <color name="darkBlue">#1F3043</color>
+    <color name="darkestBlue">#242630</color>
+    <color name="feedPageRecyclerItemColor">#333747</color>
 </resources>
