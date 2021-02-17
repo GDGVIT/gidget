@@ -2,8 +2,8 @@
 <a href="https://dscvit.com">
 	<img src="https://user-images.githubusercontent.com/30529572/92081025-fabe6f00-edb1-11ea-9169-4a8a61a5dd45.png" alt="DSC VIT"/>
 </a>
-	<h2 align="center"> < Insert Project Title Here > </h2>
-	<h4 align="center"> < Insert Project Description Here > <h4>
+	<h2 align="center"> Gidget </h2>
+	<h4 align="center"> Check out your GitHub activity from homescreen <h4>
 </p>
 
 ---
@@ -15,10 +15,8 @@
 
 
 ## Features
-- [ ]  < feature >
-- [ ]  < feature >
-- [ ]  < feature >
-- [ ]  < feature >
+- [ ]  Keep track of latest activity on your repos from homescreen
+- [ ]  View and edit your GitHub profile
 
 <br>
 
