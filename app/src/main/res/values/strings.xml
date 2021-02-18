@@ -12,4 +12,5 @@
     <string name="a_github_activity_widget">A GitHub Activity Widget</string>
     <string name="date">Date</string>
     <string name="repo_name">Repo Name</string>
+    <string name="icon_map">Icon Map</string>
 </resources>

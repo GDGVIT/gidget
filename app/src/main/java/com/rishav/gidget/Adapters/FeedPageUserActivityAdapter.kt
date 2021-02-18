@@ -48,7 +48,8 @@ class FeedPageUserActivityAdapter(
         when (currentItem.type) {
             "CommitCommentEvent" -> holder.eventPhoto.setImageResource(R.drawable.ic_baseline_comment_24)
             "CreateEvent" -> holder.eventPhoto.setImageResource(R.mipmap.github_branch)
-            "DeleteEvent" -> holder.eventPhoto.setImageResource(R.drawable.github_fork)
+            "ForkEvent" -> holder.eventPhoto.setImageResource(R.drawable.github_fork)
+            "DeleteEvent" -> holder.eventPhoto.setImageResource(R.drawable.ic_baseline_delete_24)
             "GollumEvent" -> holder.eventPhoto.setImageResource(R.drawable.github_gollum)
             "IssueCommentEvent" -> holder.eventPhoto.setImageResource(R.drawable.ic_baseline_comment_24)
             "IssuesEvent" -> holder.eventPhoto.setImageResource(R.drawable.ic_baseline_info_24)
@@ -60,6 +61,7 @@ class FeedPageUserActivityAdapter(
             "ReleaseEvent" -> holder.eventPhoto.setImageResource(R.drawable.ic_baseline_new_releases_24)
             "SponsorshipEvent" -> holder.eventPhoto.setImageResource(R.drawable.ic_baseline_monetization_on_24)
             "WatchEvent" -> holder.eventPhoto.setImageResource(R.drawable.ic_baseline_remove_red_eye_24)
+            else -> holder.eventPhoto.setImageResource(R.drawable.github_logo)
         }
 
         //Username Text
@@ -93,7 +95,12 @@ class FeedPageUserActivityAdapter(
         //Open Repository
         holder.recyclerViewItemRelativeLayout.setOnClickListener {
             val uri: Uri = Uri.parse("https://github.com/${currentItem.repo.name}")
-            context.startActivity(Intent(Intent.ACTION_VIEW, uri).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK))
+            context.startActivity(
+                Intent(
+                    Intent.ACTION_VIEW,
+                    uri
+                ).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+            )
         }
     }
 

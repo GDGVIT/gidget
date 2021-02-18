@@ -91,6 +91,7 @@
                     android:id="@+id/feedPageRecyclerViewEventPhoto"
                     android:layout_width="25dp"
                     android:layout_height="25dp"
+                    android:background="@color/feedPageRecyclerItemColor"
                     android:src="@mipmap/github_branch_round" />
             </androidx.cardview.widget.CardView>
         </RelativeLayout>
