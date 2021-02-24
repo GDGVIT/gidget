@@ -1,14 +1,11 @@
-package com.rishav.gidget.UI.Activities
+package com.rishav.gidget.UI
 
 import android.annotation.SuppressLint
-import android.media.Image
-import android.net.Uri
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
-import android.widget.Button
 import android.widget.ImageView
-import android.widget.ProgressBar
 import android.widget.RelativeLayout
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
@@ -25,8 +22,6 @@ import io.realm.Realm
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
-import java.net.URL
-import kotlin.concurrent.thread
 
 class FeedActivity : AppCompatActivity() {
     lateinit var mService: RetroFitService
@@ -36,6 +31,10 @@ class FeedActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_feed)
+
+        Realm.init(applicationContext)
+        val realm: Realm = Realm.getDefaultInstance()
+        val results = realm.where(SignUp::class.java).findAll().first()
 
         mService = Common.retroFitService
 
@@ -51,7 +50,7 @@ class FeedActivity : AppCompatActivity() {
 
 
         getFeedList(recyclerView, progressBar)
-        getProfilePhoto(profilePhoto)
+        getProfilePhoto(profilePhoto, results!!)
         showGitHubIconInfo(infoButton)
     }
 
@@ -83,11 +82,13 @@ class FeedActivity : AppCompatActivity() {
             })
     }
 
-    private fun getProfilePhoto(profilePhoto: ImageView) {
-        Realm.init(applicationContext)
-        val results = Realm.getDefaultInstance().where(SignUp::class.java).findAll().first()
-        val photoUrl = results!!.photoUrl
+    private fun getProfilePhoto(profilePhoto: ImageView, results: SignUp) {
+        val photoUrl = results.photoUrl
         Picasso.get().load(photoUrl).into(profilePhoto)
+
+        profilePhoto.setOnClickListener {
+            startActivity(Intent(this, ProfileActivity::class.java))
+        }
     }
 
     @SuppressLint("InflateParams")

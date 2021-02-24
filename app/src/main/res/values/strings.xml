@@ -13,4 +13,5 @@
     <string name="date">Date</string>
     <string name="repo_name">Repo Name</string>
     <string name="icon_map">Icon Map</string>
+    <string name="lorem_ipsum">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Elementum nec facilisi odio condimentum neque faucibus.</string>
 </resources>

@@ -1,4 +1,4 @@
-package com.rishav.gidget.UI.Activities
+package com.rishav.gidget.UI
 
 import android.content.Intent
 import android.os.Bundle
@@ -27,9 +27,12 @@ class MainActivity : AppCompatActivity() {
 
         Realm.init(applicationContext)
         val config: RealmConfiguration? = Realm.getDefaultConfiguration()
-        if (File(config!!.path).exists()) {
-            startActivity(Intent(this, FeedActivity::class.java))
-            finish()
+        if (config != null) {
+            if (File(config.path).exists()) {
+                startActivity(Intent(this, FeedActivity::class.java))
+                finish()
+            } else
+                loginButtonOnTap()
         } else
             loginButtonOnTap()
     }
@@ -55,16 +58,20 @@ class MainActivity : AppCompatActivity() {
             .addOnSuccessListener {
 
                 Realm.init(applicationContext)
+                Realm.setDefaultConfiguration(RealmConfiguration.Builder().build())
                 val realm: Realm = Realm.getDefaultInstance()
-                val signUp = SignUp()
-                signUp.email = it.user!!.email
-                signUp.name = it.user!!.displayName.toString()
-                signUp.photoUrl = it.user!!.photoUrl.toString()
-                signUp.username = it.additionalUserInfo!!.username.toString()
+                val results = realm.where(SignUp::class.java).findAll().first()
+                if (results!!.email != it.user!!.email) {
+                    val signUp = SignUp()
+                    signUp.email = it.user!!.email
+                    signUp.name = it.user!!.displayName.toString()
+                    signUp.photoUrl = it.user!!.photoUrl.toString()
+                    signUp.username = it.additionalUserInfo!!.username.toString()
 
-                realm.beginTransaction()
-                realm.copyToRealm(signUp)
-                realm.commitTransaction()
+                    realm.beginTransaction()
+                    realm.copyToRealm(signUp)
+                    realm.commitTransaction()
+                }
 
                 startActivity(Intent(this, FeedActivity::class.java))
                 finish()

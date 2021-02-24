@@ -4,8 +4,8 @@ import com.rishav.gidget.Interface.RetroFitService
 import com.rishav.gidget.Retrofit.RetroFitClient
 
 object Common {
-    private const val BASE_URL = "https://api.github.com/users/"
+    private const val baseUrl = "https://api.github.com/users/"
 
     val retroFitService: RetroFitService
-        get() = RetroFitClient.getClient(BASE_URL).create(RetroFitService::class.java)
+        get() = RetroFitClient.getClient(baseUrl).create(RetroFitService::class.java)
 }

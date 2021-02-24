@@ -10,6 +10,4 @@ open class SignUp : RealmObject() {
     var name: String = ""
     var photoUrl: String = ""
     var username: String = ""
-
-
 }

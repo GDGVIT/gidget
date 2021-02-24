@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/ic_github_bg"
-    tools:context=".UI.Activities.MainActivity">
+    tools:context=".UI.MainActivity">
 
     <Button
         android:id="@+id/buLogin"
