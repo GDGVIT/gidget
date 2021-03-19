@@ -1,0 +1,24 @@
+<resources>
+    <string name="app_name">Gidget</string>
+    <string name="signInMethod">singInMethod</string>
+    <string name="providerID">providerID</string>
+    <string name="username">username</string>
+    <string name="photoUrl">photoUrl</string>
+    <string name="UID">uid</string>
+    <string name="name">name</string>
+    <string name="email">email</string>
+    <string name="welcome_to_gidget">Welcome to Gidget</string>
+    <string name="login_with">Login with</string>
+    <string name="a_github_activity_widget">A GitHub Activity Widget</string>
+    <string name="date">Date</string>
+    <string name="repo_name">Repo Name</string>
+    <string name="icon_map">Icon Map</string>
+    <string name="lorem_ipsum">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Elementum nec facilisi odio condimentum neque faucibus.</string>
+    <string name="search">Search</string>
+    <string name="organization">User / Organization</string>
+    <string name="user">User</string>
+    <string name="repository">Repo</string>
+    <string name="no_items_searched">No items searched...</string>
+    <string name="country">country</string>
+    <string name="add_to_widget">Add to widget</string>
+</resources>
