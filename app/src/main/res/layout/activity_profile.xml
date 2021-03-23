@@ -26,12 +26,12 @@
 
                 <ImageView
                     android:id="@+id/profileBackButton"
-                    android:clickable="true"
-                    android:focusable="true"
                     android:layout_width="30dp"
                     android:layout_height="30dp"
                     android:layout_alignParentStart="true"
                     android:layout_marginEnd="10dp"
+                    android:clickable="true"
+                    android:focusable="true"
                     android:src="@drawable/ic_baseline_arrow_back_24" />
 
                 <TextView
@@ -58,6 +58,7 @@
         android:layout_marginVertical="20dp">
 
         <androidx.cardview.widget.CardView
+            android:id="@+id/profilePagePhotoCard"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentStart="true"
@@ -77,6 +78,7 @@
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
             android:layout_centerVertical="true"
+            android:layout_toEndOf="@id/profilePagePhotoCard"
             android:orientation="vertical">
 
             <TextView
@@ -85,9 +87,9 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="end"
                 android:fontFamily="@font/montserrat"
-                android:text="Name"
+                android:text="Rishav Naskar"
                 android:textColor="@color/blue"
-                android:textSize="18sp"
+                android:textSize="@dimen/_20sdp"
                 android:textStyle="bold"
                 tools:targetApi="p" />
 
@@ -99,7 +101,7 @@
                 android:fontFamily="@font/montserrat"
                 android:text="@string/username"
                 android:textColor="@color/white"
-                android:textSize="14sp" />
+                android:textSize="@dimen/_14sdp" />
         </LinearLayout>
 
     </RelativeLayout>
@@ -224,10 +226,10 @@
         android:layout_marginHorizontal="30dp"
         android:layout_marginBottom="30dp"
         android:clickable="true"
+        android:focusable="true"
         app:cardBackgroundColor="@color/feedPageRecyclerItemColor"
         app:cardCornerRadius="10dp"
-        app:cardElevation="0dp"
-        android:focusable="true">
+        app:cardElevation="0dp">
 
         <TextView
             android:layout_width="wrap_content"

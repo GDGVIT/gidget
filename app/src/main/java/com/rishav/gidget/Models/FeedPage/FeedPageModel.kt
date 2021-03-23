@@ -12,25 +12,25 @@ data class FeedPageModel(
     @SerializedName("org") val org: Org
 )
 
-data class Actor (
-    @SerializedName("id") val id : Long,
-    @SerializedName("login") val login : String,
-    @SerializedName("display_login") val display_login : String,
-    @SerializedName("gravatar_id") val gravatar_id : String,
-    @SerializedName("url") val url : String,
-    @SerializedName("avatar_url") val avatar_url : String
+data class Actor(
+    @SerializedName("id") val id: Long,
+    @SerializedName("login") val login: String,
+    @SerializedName("display_login") val display_login: String,
+    @SerializedName("gravatar_id") val gravatar_id: String,
+    @SerializedName("url") val url: String,
+    @SerializedName("avatar_url") val avatar_url: String
 )
 
-data class Org (
-    @SerializedName("id") val id : Long,
-    @SerializedName("login") val login : String,
-    @SerializedName("gravatar_id") val gravatar_id : String,
-    @SerializedName("url") val url : String,
-    @SerializedName("avatar_url") val avatar_url : String
+data class Org(
+    @SerializedName("id") val id: Long,
+    @SerializedName("login") val login: String,
+    @SerializedName("gravatar_id") val gravatar_id: String,
+    @SerializedName("url") val url: String,
+    @SerializedName("avatar_url") val avatar_url: String
 )
 
-data class Repo (
-    @SerializedName("id") val id : Long,
-    @SerializedName("name") val name : String,
-    @SerializedName("url") val url : String
+data class Repo(
+    @SerializedName("id") val id: Long,
+    @SerializedName("name") val name: String,
+    @SerializedName("url") val url: String
 )

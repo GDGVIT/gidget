@@ -75,11 +75,12 @@
 
                 <ImageButton
                     android:id="@+id/feedPageRecyclerViewOpenRepoButton"
-                    android:layout_width="15dp"
-                    android:layout_height="15dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
                     android:background="@color/feedPageRecyclerItemColor"
                     android:elevation="0dp"
-                    android:src="@drawable/ic_baseline_open_in_new_24"
+                    android:scaleType="fitCenter"
+                    android:src="@drawable/ic_baseline_add_to_home_screen_24"
                     tools:targetApi="lollipop" />
             </androidx.cardview.widget.CardView>
 

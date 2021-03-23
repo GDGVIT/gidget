@@ -32,6 +32,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/_10sdp"
         android:layout_toEndOf="@+id/searchPageRecyclerItemProfilePhotoCover"
+        android:layout_toStartOf="@+id/searchPageAddToHomeButtonCard"
         android:orientation="vertical">
 
         <TextView
@@ -66,20 +67,21 @@
     </LinearLayout>
 
     <androidx.cardview.widget.CardView
+        android:id="@+id/searchPageAddToHomeButtonCard"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentEnd="true"
         android:layout_centerVertical="true"
         app:cardCornerRadius="10dp">
 
-        <ImageButton
+        <androidx.appcompat.widget.AppCompatImageButton
+            android:id="@+id/searchPageAddToHomeButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="@android:color/transparent"
+            android:background="?android:attr/selectableItemBackground"
             android:fontFamily="@font/nexa_bold"
             android:scaleType="fitCenter"
-            android:src="@drawable/ic_baseline_add_to_home_screen_24"
-            app:backgroundTint="@android:color/transparent" />
+            android:src="@drawable/ic_baseline_add_to_home_screen_24" />
     </androidx.cardview.widget.CardView>
 
 </RelativeLayout>

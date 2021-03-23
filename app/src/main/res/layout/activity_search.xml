@@ -11,11 +11,11 @@
         android:id="@+id/searchPageBackButton"
         android:layout_width="@dimen/_20sdp"
         android:layout_height="@dimen/_20sdp"
-        android:layout_marginVertical="@dimen/_10sdp"
-        android:layout_marginStart="@dimen/_5sdp"
+        android:layout_marginVertical="@dimen/_14sdp"
+        android:layout_marginStart="@dimen/_8sdp"
         android:background="@android:color/transparent"
-        android:src="@drawable/ic_baseline_arrow_back_24"
-        android:scaleType="fitCenter"/>
+        android:scaleType="fitCenter"
+        android:src="@drawable/ic_baseline_arrow_back_24" />
 
     <androidx.cardview.widget.CardView
         android:id="@+id/searchPageSection1"
@@ -47,8 +47,9 @@
                 android:ems="10"
                 android:fontFamily="@font/montserrat"
                 android:hint="@string/search"
-                android:inputType="textPersonName"
-                android:textColor="@color/white"
+                android:imeOptions="actionSearch"
+                android:inputType="text"
+                android:textColor="@color/lightGrey"
                 android:textColorHint="@color/white" />
 
             <ImageButton
@@ -80,13 +81,14 @@
             android:id="@+id/searchPageOrganizationButton"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="10dp"
+            android:layout_marginEnd="@dimen/_8sdp"
             android:layout_weight="2"
             android:background="@drawable/roundedbutton_30dp"
-            android:fontFamily="@font/montserrat"
+            android:fontFamily="@font/nexa_bold"
             android:text="@string/organization"
             android:textAllCaps="false"
             android:textColor="@color/blue"
+            android:textStyle="bold"
             app:backgroundTint="@color/feedPageRecyclerItemColor" />
 
         <Button
@@ -95,7 +97,8 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:background="@drawable/roundedbutton_30dp"
-            android:fontFamily="@font/montserrat"
+            android:fontFamily="@font/nexa_bold"
+            android:maxLines="1"
             android:text="@string/repository"
             android:textAllCaps="false"
             android:textColor="@color/blue"

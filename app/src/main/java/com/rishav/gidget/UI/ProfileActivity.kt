@@ -1,8 +1,8 @@
 package com.rishav.gidget.UI
 
+import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
-import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
@@ -16,7 +16,6 @@ import com.rishav.gidget.R
 import com.rishav.gidget.Realm.SignUp
 import com.squareup.picasso.Picasso
 import io.realm.Realm
-import org.w3c.dom.Text
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -74,18 +73,18 @@ class ProfileActivity : AppCompatActivity() {
     ) {
         mService.getProfileInfo(results.username, System.getenv("token") ?: "null")
             .enqueue(object : Callback<ProfilePageModel> {
+                @SuppressLint("SetTextI18n")
                 override fun onResponse(
                     call: Call<ProfilePageModel>,
                     response: Response<ProfilePageModel>
                 ) {
                     Picasso.get().load(response.body()!!.avatar_url).into(profilePhotoIV)
                     nameTV.text = response.body()!!.name
-                    usernameTV.text = response.body()!!.login
+                    usernameTV.text = "@${response.body()!!.login}"
                     followersTV.text = response.body()!!.followers.toString()
                     followingTV.text = response.body()!!.following.toString()
                     bioTV.text = response.body()!!.bio
                     cityTV.text = response.body()!!.location
-
 
                     logoutButton.setOnClickListener {
                         mAuth.signOut()

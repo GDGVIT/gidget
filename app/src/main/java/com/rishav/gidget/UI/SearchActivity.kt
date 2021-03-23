@@ -1,16 +1,20 @@
 package com.rishav.gidget.UI
 
 import android.os.Bundle
+import android.view.inputmethod.EditorInfo
 import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageButton
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.rishav.gidget.Adapters.SearchPageAdapter
+import com.rishav.gidget.Adapters.SearchPageRepoAdapter
+import com.rishav.gidget.Adapters.SearchPageUserAdapter
 import com.rishav.gidget.Common.Common
 import com.rishav.gidget.Interface.RetroFitService
 import com.rishav.gidget.Models.SearchPage.Items
+import com.rishav.gidget.Models.SearchPage.ItemsRepo
+import com.rishav.gidget.Models.SearchPage.SearchPageRepoModel
 import com.rishav.gidget.Models.SearchPage.SearchPageUserModel
 import com.rishav.gidget.R
 import retrofit2.Call
@@ -20,7 +24,8 @@ import retrofit2.Response
 class SearchActivity : AppCompatActivity() {
     lateinit var mService: RetroFitService
     lateinit var layoutManager: LinearLayoutManager
-    lateinit var adapter: SearchPageAdapter
+    lateinit var userAdapter: SearchPageUserAdapter
+    lateinit var repoAdapter: SearchPageRepoAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -39,39 +44,82 @@ class SearchActivity : AppCompatActivity() {
         layoutManager = LinearLayoutManager(this)
         recyclerView.layoutManager = layoutManager
 
-        searchButton.setOnClickListener {
-            getSearchData(searchText.text.toString(), orgButton, repoButton, recyclerView)
+        var searchType = "users"
+
+        orgButton.setOnClickListener {
+            searchType = "users"
+            searchText.hint = "Search Users"
+            recyclerView.removeAllViewsInLayout()
         }
+
+        repoButton.setOnClickListener {
+            searchType = "repositories"
+            searchText.hint = "Search Repositories"
+            recyclerView.removeAllViewsInLayout()
+        }
+
+        searchButton.setOnClickListener {
+            getSearchData(searchText.text.toString(), searchType, recyclerView)
+        }
+        searchText.setOnEditorActionListener { textView, actionId, keyEvent ->
+            if (actionId == EditorInfo.IME_ACTION_SEARCH) {
+                getSearchData(searchText.text.toString(), searchType, recyclerView)
+            }
+            false
+        }
+
+        backButton.setOnClickListener { finish() }
     }
 
     private fun getSearchData(
-        searchText: String,
-        orgButton: Button,
-        repoButton: Button,
-        recyclerView: RecyclerView
+            searchText: String,
+            searchType: String,
+            recyclerView: RecyclerView
     ) {
-        mService.searchUser(searchText, System.getenv("token") ?: "null")
-            .enqueue(object : Callback<SearchPageUserModel> {
-                override fun onResponse(
-                    call: Call<SearchPageUserModel>,
-                    response: Response<SearchPageUserModel>
-                ) {
-                    if (response.body() != null) {
-                        adapter = SearchPageAdapter(
-                            this@SearchActivity,
-                            response.body()!!.items as MutableList<Items>,
-                            mService,
-                        )
-                    }
+        if (searchType == "users") {
+            mService.searchUser(searchText, System.getenv("token") ?: "null")
+                    .enqueue(object : Callback<SearchPageUserModel> {
+                        override fun onResponse(
+                                call: Call<SearchPageUserModel>,
+                                response: Response<SearchPageUserModel>
+                        ) {
+                            if (response.body() != null) {
+                                userAdapter = SearchPageUserAdapter(
+                                        this@SearchActivity,
+                                        response.body()!!.items as MutableList<Items>,
+                                        mService,
+                                )
+                                userAdapter.notifyDataSetChanged()
+                                recyclerView.adapter = userAdapter
+                            }
+                        }
 
-                    adapter.notifyDataSetChanged()
-                    recyclerView.adapter = adapter
+                        override fun onFailure(call: Call<SearchPageUserModel>, t: Throwable) {
+                            println("Error - ${t.message}")
+                        }
+                    })
+        } else if (searchType == "repositories") {
+            mService.searchRepo(searchText, System.getenv("token")
+                    ?: "null").enqueue(object : Callback<SearchPageRepoModel> {
+                override fun onResponse(call: Call<SearchPageRepoModel>, response: Response<SearchPageRepoModel>) {
+                    println(response)
+                    println(response.body())
+                    if (response.body() != null) {
+                        repoAdapter = SearchPageRepoAdapter(
+                                this@SearchActivity,
+                                response.body()!!.items as MutableList<ItemsRepo>,
+                                mService,
+                        )
+                        repoAdapter.notifyDataSetChanged()
+                        recyclerView.adapter = repoAdapter
+                    }
                 }
 
-                override fun onFailure(call: Call<SearchPageUserModel>, t: Throwable) {
+                override fun onFailure(call: Call<SearchPageRepoModel>, t: Throwable) {
                     println("Error - ${t.message}")
                 }
 
             })
+        }
     }
 }

@@ -21,7 +21,6 @@ import java.time.Duration
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
-
 class FeedPageAdapter(
     private val context: Context,
     private val feedPageDataList: MutableList<FeedPageModel>
@@ -38,10 +37,10 @@ class FeedPageAdapter(
     override fun onBindViewHolder(holder: FeedPageUserActivityViewHolder, position: Int) {
         val currentItem = feedPageDataList[position]
 
-        //Profile Photo
+        // Profile Photo
         Picasso.get().load(currentItem.actor.avatar_url).into(holder.profilePhoto)
 
-        //Event Photo
+        // Event Photo
         when (currentItem.type) {
             "CommitCommentEvent" -> holder.eventPhoto.setImageResource(R.drawable.ic_baseline_comment_24)
             "CreateEvent" -> holder.eventPhoto.setImageResource(R.drawable.ic_git_branch)
@@ -61,13 +60,13 @@ class FeedPageAdapter(
             else -> holder.eventPhoto.setImageResource(R.drawable.github_logo)
         }
 
-        //Username Text
+        // Username Text
         holder.username.text = currentItem.actor.login
 
-        //Repository Name
+        // Repository Name
         holder.repositoryName.text = currentItem.repo.name
 
-        //Date Text
+        // Date Text
         val dateTimePattern = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss'Z'")
         val createDate = LocalDateTime.parse(currentItem.created_at, dateTimePattern)
         val currentDate = LocalDateTime.now()
@@ -80,7 +79,7 @@ class FeedPageAdapter(
         }
         holder.dateText.text = finalResult
 
-        //Custom Animation
+        // Custom Animation
         var lastPosition: Int = -1
         val animation: Animation = AnimationUtils.loadAnimation(
             context,
@@ -89,7 +88,7 @@ class FeedPageAdapter(
         holder.itemView.startAnimation(animation)
         lastPosition = position
 
-        //Open Repository
+        // Open Repository
         holder.recyclerViewItemRelativeLayout.setOnClickListener {
             val uri: Uri = Uri.parse("https://github.com/${currentItem.repo.name}")
             context.startActivity(
