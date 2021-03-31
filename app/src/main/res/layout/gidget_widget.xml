@@ -1,0 +1,46 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/gradient_bg"
+    android:paddingHorizontal="@dimen/_15sdp"
+    android:paddingVertical="@dimen/_10sdp"
+    android:theme="@style/ThemeOverlay.Gidget.AppWidgetContainer">
+
+    <RelativeLayout
+        android:id="@+id/appwidgetSection1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_marginBottom="@dimen/_10sdp">
+
+        <ImageButton
+            android:id="@+id/appwidgetRefreshButton"
+            android:layout_width="@dimen/_20sdp"
+            android:layout_height="@dimen/_20sdp"
+            android:layout_centerVertical="true"
+            android:layout_margin="5dp"
+            android:background="@android:color/transparent"
+            android:scaleType="fitCenter"
+            android:src="@drawable/ic_baseline_refresh_24" />
+
+        <TextView
+            android:id="@+id/appwidgetTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_margin="8dp"
+            android:contentDescription="@string/appwidget_text"
+            android:fontFamily="@font/nexa_bold"
+            android:text="@string/app_name"
+            android:textColor="@color/white"
+            android:textSize="24sp"
+            android:textStyle="bold" />
+    </RelativeLayout>
+
+    <ListView
+        android:id="@+id/appwidgetListView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/appwidgetSection1" />
+
+</RelativeLayout>

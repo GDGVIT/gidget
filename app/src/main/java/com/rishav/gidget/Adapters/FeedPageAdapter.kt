@@ -27,7 +27,10 @@ class FeedPageAdapter(
 ) :
     RecyclerView.Adapter<FeedPageAdapter.FeedPageUserActivityViewHolder>() {
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): FeedPageUserActivityViewHolder {
+    override fun onCreateViewHolder(
+        parent: ViewGroup,
+        viewType: Int
+    ): FeedPageUserActivityViewHolder {
         val itemView = LayoutInflater.from(parent.context)
             .inflate(R.layout.feed_page_recycler_item, parent, false)
         return FeedPageUserActivityViewHolder(itemView)
@@ -41,24 +44,7 @@ class FeedPageAdapter(
         Picasso.get().load(currentItem.actor.avatar_url).into(holder.profilePhoto)
 
         // Event Photo
-        when (currentItem.type) {
-            "CommitCommentEvent" -> holder.eventPhoto.setImageResource(R.drawable.ic_baseline_comment_24)
-            "CreateEvent" -> holder.eventPhoto.setImageResource(R.drawable.ic_git_branch)
-            "ForkEvent" -> holder.eventPhoto.setImageResource(R.drawable.ic_github_fork)
-            "DeleteEvent" -> holder.eventPhoto.setImageResource(R.drawable.ic_baseline_delete_24)
-            "GollumEvent" -> holder.eventPhoto.setImageResource(R.drawable.github_gollum)
-            "IssueCommentEvent" -> holder.eventPhoto.setImageResource(R.drawable.ic_baseline_comment_24)
-            "IssuesEvent" -> holder.eventPhoto.setImageResource(R.drawable.ic_github_issue)
-            "MemberEvent" -> holder.eventPhoto.setImageResource(R.drawable.ic_baseline_group_24)
-            "PublicEvent" -> holder.eventPhoto.setImageResource(R.drawable.ic_baseline_public_24)
-            "PullRequestEvent" -> holder.eventPhoto.setImageResource(R.drawable.ic_github_pull_request)
-            "PullRequestReviewCommentEvent" -> holder.eventPhoto.setImageResource(R.drawable.ic_baseline_comment_24)
-            "PushEvent" -> holder.eventPhoto.setImageResource(R.drawable.ic_baseline_cloud_upload_24)
-            "ReleaseEvent" -> holder.eventPhoto.setImageResource(R.drawable.ic_baseline_new_releases_24)
-            "SponsorshipEvent" -> holder.eventPhoto.setImageResource(R.drawable.ic_baseline_monetization_on_24)
-            "WatchEvent" -> holder.eventPhoto.setImageResource(R.drawable.ic_baseline_remove_red_eye_24)
-            else -> holder.eventPhoto.setImageResource(R.drawable.github_logo)
-        }
+        setEventData(currentItem, holder)
 
         // Username Text
         holder.username.text = currentItem.actor.login
@@ -67,17 +53,7 @@ class FeedPageAdapter(
         holder.repositoryName.text = currentItem.repo.name
 
         // Date Text
-        val dateTimePattern = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss'Z'")
-        val createDate = LocalDateTime.parse(currentItem.created_at, dateTimePattern)
-        val currentDate = LocalDateTime.now()
-        val differenceTime = Duration.between(currentDate, createDate).abs()
-        val finalResult: String = when {
-            differenceTime.toMinutes() < 60 -> "${differenceTime.toMinutes()} minutes ago"
-            differenceTime.toHours() < 24 -> "${differenceTime.toHours()} hours ago"
-            differenceTime.toDays() <= 1 -> "${differenceTime.toDays()} day ago"
-            else -> "${differenceTime.toDays()} days ago"
-        }
-        holder.dateText.text = finalResult
+        setDate(holder, currentItem)
 
         // Custom Animation
         var lastPosition: Int = -1
@@ -107,13 +83,99 @@ class FeedPageAdapter(
         holder.itemView.clearAnimation()
     }
 
+    private fun setEventData(currentItem: FeedPageModel, holder: FeedPageUserActivityViewHolder) {
+        when (currentItem.type) {
+            "CommitCommentEvent" -> {
+                holder.eventPhoto.setImageResource(R.drawable.ic_baseline_comment_24)
+                holder.message.text = "User commented on a commit"
+            }
+            "CreateEvent" -> {
+                holder.eventPhoto.setImageResource(R.drawable.ic_git_branch)
+                holder.message.text = "User created a branch / tag"
+            }
+            "ForkEvent" -> {
+                holder.eventPhoto.setImageResource(R.drawable.ic_github_fork)
+                holder.message.text = "User forked this repository"
+            }
+            "DeleteEvent" -> {
+                holder.eventPhoto.setImageResource(R.drawable.ic_baseline_delete_24)
+                holder.message.text = "User deleted a branch / tag"
+            }
+            "GollumEvent" -> {
+                holder.eventPhoto.setImageResource(R.drawable.github_gollum)
+                holder.message.text = "User created / updated a wiki page"
+            }
+            "IssueCommentEvent" -> {
+                holder.eventPhoto.setImageResource(R.drawable.ic_baseline_comment_24)
+                holder.message.text = "User commented on an issue"
+            }
+            "IssuesEvent" -> {
+                holder.eventPhoto.setImageResource(R.drawable.ic_github_issue)
+                holder.message.text = "Activity related to an issue"
+            }
+            "MemberEvent" -> {
+                holder.eventPhoto.setImageResource(R.drawable.ic_baseline_group_24)
+                holder.message.text = "A collaborator was added or removed"
+            }
+            "PublicEvent" -> {
+                holder.eventPhoto.setImageResource(R.drawable.ic_baseline_public_24)
+                holder.message.text = "Repository was made public"
+            }
+            "PullRequestEvent" -> {
+                holder.eventPhoto.setImageResource(R.drawable.ic_github_pull_request)
+                holder.message.text = "User made a pull request"
+            }
+            "PullRequestReviewCommentEvent" -> {
+                holder.eventPhoto.setImageResource(R.drawable.ic_baseline_comment_24)
+                holder.message.text = "User commented on a pull request review"
+            }
+            "PushEvent" -> {
+                holder.eventPhoto.setImageResource(R.drawable.ic_baseline_cloud_upload_24)
+                holder.message.text = "User made a push request"
+            }
+            "ReleaseEvent" -> {
+                holder.eventPhoto.setImageResource(R.drawable.ic_baseline_new_releases_24)
+                holder.message.text = "User made a new release"
+            }
+            "SponsorshipEvent" -> {
+                holder.eventPhoto.setImageResource(R.drawable.ic_baseline_monetization_on_24)
+                holder.message.text = "User started sponsoring"
+            }
+            "WatchEvent" -> {
+                holder.eventPhoto.setImageResource(R.drawable.ic_baseline_remove_red_eye_24)
+                holder.message.text = "User was watching"
+            }
+            else -> {
+                holder.eventPhoto.setImageResource(R.drawable.github_logo)
+                holder.message.text = "Unidentified event"
+            }
+        }
+    }
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    private fun setDate(holder: FeedPageUserActivityViewHolder, currentItem: FeedPageModel) {
+        val dateTimePattern = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss'Z'")
+        val createDate = LocalDateTime.parse(currentItem.created_at, dateTimePattern)
+        val currentDate = LocalDateTime.now()
+        val differenceTime = Duration.between(currentDate, createDate).abs()
+        val finalResult: String = when {
+            differenceTime.toMinutes() < 60 -> "${differenceTime.toMinutes()} minutes ago"
+            differenceTime.toHours() < 24 -> "${differenceTime.toHours()} hours ago"
+            differenceTime.toDays() <= 1 -> "${differenceTime.toDays()} day ago"
+            else -> "${differenceTime.toDays()} days ago"
+        }
+        holder.dateText.text = finalResult
+    }
+
     class FeedPageUserActivityViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        val profilePhoto: ImageView = itemView.findViewById(R.id.feedPageRecyclerViewProfilePhoto)
-        val eventPhoto: ImageView = itemView.findViewById(R.id.feedPageRecyclerViewEventPhoto)
-        val username: TextView = itemView.findViewById(R.id.feedPageRecyclerViewUsername)
-        val repositoryName: TextView = itemView.findViewById(R.id.feedPageRecyclerViewRepoName)
-        val dateText: TextView = itemView.findViewById(R.id.feedPageRecyclerViewDate)
+        val profilePhoto: ImageView =
+            itemView.findViewById(R.id.feedPageRecyclerViewItemProfilePhoto)
+        val eventPhoto: ImageView = itemView.findViewById(R.id.feedPageEventTypeIcon)
+        val username: TextView = itemView.findViewById(R.id.feedPageRecyclerViewItemUsername)
+        val repositoryName: TextView = itemView.findViewById(R.id.feedPageRecyclerViewItemRepoName)
+        val dateText: TextView = itemView.findViewById(R.id.feedPageRecyclerViewItemDate)
         val recyclerViewItemRelativeLayout: RelativeLayout =
             itemView.findViewById(R.id.feedPageRecyclerViewItemRelativeLayout)
+        val message: TextView = itemView.findViewById(R.id.feedPageRecyclerViewItemMessage)
     }
 }

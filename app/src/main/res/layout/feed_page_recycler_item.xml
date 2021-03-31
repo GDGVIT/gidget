@@ -1,106 +1,128 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="wrap_content"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginHorizontal="20dp"
-    android:layout_marginVertical="10dp"
-    app:cardCornerRadius="20dp">
+    android:layout_marginHorizontal="@dimen/_10sdp"
+    android:layout_marginVertical="@dimen/_4sdp"
+    app:cardBackgroundColor="@android:color/transparent"
+    app:cardCornerRadius="20dp"
+    app:cardElevation="0dp">
 
     <RelativeLayout
-        android:id="@+id/feedPageRecyclerViewItemRelativeLayout"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/feedPageRecyclerItemColor"
-        android:clickable="true"
-        android:focusable="true"
-        android:padding="20dp">
+        android:layout_marginHorizontal="@dimen/_10sdp"
+        android:layout_marginVertical="@dimen/_8sdp"
+        android:background="@android:color/transparent">
 
         <RelativeLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
+            android:id="@+id/feedPageRecyclerViewItemSection1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/_10sdp"
+            android:layout_marginBottom="@dimen/_10sdp">
 
             <androidx.cardview.widget.CardView
+                android:id="@+id/feedPageRecyclerViewItemProfilePhotoCard"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignParentStart="true"
-                android:layout_centerVertical="true"
-                app:cardCornerRadius="50dp">
+                android:layout_marginEnd="10dp"
+                app:cardBackgroundColor="@android:color/transparent"
+                app:cardCornerRadius="30dp">
 
                 <ImageView
-                    android:id="@+id/feedPageRecyclerViewProfilePhoto"
-                    android:layout_width="40dp"
-                    android:layout_height="40dp"
-                    android:background="@color/darkestBlue"
+                    android:id="@+id/feedPageRecyclerViewItemProfilePhoto"
+                    android:layout_width="@dimen/_30sdp"
+                    android:layout_height="@dimen/_30sdp"
                     android:src="@drawable/ic_baseline_person_24" />
             </androidx.cardview.widget.CardView>
 
             <TextView
-                android:id="@+id/feedPageRecyclerViewUsername"
+                android:id="@+id/feedPageRecyclerViewItemUsername"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="70dp"
-                android:text="@string/username"
+                android:layout_centerVertical="true"
+                android:layout_marginStart="@dimen/_10sdp"
+                android:layout_toEndOf="@+id/feedPageRecyclerViewItemProfilePhotoCard"
+                android:fontFamily="@font/montserrat"
+                android:maxLines="1"
+                android:text="john doe"
                 android:textColor="@color/blue"
-                android:textSize="18sp" />
+                android:textSize="@dimen/_12sdp"
+                android:textStyle="bold" />
+        </RelativeLayout>
 
-            <TextView
-                android:id="@+id/feedPageRecyclerViewRepoName"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/feedPageRecyclerViewUsername"
-                android:layout_marginStart="70dp"
-                android:layout_marginTop="5dp"
-                android:text="@string/repo_name"
-                android:textColor="@color/lightGrey"
-                android:textSize="14sp" />
-
-            <TextView
-                android:id="@+id/feedPageRecyclerViewDate"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/feedPageRecyclerViewRepoName"
-                android:layout_marginStart="70dp"
-                android:layout_marginTop="20dp"
-                android:text="@string/date"
-                android:textColor="@color/lightGrey"
-                android:textStyle="italic" />
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/feedPageRecyclerViewItemSection1"
+            android:layout_marginStart="@dimen/_10sdp">
 
             <androidx.cardview.widget.CardView
+                android:id="@+id/feedPageEventTypeIconCard"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignParentTop="true"
-                android:layout_alignParentEnd="true">
-
-                <ImageButton
-                    android:id="@+id/feedPageRecyclerViewOpenRepoButton"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:background="@color/feedPageRecyclerItemColor"
-                    android:elevation="0dp"
-                    android:scaleType="fitCenter"
-                    android:src="@drawable/ic_baseline_add_to_home_screen_24"
-                    tools:targetApi="lollipop" />
-            </androidx.cardview.widget.CardView>
-
-            <androidx.cardview.widget.CardView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentEnd="true"
-                android:layout_alignParentBottom="true"
-                app:cardCornerRadius="50dp">
+                android:layout_centerVertical="true"
+                android:layout_marginEnd="@dimen/_20sdp"
+                app:cardBackgroundColor="@color/feedPageRecyclerItemColor"
+                app:cardCornerRadius="30dp">
 
                 <ImageView
-                    android:id="@+id/feedPageRecyclerViewEventPhoto"
-                    android:layout_width="25dp"
-                    android:layout_height="25dp"
-                    android:background="@color/feedPageRecyclerItemColor"
-                    android:elevation="0dp"
-                    android:src="@mipmap/github_branch_round"
-                    tools:targetApi="lollipop" />
+                    android:id="@+id/feedPageEventTypeIcon"
+                    android:layout_width="@dimen/_16sdp"
+                    android:layout_height="@dimen/_16sdp"
+                    android:layout_margin="10dp"
+                    android:src="@drawable/ic_github_fork" />
+            </androidx.cardview.widget.CardView>
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/feedPageRecyclerViewItemSection2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="@dimen/_10sdp"
+                android:layout_toEndOf="@+id/feedPageEventTypeIconCard"
+                app:cardBackgroundColor="@color/feedPageRecyclerItemColor"
+                app:cardCornerRadius="10dp">
+
+                <RelativeLayout
+                    android:id="@+id/feedPageRecyclerViewItemRelativeLayout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="@dimen/_8sdp"
+                    android:padding="@dimen/_6sdp">
+
+                    <TextView
+                        android:id="@+id/feedPageRecyclerViewItemRepoName"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/nexa_bold"
+                        android:text="@string/repo_name"
+                        android:textColor="@color/white" />
+
+                    <TextView
+                        android:id="@+id/feedPageRecyclerViewItemMessage"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/feedPageRecyclerViewItemRepoName"
+                        android:layout_marginTop="@dimen/_10sdp"
+                        android:fontFamily="@font/montserrat"
+                        android:maxLines="3"
+                        android:text="@string/appwidget_commit_message"
+                        android:textColor="@color/lightGrey" />
+
+                    <TextView
+                        android:id="@+id/feedPageRecyclerViewItemDate"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@id/feedPageRecyclerViewItemMessage"
+                        android:layout_marginTop="@dimen/_5sdp"
+                        android:text="@string/date"
+                        android:textColor="@color/lightGrey"
+                        android:textSize="@dimen/_8sdp" />
+                </RelativeLayout>
             </androidx.cardview.widget.CardView>
         </RelativeLayout>
-    </RelativeLayout>
 
+    </RelativeLayout>
 </androidx.cardview.widget.CardView>

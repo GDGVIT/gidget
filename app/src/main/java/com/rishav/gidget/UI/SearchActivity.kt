@@ -1,5 +1,6 @@
 package com.rishav.gidget.UI
 
+import android.graphics.Color
 import android.os.Bundle
 import android.view.inputmethod.EditorInfo
 import android.widget.Button
@@ -48,13 +49,21 @@ class SearchActivity : AppCompatActivity() {
 
         orgButton.setOnClickListener {
             searchType = "users"
-            searchText.hint = "Search Users"
+            searchText.hint = "Search User / Organization"
+
+            repoButton.setTextColor(Color.WHITE)
+            orgButton.setTextColor(Color.parseColor("#61B1FF"))
+
             recyclerView.removeAllViewsInLayout()
         }
 
         repoButton.setOnClickListener {
             searchType = "repositories"
             searchText.hint = "Search Repositories"
+
+            orgButton.setTextColor(Color.WHITE)
+            repoButton.setTextColor(Color.parseColor("#61B1FF"))
+
             recyclerView.removeAllViewsInLayout()
         }
 
@@ -102,8 +111,6 @@ class SearchActivity : AppCompatActivity() {
             mService.searchRepo(searchText, System.getenv("token")
                     ?: "null").enqueue(object : Callback<SearchPageRepoModel> {
                 override fun onResponse(call: Call<SearchPageRepoModel>, response: Response<SearchPageRepoModel>) {
-                    println(response)
-                    println(response.body())
                     if (response.body() != null) {
                         repoAdapter = SearchPageRepoAdapter(
                                 this@SearchActivity,

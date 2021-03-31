@@ -14,11 +14,14 @@
     <string name="repo_name">Repo Name</string>
     <string name="icon_map">Icon Map</string>
     <string name="lorem_ipsum">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Elementum nec facilisi odio condimentum neque faucibus.</string>
-    <string name="search">Search Users</string>
+    <string name="search">Search Users / Organization</string>
     <string name="organization">User / Organization</string>
     <string name="user">User</string>
     <string name="repository">Repo</string>
-    <string name="no_items_searched">No items searched...</string>
+    <string name="no_items_searched">No items searched…</string>
     <string name="country">country</string>
     <string name="add_to_widget">Add to widget</string>
+    <string name="appwidget_text">EXAMPLE</string>
+    <string name="add_widget">Add widget</string>
+    <string name="appwidget_commit_message">commit message</string>
 </resources>

@@ -41,7 +41,6 @@ class FeedActivity : AppCompatActivity() {
         val recyclerView: RecyclerView = findViewById(R.id.feedPageRecyclerView)
         val profilePhoto: ImageView = findViewById(R.id.feedPageProfilePhoto)
         val progressBar: RelativeLayout = findViewById(R.id.loadingPanel)
-        val infoButton: ImageView = findViewById(R.id.feedPageInfoButton)
         val searchButton: ImageView = findViewById(R.id.feedPageSearchButton)
 
 
@@ -52,7 +51,6 @@ class FeedActivity : AppCompatActivity() {
 
         getFeedList(recyclerView, progressBar, results!!)
         getProfilePhoto(profilePhoto, results)
-        showGitHubIconInfo(infoButton)
         navigateToSearchPage(searchButton)
     }
 
@@ -94,19 +92,6 @@ class FeedActivity : AppCompatActivity() {
 
         profilePhoto.setOnClickListener {
             startActivity(Intent(this, ProfileActivity::class.java))
-        }
-    }
-
-    @SuppressLint("InflateParams")
-    private fun showGitHubIconInfo(infoButton: ImageView) {
-        infoButton.setOnClickListener {
-            val messageBoxView =
-                LayoutInflater.from(this).inflate(R.layout.github_icons_alertbox, null)
-            val messageBoxBuilder = AlertDialog.Builder(this).setView(messageBoxView)
-            val messageBoxInstance = messageBoxBuilder.show()
-            messageBoxView.setOnClickListener {
-                messageBoxInstance.dismiss()
-            }
         }
     }
 

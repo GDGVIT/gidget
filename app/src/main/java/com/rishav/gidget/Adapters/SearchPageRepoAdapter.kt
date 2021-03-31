@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
+import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
@@ -13,7 +14,9 @@ import com.rishav.gidget.Interface.RetroFitService
 import com.rishav.gidget.Models.ProfilePage.ProfilePageModel
 import com.rishav.gidget.Models.SearchPage.ItemsRepo
 import com.rishav.gidget.R
+import com.rishav.gidget.Realm.AddToWidget
 import com.squareup.picasso.Picasso
+import io.realm.Realm
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -52,14 +55,44 @@ class SearchPageRepoAdapter(
         )
         holderRepo.itemView.startAnimation(animation)
         lastPosition = position
+
+        //Add to widget
+        holderRepo.addToWidgetButton.setOnClickListener {
+            val realm: Realm = Realm.getDefaultInstance()
+            if (realm.isEmpty) {
+                addDataToReam(realm, currentItem)
+            } else {
+                val results = realm.where(AddToWidget::class.java).findAll()
+                if (results.isEmpty()) {
+                    addDataToReam(realm, currentItem)
+                } else {
+                    realm.beginTransaction()
+                    results.deleteAllFromRealm()
+                    realm.commitTransaction()
+
+                    addDataToReam(realm, currentItem)
+                }
+            }
+        }
     }
 
     override fun getItemCount(): Int = searchPageDataList.size
+
+    private fun addDataToReam(realm: Realm, currentItem: ItemsRepo) {
+        val addToWidget = AddToWidget()
+        addToWidget.username = currentItem.full_name
+        addToWidget.type = "Repo"
+
+        realm.beginTransaction()
+        realm.copyToRealm(addToWidget)
+        realm.commitTransaction()
+    }
 
     class SearchPageRepoViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val profilePhoto: ImageView = itemView.findViewById(R.id.searchPageRecyclerItemProfilePhoto)
         val name: TextView = itemView.findViewById(R.id.searchPageRecyclerItemNameText)
         val username: TextView = itemView.findViewById(R.id.searchPageRecyclerItemUsernameText)
         val location: TextView = itemView.findViewById(R.id.searchPageRecyclerItemLocationText)
+        val addToWidgetButton: ImageButton = itemView.findViewById(R.id.searchPageAddToHomeButton)
     }
 }

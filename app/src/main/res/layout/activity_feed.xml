@@ -47,56 +47,49 @@
                     android:textColor="@color/white"
                     android:textSize="24sp" />
 
-                <ImageView
-                    android:id="@+id/feedPageSearchButton"
-                    android:layout_width="30dp"
-                    android:layout_height="30dp"
+                <androidx.cardview.widget.CardView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
                     android:layout_alignParentEnd="true"
                     android:layout_marginEnd="10dp"
-                    android:clickable="true"
-                    android:focusable="true"
-                    android:src="@drawable/ic_baseline_search_24"
-                    tools:ignore="ContentDescription" />
+                    app:cardBackgroundColor="@color/feedPageRecyclerItemColor"
+                    app:cardCornerRadius="30dp">
+
+                    <ImageView
+                        android:id="@+id/feedPageSearchButton"
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:layout_margin="5dp"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:src="@drawable/ic_baseline_search_24"
+                        tools:ignore="ContentDescription" />
+                </androidx.cardview.widget.CardView>
 
             </RelativeLayout>
 
         </androidx.appcompat.widget.Toolbar>
     </com.google.android.material.appbar.AppBarLayout>
 
-    <RelativeLayout
-        android:id="@+id/feedPageActvityRL"
-        android:layout_width="match_parent"
+    <TextView
+        android:id="@+id/feedPageActvityTV"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/feedPageAppBar"
+        android:layout_centerVertical="true"
         android:layout_marginHorizontal="30dp"
-        android:layout_marginVertical="20dp">
+        android:layout_marginVertical="20dp"
+        android:fontFamily="@font/montserrat"
+        android:text="Activity"
+        android:textColor="@color/white"
+        android:textSize="24sp" />
 
-        <TextView
-            android:id="@+id/feedPageActvityTV"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
-            android:fontFamily="@font/montserrat"
-            android:text="Activity"
-            android:textColor="@color/white"
-            android:textSize="24sp" />
-
-        <ImageView
-            android:id="@+id/feedPageInfoButton"
-            android:layout_width="20dp"
-            android:layout_height="20dp"
-            android:layout_alignParentEnd="true"
-            android:layout_centerVertical="true"
-            android:clickable="true"
-            android:focusable="true"
-            android:src="@drawable/ic_baseline_info_24" />
-    </RelativeLayout>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/feedPageRecyclerView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/feedPageActvityRL"
+        android:layout_below="@+id/feedPageActvityTV"
         tools:listitem="@layout/feed_page_recycler_item" />
 
     <RelativeLayout
@@ -106,7 +99,7 @@
         android:gravity="center">
 
         <ProgressBar
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:indeterminate="true"
             android:indeterminateTint="@color/white"

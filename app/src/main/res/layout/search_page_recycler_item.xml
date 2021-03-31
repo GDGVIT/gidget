@@ -31,8 +31,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/_10sdp"
-        android:layout_toEndOf="@+id/searchPageRecyclerItemProfilePhotoCover"
         android:layout_toStartOf="@+id/searchPageAddToHomeButtonCard"
+        android:layout_toEndOf="@+id/searchPageRecyclerItemProfilePhotoCover"
         android:orientation="vertical">
 
         <TextView
@@ -72,6 +72,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentEnd="true"
         android:layout_centerVertical="true"
+        app:cardBackgroundColor="@android:color/transparent"
         app:cardCornerRadius="10dp">
 
         <androidx.appcompat.widget.AppCompatImageButton

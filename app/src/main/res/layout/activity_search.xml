@@ -48,6 +48,7 @@
                 android:fontFamily="@font/montserrat"
                 android:hint="@string/search"
                 android:imeOptions="actionSearch"
+                android:textSize="@dimen/_12sdp"
                 android:inputType="text"
                 android:textColor="@color/lightGrey"
                 android:textColorHint="@color/white" />
@@ -87,7 +88,7 @@
             android:fontFamily="@font/nexa_bold"
             android:text="@string/organization"
             android:textAllCaps="false"
-            android:textColor="@color/blue"
+            android:textColor="@color/white"
             android:textStyle="bold"
             app:backgroundTint="@color/feedPageRecyclerItemColor" />
 
