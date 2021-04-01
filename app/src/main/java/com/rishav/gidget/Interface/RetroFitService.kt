@@ -40,5 +40,5 @@ interface RetroFitService {
     fun widgetRepoEvents(
         @Path("owner") owner: String,
         @Path("repo") repo: String
-    ) : Call<MutableList<WidgetRepoModel>>
+    ): Call<MutableList<WidgetRepoModel>>
 }

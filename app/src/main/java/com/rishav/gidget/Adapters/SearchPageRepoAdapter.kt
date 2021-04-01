@@ -10,21 +10,15 @@ import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import com.rishav.gidget.Interface.RetroFitService
-import com.rishav.gidget.Models.ProfilePage.ProfilePageModel
 import com.rishav.gidget.Models.SearchPage.ItemsRepo
 import com.rishav.gidget.R
 import com.rishav.gidget.Realm.AddToWidget
 import com.squareup.picasso.Picasso
 import io.realm.Realm
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
 
 class SearchPageRepoAdapter(
-        private val context: Context,
-        private val searchPageDataList: MutableList<ItemsRepo>,
-        private val mService: RetroFitService,
+    private val context: Context,
+    private val searchPageDataList: MutableList<ItemsRepo>,
 ) : RecyclerView.Adapter<SearchPageRepoAdapter.SearchPageRepoViewHolder>() {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SearchPageRepoViewHolder {
         val itemView = LayoutInflater.from(parent.context)
