@@ -13,13 +13,12 @@ import com.rishav.gidget.Adapters.WidgetRepoRemoteService
 import com.rishav.gidget.R
 import com.rishav.gidget.UI.MainActivity
 
-
 /**
  * Implementation of App Widget functionality.
  */
 class GidgetWidget : AppWidgetProvider() {
-    private val ACTION_TOAST = "actionToast"
-    private val EXTRA_ITEM_POSITION = "extraItemPosition"
+    private val actionToast = "actionToast"
+    private val extraItemPosition = "extraItemPosition"
 
     override fun onUpdate(
         context: Context,
@@ -33,17 +32,17 @@ class GidgetWidget : AppWidgetProvider() {
                 context,
                 appWidgetManager,
                 appWidgetId,
-                ACTION_TOAST
+                actionToast
             )
         }
     }
 
     override fun onEnabled(context: Context) {
-        Toast.makeText(context, "onEnabled", Toast.LENGTH_SHORT).show();
+        Toast.makeText(context, "onEnabled", Toast.LENGTH_SHORT).show()
     }
 
     override fun onDisabled(context: Context) {
-        Toast.makeText(context, "onDisabled", Toast.LENGTH_SHORT).show();
+        Toast.makeText(context, "onDisabled", Toast.LENGTH_SHORT).show()
     }
 
     override fun onDeleted(context: Context?, appWidgetIds: IntArray?) {
@@ -61,8 +60,8 @@ class GidgetWidget : AppWidgetProvider() {
     }
 
     override fun onReceive(context: Context?, intent: Intent) {
-        if (ACTION_TOAST == intent.action) {
-            val clickedPosition = intent.getIntExtra(EXTRA_ITEM_POSITION, 0)
+        if (actionToast == intent.action) {
+            val clickedPosition = intent.getIntExtra(extraItemPosition, 0)
             Toast.makeText(context, "Clicked position: $clickedPosition", Toast.LENGTH_SHORT).show()
         }
         super.onReceive(context, intent)

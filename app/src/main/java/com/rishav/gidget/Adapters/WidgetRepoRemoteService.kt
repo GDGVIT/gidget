@@ -19,7 +19,6 @@ import java.time.Duration
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
-
 class WidgetRepoRemoteService : RemoteViewsService() {
     override fun onGetViewFactory(intent: Intent?): RemoteViewsFactory {
         return WidgetRepoRemoteViewsFactory(applicationContext, intent!!)
@@ -136,5 +135,4 @@ class WidgetRepoRemoteViewsFactory(private val context: Context, private val int
             else -> "${differenceTime.toDays()} days ago"
         }
     }
-
 }
