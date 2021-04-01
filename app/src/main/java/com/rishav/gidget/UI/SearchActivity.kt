@@ -3,15 +3,24 @@ package com.rishav.gidget.UI
 import android.graphics.Color
 import android.os.Bundle
 import android.view.inputmethod.EditorInfo
-import android.widget.*
+import android.widget.Button
+import android.widget.EditText
+import android.widget.ImageButton
 import androidx.appcompat.app.AppCompatActivity
-import androidx.recyclerview.widget.*
-import com.rishav.gidget.Adapters.*
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import com.rishav.gidget.Adapters.SearchPageRepoAdapter
+import com.rishav.gidget.Adapters.SearchPageUserAdapter
 import com.rishav.gidget.Common.Common
 import com.rishav.gidget.Interface.RetroFitService
-import com.rishav.gidget.Models.SearchPage.*
+import com.rishav.gidget.Models.SearchPage.Items
+import com.rishav.gidget.Models.SearchPage.ItemsRepo
+import com.rishav.gidget.Models.SearchPage.SearchPageRepoModel
+import com.rishav.gidget.Models.SearchPage.SearchPageUserModel
 import com.rishav.gidget.R
-import retrofit2.*
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 
 class SearchActivity : AppCompatActivity() {
     lateinit var mService: RetroFitService
@@ -88,7 +97,8 @@ class SearchActivity : AppCompatActivity() {
                 })
         } else if (searchType == "repositories") {
             mService.searchRepo(
-                searchText, System.getenv("token")
+                searchText,
+                System.getenv("token")
                     ?: "null"
             ).enqueue(object : Callback<SearchPageRepoModel> {
                 override fun onResponse(

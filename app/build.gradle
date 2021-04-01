@@ -5,6 +5,7 @@ plugins {
     id 'com.google.gms.google-services'
     id 'com.google.firebase.crashlytics'
     id 'realm-android'
+    id 'org.jlleitschuh.gradle.ktlint' version '10.0.0'
 }
 
 android {

@@ -2,9 +2,14 @@ package com.rishav.gidget.Adapters
 
 import android.annotation.SuppressLint
 import android.content.Context
-import android.view.*
-import android.view.animation.*
-import android.widget.*
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import android.view.animation.Animation
+import android.view.animation.AnimationUtils
+import android.widget.ImageButton
+import android.widget.ImageView
+import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.rishav.gidget.Interface.RetroFitService
 import com.rishav.gidget.Models.ProfilePage.ProfilePageModel
@@ -13,7 +18,9 @@ import com.rishav.gidget.R
 import com.rishav.gidget.Realm.AddToWidget
 import com.squareup.picasso.Picasso
 import io.realm.Realm
-import retrofit2.*
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 
 class SearchPageUserAdapter(
     private val context: Context,

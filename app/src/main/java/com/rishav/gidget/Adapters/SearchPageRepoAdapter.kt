@@ -22,13 +22,13 @@ class SearchPageRepoAdapter(
 ) : RecyclerView.Adapter<SearchPageRepoAdapter.SearchPageRepoViewHolder>() {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SearchPageRepoViewHolder {
         val itemView = LayoutInflater.from(parent.context)
-                .inflate(R.layout.search_page_recycler_item, parent, false)
+            .inflate(R.layout.search_page_recycler_item, parent, false)
         return SearchPageRepoViewHolder(itemView)
     }
 
     override fun onBindViewHolder(holderRepo: SearchPageRepoViewHolder, position: Int) {
         val currentItem = searchPageDataList[position]
-        //val profileURL = "https://github.com/${currentItem.owner.login}"
+        // val profileURL = "https://github.com/${currentItem.owner.login}"
 
         Picasso.get().load(currentItem.owner.avatar_url).into(holderRepo.profilePhoto)
 
@@ -44,13 +44,13 @@ class SearchPageRepoAdapter(
         // Custom Animation
         var lastPosition: Int = -1
         val animation: Animation = AnimationUtils.loadAnimation(
-                context,
-                if (position > lastPosition) R.anim.up_from_bottom else R.anim.down_from_top
+            context,
+            if (position > lastPosition) R.anim.up_from_bottom else R.anim.down_from_top
         )
         holderRepo.itemView.startAnimation(animation)
         lastPosition = position
 
-        //Add to widget
+        // Add to widget
         holderRepo.addToWidgetButton.setOnClickListener {
             val realm: Realm = Realm.getDefaultInstance()
             if (realm.isEmpty) {

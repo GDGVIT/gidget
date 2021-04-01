@@ -3,9 +3,11 @@ package com.rishav.gidget.UI
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
-import android.widget.*
+import android.widget.ImageView
+import android.widget.RelativeLayout
 import androidx.appcompat.app.AppCompatActivity
-import androidx.recyclerview.widget.*
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.rishav.gidget.Adapters.FeedPageAdapter
 import com.rishav.gidget.Common.Common
 import com.rishav.gidget.Interface.RetroFitService
@@ -14,7 +16,9 @@ import com.rishav.gidget.R
 import com.rishav.gidget.Realm.SignUp
 import com.squareup.picasso.Picasso
 import io.realm.Realm
-import retrofit2.*
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 
 class FeedActivity : AppCompatActivity() {
     lateinit var mService: RetroFitService
