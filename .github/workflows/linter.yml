@@ -57,7 +57,6 @@ jobs:
           VALIDATE_DOCKERFILE_HADOLINT: false
           VALIDATE_PYTHON_FLAKE8: false
           VALIDATE_JSCPD: false
-          VALIDATE_KOTLIN: true
           VALIDATE_BASH: false
           VALIDATE_BASH_EXEC: false
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
