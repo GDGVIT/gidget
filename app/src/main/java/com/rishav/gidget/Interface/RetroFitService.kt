@@ -41,4 +41,7 @@ interface RetroFitService {
         @Path("owner") owner: String,
         @Path("repo") repo: String
     ): Call<MutableList<WidgetRepoModel>>
+
+    @GET("users/{user}/events")
+    fun widgetUserEvents(@Path("user") user: String): Call<MutableList<WidgetRepoModel>>
 }

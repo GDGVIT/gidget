@@ -29,6 +29,10 @@ class FeedActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_feed)
         Realm.init(applicationContext)
+//        val config: RealmConfiguration = RealmConfiguration.Builder().schemaVersion(2).migration(MyMigration()).build()
+//        Realm.setDefaultConfiguration(config)
+//        Realm.removeDefaultConfiguration()
+//        Realm.setDefaultConfiguration(RealmConfiguration.Builder().deleteRealmIfMigrationNeeded().build())
         val realm: Realm = Realm.getDefaultInstance()
         val results = realm.where(SignUp::class.java).findAll().first()
         mService = Common.retroFitService
