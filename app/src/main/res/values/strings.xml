@@ -24,4 +24,5 @@
     <string name="appwidget_text">EXAMPLE</string>
     <string name="add_widget">Add widget</string>
     <string name="appwidget_commit_message">commit message</string>
+    <string name="empty_widget">Empty Widget</string>
 </resources>

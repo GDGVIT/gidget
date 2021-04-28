@@ -1,5 +1,6 @@
 package com.rishav.gidget.Adapters
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
@@ -83,6 +84,7 @@ class FeedPageAdapter(
         holder.itemView.clearAnimation()
     }
 
+    @SuppressLint("SetTextI18n")
     private fun setEventData(currentItem: FeedPageModel, holder: FeedPageUserActivityViewHolder) {
         when (currentItem.type) {
             "CommitCommentEvent" -> {

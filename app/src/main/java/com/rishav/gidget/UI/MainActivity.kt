@@ -37,8 +37,11 @@ class MainActivity : AppCompatActivity() {
 
     private fun loginButtonOnTap() {
         val progressBar: ProgressBar = findViewById(R.id.mainPageProgressBar)
-        findViewById<Button>(R.id.buLogin).setOnClickListener {
+        val loginButton: Button = findViewById<Button>(R.id.buLogin)
+        loginButton.setOnClickListener {
             progressBar.visibility = View.VISIBLE
+            loginButton.visibility = View.GONE
+
             val provider = OAuthProvider.newBuilder("github.com")
             provider.scopes = object : ArrayList<String?>() {
                 init {
@@ -46,13 +49,14 @@ class MainActivity : AppCompatActivity() {
                 }
             }
             if (mAuth!!.pendingAuthResult == null) {
-                newLogin(provider, progressBar)
+                newLogin(provider, progressBar, loginButton)
             } else
-                pendingLogin(progressBar)
+                pendingLogin(progressBar, loginButton)
         }
     }
 
-    private fun newLogin(provider: OAuthProvider.Builder, progressBar: ProgressBar) {
+    @Suppress("RECEIVER_NULLABILITY_MISMATCH_BASED_ON_JAVA_ANNOTATIONS")
+    private fun newLogin(provider: OAuthProvider.Builder, progressBar: ProgressBar, loginButton: Button) {
         mAuth!!.startActivityForSignInWithProvider(this, provider.build())
             .addOnSuccessListener {
                 Realm.init(applicationContext)
@@ -80,26 +84,28 @@ class MainActivity : AppCompatActivity() {
                         realm.commitTransaction()
                     }
                 }
-                progressBar.visibility = View.GONE
+                Toast.makeText(this, "Logged in", Toast.LENGTH_LONG).show()
                 startActivity(Intent(this, FeedActivity::class.java))
                 finish()
             }
             .addOnFailureListener {
                 progressBar.visibility = View.GONE
+                loginButton.visibility = View.VISIBLE
                 Toast.makeText(this, it.toString(), Toast.LENGTH_SHORT).show()
                 println(it)
             }
     }
 
-    private fun pendingLogin(progressBar: ProgressBar) {
+    private fun pendingLogin(progressBar: ProgressBar, loginButton: Button) {
         val pendingResultTask: Task<AuthResult> = mAuth!!.pendingAuthResult!!
         pendingResultTask.addOnSuccessListener {
-            progressBar.visibility = View.GONE
+            Toast.makeText(this, "Logged in", Toast.LENGTH_LONG).show()
             startActivity(Intent(this, FeedActivity::class.java))
             finish()
         }
             .addOnFailureListener {
                 progressBar.visibility = View.GONE
+                loginButton.visibility = View.VISIBLE
                 Toast.makeText(this, it.toString(), Toast.LENGTH_SHORT).show()
                 println(it)
             }

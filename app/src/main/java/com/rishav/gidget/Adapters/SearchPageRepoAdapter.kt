@@ -1,6 +1,9 @@
 package com.rishav.gidget.Adapters
 
+import android.appwidget.AppWidgetManager
+import android.content.ComponentName
 import android.content.Context
+import android.content.Intent
 import android.os.Build
 import android.view.LayoutInflater
 import android.view.View
@@ -19,8 +22,8 @@ import com.rishav.gidget.Models.SearchPage.ItemsRepo
 import com.rishav.gidget.Models.Widget.WidgetRepoModel
 import com.rishav.gidget.R
 import com.rishav.gidget.Realm.AddToWidget
+import com.rishav.gidget.Widget.GidgetWidget
 import com.squareup.picasso.Picasso
-import io.realm.Realm
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -44,7 +47,7 @@ class SearchPageRepoAdapter(
 
         Picasso.get().load(currentItem.owner.avatar_url).into(holderRepo.profilePhoto)
 
-        val type = if (!currentItem.private)
+        val type = if (currentItem.private)
             "Private"
         else
             "Public"
@@ -63,31 +66,12 @@ class SearchPageRepoAdapter(
         lastPosition = position
 
         // Add to widget
-        holderRepo.addToWidgetButton.setOnClickListener {
-            val realm: Realm = Realm.getDefaultInstance()
-            if (realm.isEmpty) {
-                println(1)
-                addDataToReam(realm, currentItem)
-            } else {
-                val results = realm.where(AddToWidget::class.java).findAll()
-                if (results.isEmpty()) {
-                    println(2)
-                    addDataToReam(realm, currentItem)
-                } else {
-                    println(3)
-                    realm.beginTransaction()
-                    results.deleteAllFromRealm()
-                    realm.commitTransaction()
-
-                    addDataToReam(realm, currentItem)
-                }
-            }
-        }
+        holderRepo.addToWidgetButton.setOnClickListener { addToWidget(currentItem) }
     }
 
     override fun getItemCount(): Int = searchPageDataList.size
 
-    private fun addDataToReam(realm: Realm, currentItem: ItemsRepo) {
+    private fun addToWidget(currentItem: ItemsRepo) {
         val mService: RetroFitService = Common.retroFitService
 
         mService.widgetRepoEvents(currentItem.owner.login, currentItem.name)
@@ -98,19 +82,31 @@ class SearchPageRepoAdapter(
                     response: Response<MutableList<WidgetRepoModel>>
                 ) {
                     if (response.body() != null) {
+                        val dataSource: ArrayList<AddToWidget> = arrayListOf()
                         for (res in response.body()!!) {
                             val addToWidget = AddToWidget()
+                            val eventsList: List<String> = getEventData(res)
 
                             addToWidget.username = res.actor.login
                             addToWidget.name = res.repo.name
                             addToWidget.avatarUrl = res.actor.avatar_url
-                            addToWidget.message = getMessage(res)
+                            addToWidget.icon = eventsList[1].toInt()
+                            addToWidget.message = eventsList[0]
                             addToWidget.date = getDate(res)
 
-                            realm.beginTransaction()
-                            realm.copyToRealm(addToWidget)
-                            realm.commitTransaction()
+                            dataSource.add(addToWidget)
                         }
+
+                        val ids: IntArray = AppWidgetManager.getInstance(context).getAppWidgetIds(
+                            ComponentName(context, GidgetWidget::class.java)
+                        )
+                        if (ids.isNotEmpty()) {
+                            val widgetIntent = Intent(context, GidgetWidget::class.java)
+                            widgetIntent.action = AppWidgetManager.ACTION_APPWIDGET_UPDATE
+                            widgetIntent.putParcelableArrayListExtra("dataSource", dataSource)
+                            context.sendBroadcast(widgetIntent)
+                        }
+
                         Toast.makeText(context, "Added to widget", Toast.LENGTH_LONG).show()
                     } else
                         Toast.makeText(context, "Could not add", Toast.LENGTH_LONG).show()
@@ -122,24 +118,69 @@ class SearchPageRepoAdapter(
             })
     }
 
-    private fun getMessage(currentItem: WidgetRepoModel): String {
+    private fun getEventData(currentItem: WidgetRepoModel): List<String> {
         return when (currentItem.type) {
-            "CommitCommentEvent" -> "User commented on a commit"
-            "CreateEvent" -> "User created a branch / tag"
-            "ForkEvent" -> "User forked this repository"
-            "DeleteEvent" -> "User deleted a branch / tag"
-            "GollumEvent" -> "User created / updated a wiki page"
-            "IssueCommentEvent" -> "User commented on an issue"
-            "IssuesEvent" -> "Activity related to an issue"
-            "MemberEvent" -> "A collaborator was added or removed"
-            "PublicEvent" -> "Repository was made public"
-            "PullRequestEvent" -> "User made a pull request"
-            "PullRequestReviewCommentEvent" -> "User commented on a pull request review"
-            "PushEvent" -> "User made a push request"
-            "ReleaseEvent" -> "User made a new release"
-            "SponsorshipEvent" -> "User started sponsoring"
-            "WatchEvent" -> "User was watching"
-            else -> "Unidentified event"
+            "CommitCommentEvent" -> listOf(
+                "User commented on a commit",
+                R.drawable.ic_baseline_comment_24.toString()
+            )
+            "CreateEvent" -> listOf(
+                "User created a branch / tag",
+                R.drawable.ic_git_branch.toString()
+            )
+            "ForkEvent" -> listOf(
+                "User forked this repository",
+                R.drawable.ic_github_fork.toString()
+            )
+            "DeleteEvent" -> listOf(
+                "User deleted a branch / tag",
+                R.drawable.ic_baseline_delete_24.toString()
+            )
+            "GollumEvent" -> listOf(
+                "User created / updated a wiki page",
+                R.drawable.github_gollum.toString()
+            )
+            "IssueCommentEvent" -> listOf(
+                "User commented on an issue",
+                R.drawable.ic_baseline_comment_24.toString()
+            )
+            "IssuesEvent" -> listOf(
+                "Activity related to an issue",
+                R.drawable.ic_github_issue.toString()
+            )
+            "MemberEvent" -> listOf(
+                "A collaborator was added or removed",
+                R.drawable.ic_baseline_group_24.toString()
+            )
+            "PublicEvent" -> listOf(
+                "Repository was made public",
+                R.drawable.ic_baseline_public_24.toString()
+            )
+            "PullRequestEvent" -> listOf(
+                "User made a pull request",
+                R.drawable.ic_github_pull_request.toString()
+            )
+            "PullRequestReviewCommentEvent" -> listOf(
+                "User commented on a pull request review",
+                R.drawable.ic_baseline_comment_24.toString()
+            )
+            "PushEvent" -> listOf(
+                "User made a push request",
+                R.drawable.ic_baseline_cloud_upload_24.toString()
+            )
+            "ReleaseEvent" -> listOf(
+                "User made a new release",
+                R.drawable.ic_baseline_new_releases_24.toString()
+            )
+            "SponsorshipEvent" -> listOf(
+                "User started sponsoring",
+                R.drawable.ic_baseline_monetization_on_24.toString()
+            )
+            "WatchEvent" -> listOf(
+                "User was watching",
+                R.drawable.ic_baseline_remove_red_eye_24.toString()
+            )
+            else -> listOf("Unidentified event", R.drawable.github_logo.toString())
         }
     }
 
