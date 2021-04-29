@@ -6,6 +6,7 @@ import android.view.inputmethod.EditorInfo
 import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageButton
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -57,7 +58,10 @@ class SearchActivity : AppCompatActivity() {
             recyclerView.removeAllViewsInLayout()
         }
         searchButton.setOnClickListener {
-            getSearchData(searchText.text.toString(), searchType, recyclerView)
+            if (searchText.text.isNullOrEmpty() || searchText.text.isBlank())
+                Toast.makeText(this, "Empty search field", Toast.LENGTH_LONG).show()
+            else
+                getSearchData(searchText.text.toString(), searchType, recyclerView)
         }
         searchText.setOnEditorActionListener { textView, actionId, keyEvent ->
             if (actionId == EditorInfo.IME_ACTION_SEARCH) {

@@ -9,13 +9,16 @@
 
     <ImageButton
         android:id="@+id/searchPageBackButton"
-        android:layout_width="@dimen/_20sdp"
-        android:layout_height="@dimen/_20sdp"
+        android:layout_width="22dp"
+        android:layout_height="19dp"
         android:layout_marginVertical="@dimen/_14sdp"
         android:layout_marginStart="@dimen/_8sdp"
-        android:background="@android:color/transparent"
+        tools:background="@android:color/transparent"
+        android:background="?android:attr/selectableItemBackground"
+        android:clickable="true"
         android:scaleType="fitCenter"
-        android:src="@drawable/ic_baseline_arrow_back_24" />
+        android:src="@drawable/ic_baseline_arrow_back_24"
+        android:focusable="true" />
 
     <androidx.cardview.widget.CardView
         android:id="@+id/searchPageSection1"
@@ -59,9 +62,12 @@
                 android:layout_height="30dp"
                 android:layout_alignParentEnd="true"
                 android:layout_centerVertical="true"
-                android:background="@color/feedPageRecyclerItemColor"
+                tools:background="@color/feedPageRecyclerItemColor"
+                android:background="?android:attr/selectableItemBackground"
+                android:clickable="true"
                 android:scaleType="fitCenter"
-                android:src="@drawable/ic_baseline_search_24" />
+                android:src="@drawable/ic_baseline_search_24"
+                android:focusable="true" />
         </RelativeLayout>
     </androidx.cardview.widget.CardView>
 

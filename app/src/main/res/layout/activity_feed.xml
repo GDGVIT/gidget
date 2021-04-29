@@ -18,7 +18,7 @@
         <androidx.appcompat.widget.Toolbar
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="10dp">
+            android:layout_marginTop="@dimen/_10sdp">
 
             <RelativeLayout
                 android:layout_width="match_parent"
@@ -32,8 +32,11 @@
 
                     <ImageView
                         android:id="@+id/feedPageProfilePhoto"
-                        android:layout_width="30dp"
-                        android:layout_height="30dp"
+                        android:layout_width="@dimen/_25sdp"
+                        android:layout_height="@dimen/_25sdp"
+                        android:background="?android:attr/selectableItemBackground"
+                        android:clickable="true"
+                        android:focusable="true"
                         android:src="@drawable/github_logo" />
                 </androidx.cardview.widget.CardView>
 
@@ -45,7 +48,7 @@
                     android:fontFamily="@font/nexa_bold"
                     android:text="@string/app_name"
                     android:textColor="@color/white"
-                    android:textSize="24sp" />
+                    android:textSize="@dimen/_20sdp" />
 
                 <androidx.cardview.widget.CardView
                     android:layout_width="wrap_content"
@@ -57,11 +60,12 @@
 
                     <ImageView
                         android:id="@+id/feedPageSearchButton"
-                        android:layout_width="30dp"
-                        android:layout_height="30dp"
-                        android:layout_margin="5dp"
+                        android:layout_width="@dimen/_20sdp"
+                        android:layout_height="@dimen/_20sdp"
+                        android:layout_margin="@dimen/_5sdp"
                         android:clickable="true"
                         android:focusable="true"
+                        android:background="?android:attr/selectableItemBackground"
                         android:src="@drawable/ic_baseline_search_24"
                         tools:ignore="ContentDescription" />
                 </androidx.cardview.widget.CardView>
@@ -78,7 +82,7 @@
         android:layout_below="@+id/feedPageAppBar"
         android:layout_centerVertical="true"
         android:layout_marginHorizontal="30dp"
-        android:layout_marginVertical="20dp"
+        android:layout_marginVertical="@dimen/_20sdp"
         android:fontFamily="@font/montserrat"
         android:text="Activity"
         android:textColor="@color/white"
@@ -93,7 +97,7 @@
         tools:listitem="@layout/feed_page_recycler_item" />
 
     <RelativeLayout
-        android:id="@+id/loadingPanel"
+        android:id="@+id/feedpageProgressBar"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:gravity="center">
@@ -103,8 +107,8 @@
             android:layout_height="wrap_content"
             android:indeterminate="true"
             android:indeterminateTint="@color/white"
-            android:minWidth="60dp"
-            android:minHeight="60dp"
+            android:minWidth="@dimen/_50sdp"
+            android:minHeight="@dimen/_50sdp"
             tools:targetApi="lollipop" />
     </RelativeLayout>
 </RelativeLayout>

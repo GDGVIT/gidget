@@ -2,10 +2,10 @@
     <string name="app_name">Gidget</string>
     <string name="signInMethod">singInMethod</string>
     <string name="providerID">providerID</string>
-    <string name="username">username</string>
+    <string name="username">sampleUsername</string>
     <string name="photoUrl">photoUrl</string>
     <string name="UID">uid</string>
-    <string name="name">name</string>
+    <string name="name">Sample Name</string>
     <string name="email">email</string>
     <string name="welcome_to_gidget">Welcome to Gidget</string>
     <string name="login_with">Login with</string>

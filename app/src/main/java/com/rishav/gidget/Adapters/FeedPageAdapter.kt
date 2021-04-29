@@ -11,9 +11,9 @@ import android.view.ViewGroup
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import android.widget.ImageView
-import android.widget.RelativeLayout
 import android.widget.TextView
 import androidx.annotation.RequiresApi
+import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.RecyclerView
 import com.rishav.gidget.Models.FeedPage.FeedPageModel
 import com.rishav.gidget.R
@@ -66,7 +66,7 @@ class FeedPageAdapter(
         lastPosition = position
 
         // Open Repository
-        holder.recyclerViewItemRelativeLayout.setOnClickListener {
+        holder.feedPageRecyclerViewItem.setOnClickListener {
             val uri: Uri = Uri.parse("https://github.com/${currentItem.repo.name}")
             context.startActivity(
                 Intent(
@@ -176,8 +176,7 @@ class FeedPageAdapter(
         val username: TextView = itemView.findViewById(R.id.feedPageRecyclerViewItemUsername)
         val repositoryName: TextView = itemView.findViewById(R.id.feedPageRecyclerViewItemRepoName)
         val dateText: TextView = itemView.findViewById(R.id.feedPageRecyclerViewItemDate)
-        val recyclerViewItemRelativeLayout: RelativeLayout =
-            itemView.findViewById(R.id.feedPageRecyclerViewItemRelativeLayout)
+        val feedPageRecyclerViewItem: CardView = itemView.findViewById(R.id.feedPageRecyclerViewItem)
         val message: TextView = itemView.findViewById(R.id.feedPageRecyclerViewItemMessage)
     }
 }

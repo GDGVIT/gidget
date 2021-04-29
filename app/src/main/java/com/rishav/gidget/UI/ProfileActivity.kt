@@ -3,7 +3,10 @@ package com.rishav.gidget.UI
 import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
+import android.view.View
 import android.widget.ImageView
+import android.widget.ProgressBar
+import android.widget.RelativeLayout
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -43,9 +46,9 @@ class ProfileActivity : AppCompatActivity() {
         val bioTV: TextView = findViewById(R.id.profilePageBio)
         val cityTV: TextView = findViewById(R.id.profilePageCity)
         val logoutButton: CardView = findViewById(R.id.profilePageLogoutButton)
-        findViewById<ImageView>(R.id.profileBackButton).setOnClickListener {
-            finish()
-        }
+        val progressBar: ProgressBar = findViewById(R.id.profilepageProgressBar)
+
+        findViewById<ImageView>(R.id.profileBackButton).setOnClickListener { finish() }
 
         getProfileData(
             results!!,
@@ -56,7 +59,8 @@ class ProfileActivity : AppCompatActivity() {
             followingTV,
             bioTV,
             cityTV,
-            logoutButton
+            logoutButton,
+            progressBar
         )
     }
 
@@ -70,7 +74,11 @@ class ProfileActivity : AppCompatActivity() {
         bioTV: TextView,
         cityTV: TextView,
         logoutButton: CardView,
+        progressBar: ProgressBar
     ) {
+        val profilePageView: RelativeLayout = findViewById(R.id.profilePageSection0)
+        profilePageView.visibility = View.GONE
+        progressBar.visibility = View.VISIBLE
         mService.getProfileInfo(results.username, System.getenv("token") ?: "null")
             .enqueue(object : Callback<ProfilePageModel> {
                 @SuppressLint("SetTextI18n")
@@ -86,15 +94,21 @@ class ProfileActivity : AppCompatActivity() {
                     bioTV.text = response.body()!!.bio
                     cityTV.text = response.body()!!.location
 
+                    progressBar.visibility = View.GONE
+                    profilePageView.visibility = View.VISIBLE
+
                     logoutButton.setOnClickListener {
                         mAuth.signOut()
                         Realm.removeDefaultConfiguration()
+                        Toast.makeText(applicationContext, "Logged out", Toast.LENGTH_LONG).show()
                         startActivity(Intent(applicationContext, MainActivity::class.java))
                         finishAffinity()
                     }
                 }
 
                 override fun onFailure(call: Call<ProfilePageModel>, t: Throwable) {
+                    progressBar.visibility = View.GONE
+                    profilePageView.visibility = View.VISIBLE
                     println("Error occurred - $t")
                     Toast.makeText(baseContext, "Something went wrong...", Toast.LENGTH_LONG).show()
                 }

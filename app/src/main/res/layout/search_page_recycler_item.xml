@@ -5,8 +5,11 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginVertical="@dimen/_10sdp"
-    android:background="@android:color/transparent"
-    android:paddingHorizontal="@dimen/_20sdp">
+    android:background="?android:attr/selectableItemBackground"
+    tools:background="@android:color/transparent"
+    android:clickable="true"
+    android:paddingHorizontal="@dimen/_20sdp"
+    android:focusable="true">
 
 
     <androidx.cardview.widget.CardView
@@ -80,9 +83,11 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="?android:attr/selectableItemBackground"
+            android:clickable="true"
             android:fontFamily="@font/nexa_bold"
             android:scaleType="fitCenter"
-            android:src="@drawable/ic_baseline_add_to_home_screen_24" />
+            android:src="@drawable/ic_baseline_add_to_home_screen_24"
+            android:focusable="true" />
     </androidx.cardview.widget.CardView>
 
 </RelativeLayout>

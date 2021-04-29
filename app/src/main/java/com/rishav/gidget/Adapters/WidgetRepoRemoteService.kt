@@ -36,10 +36,8 @@ class WidgetRepoRemoteViewsFactory(
             if (intent.extras!!.containsKey("dataSource")) {
                 val bundle = intent.extras!!.getBundle("dataSource")
                 dataSource = bundle!!.getParcelableArrayList("dataSourceBundle")!!
-            } else
-                println("Doesnt contain bundle")
-        } else
-            println("no extras")
+            }
+        }
     }
 
     override fun onCreate() {}
@@ -48,7 +46,7 @@ class WidgetRepoRemoteViewsFactory(
 
     override fun onDestroy() = dataSource.clear()
 
-    override fun getCount(): Int = dataSource.size // if (dataSource.size <= 10) dataSource.size else 10
+    override fun getCount(): Int = dataSource.size
 
     @RequiresApi(Build.VERSION_CODES.O)
     override fun getViewAt(position: Int): RemoteViews {
@@ -81,43 +79,3 @@ class WidgetRepoRemoteViewsFactory(
 
     override fun hasStableIds(): Boolean = true
 }
-
-//        temp.username = "vigneshshettyin"
-//        temp.name = "gdg-x/aura"
-//        temp.avatarUrl = "https://avatars.githubusercontent.com/u/77713888?"
-//        temp.message = "User was watching"
-//        temp.date = "today"
-//        temp.icon = R.drawable.ic_github_issue
-//        dataSource.add(temp)
-//
-//        temp.username = "dependabot[bot]"
-//        temp.name = "gdg-x/aura"
-//        temp.avatarUrl = "https://avatars.githubusercontent.com/u/49699333?"
-//        temp.message = "User created a branch / tag"
-//        temp.date = "today"
-//        temp.icon = R.drawable.ic_github_issue
-//        dataSource.add(temp)
-//
-//        temp.username = "dependabot[bot]"
-//        temp.name = "gdg-x/aura"
-//        temp.avatarUrl = "https://avatars.githubusercontent.com/u/15610556?"
-//        temp.message = "User created a branch / tag"
-//        temp.date = "today"
-//        temp.icon = R.drawable.ic_github_issue
-//        dataSource.add(temp)
-//
-//        temp.username = "asdoasd"
-//        temp.name = "asdoaksd"
-//        temp.avatarUrl = "https://avatars.githubusercontent.com/u/15610556?"
-//        temp.message = "random message"
-//        temp.date = "today"
-//        temp.icon = R.drawable.ic_github_issue
-//        dataSource.add(temp)
-//
-//        temp.username = "asdoasd"
-//        temp.name = "asdoaksd"
-//        temp.avatarUrl = "https://avatars.githubusercontent.com/u/15610556?"
-//        temp.message = "random message"
-//        temp.date = "today"
-//        temp.icon = R.drawable.ic_github_issue
-//        dataSource.add(temp)

@@ -28,21 +28,22 @@ class FeedActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_feed)
+
         Realm.init(applicationContext)
-//        val config: RealmConfiguration = RealmConfiguration.Builder().schemaVersion(2).migration(MyMigration()).build()
-//        Realm.setDefaultConfiguration(config)
-//        Realm.removeDefaultConfiguration()
-//        Realm.setDefaultConfiguration(RealmConfiguration.Builder().deleteRealmIfMigrationNeeded().build())
         val realm: Realm = Realm.getDefaultInstance()
         val results = realm.where(SignUp::class.java).findAll().first()
+
         mService = Common.retroFitService
+
         val recyclerView: RecyclerView = findViewById(R.id.feedPageRecyclerView)
         val profilePhoto: ImageView = findViewById(R.id.feedPageProfilePhoto)
-        val progressBar: RelativeLayout = findViewById(R.id.loadingPanel)
+        val progressBar: RelativeLayout = findViewById(R.id.feedpageProgressBar)
         val searchButton: ImageView = findViewById(R.id.feedPageSearchButton)
         recyclerView.setHasFixedSize(true)
+
         layoutManager = LinearLayoutManager(this)
         recyclerView.layoutManager = layoutManager
+
         getFeedList(recyclerView, progressBar, results!!)
         getProfilePhoto(profilePhoto, results)
         navigateToSearchPage(searchButton)

@@ -3,11 +3,15 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:id="@+id/feedPageRecyclerViewItem"
     android:layout_marginHorizontal="@dimen/_10sdp"
     android:layout_marginVertical="@dimen/_4sdp"
     app:cardBackgroundColor="@android:color/transparent"
+    android:foreground="?android:attr/selectableItemBackground"
+    android:clickable="true"
     app:cardCornerRadius="20dp"
-    app:cardElevation="0dp">
+    app:cardElevation="0dp"
+    android:focusable="true">
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -27,7 +31,7 @@
                 android:id="@+id/feedPageRecyclerViewItemProfilePhotoCard"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="10dp"
+                android:layout_marginEnd="@dimen/_8sdp"
                 app:cardBackgroundColor="@android:color/transparent"
                 app:cardCornerRadius="30dp">
 
@@ -72,7 +76,7 @@
                     android:id="@+id/feedPageEventTypeIcon"
                     android:layout_width="@dimen/_16sdp"
                     android:layout_height="@dimen/_16sdp"
-                    android:layout_margin="10dp"
+                    android:layout_margin="@dimen/_8sdp"
                     android:src="@drawable/ic_github_fork" />
             </androidx.cardview.widget.CardView>
 
