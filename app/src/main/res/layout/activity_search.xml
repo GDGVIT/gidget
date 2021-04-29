@@ -13,12 +13,12 @@
         android:layout_height="19dp"
         android:layout_marginVertical="@dimen/_14sdp"
         android:layout_marginStart="@dimen/_8sdp"
-        tools:background="@android:color/transparent"
         android:background="?android:attr/selectableItemBackground"
         android:clickable="true"
+        android:focusable="true"
         android:scaleType="fitCenter"
         android:src="@drawable/ic_baseline_arrow_back_24"
-        android:focusable="true" />
+        tools:background="@android:color/transparent" />
 
     <androidx.cardview.widget.CardView
         android:id="@+id/searchPageSection1"
@@ -47,14 +47,17 @@
                 android:layout_toStartOf="@id/searchPageSearchButton"
                 android:autofillHints="@string/username"
                 android:background="@null"
+                android:scrollHorizontally="true"
+                android:ellipsize="end"
+                android:maxLines="1"
                 android:ems="10"
                 android:fontFamily="@font/montserrat"
                 android:hint="@string/search"
                 android:imeOptions="actionSearch"
-                android:textSize="@dimen/_12sdp"
                 android:inputType="text"
                 android:textColor="@color/lightGrey"
-                android:textColorHint="@color/white" />
+                android:textColorHint="@color/white"
+                android:textSize="@dimen/_12sdp" />
 
             <ImageButton
                 android:id="@+id/searchPageSearchButton"
@@ -62,12 +65,12 @@
                 android:layout_height="30dp"
                 android:layout_alignParentEnd="true"
                 android:layout_centerVertical="true"
-                tools:background="@color/feedPageRecyclerItemColor"
                 android:background="?android:attr/selectableItemBackground"
                 android:clickable="true"
+                android:focusable="true"
                 android:scaleType="fitCenter"
                 android:src="@drawable/ic_baseline_search_24"
-                android:focusable="true" />
+                tools:background="@color/feedPageRecyclerItemColor" />
         </RelativeLayout>
     </androidx.cardview.widget.CardView>
 
@@ -89,27 +92,33 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginEnd="@dimen/_8sdp"
-            android:layout_weight="2"
-            android:background="@drawable/roundedbutton_30dp"
+            android:layout_weight="1"
+            android:foreground="?android:attr/selectableItemBackground"
+            android:clickable="true"
+            android:focusable="true"
             android:fontFamily="@font/nexa_bold"
             android:text="@string/organization"
             android:textAllCaps="false"
             android:textColor="@color/blue"
             android:textStyle="bold"
-            app:backgroundTint="@color/feedPageRecyclerItemColor" />
+            app:backgroundTint="@color/feedPageRecyclerItemColor"
+            android:background="@drawable/roundedbutton_30dp" />
 
         <Button
             android:id="@+id/searchPageRepoButton"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:background="@drawable/roundedbutton_30dp"
+            android:foreground="?android:attr/selectableItemBackground"
+            android:clickable="true"
+            android:focusable="true"
             android:fontFamily="@font/nexa_bold"
             android:maxLines="1"
             android:text="@string/repository"
             android:textAllCaps="false"
             android:textColor="@color/white"
-            app:backgroundTint="@color/feedPageRecyclerItemColor" />
+            app:backgroundTint="@color/feedPageRecyclerItemColor"
+            android:background="@drawable/roundedbutton_30dp" />
     </LinearLayout>
 
     <TextView

@@ -77,7 +77,6 @@ internal fun updateAppWidget(
         serviceIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId)
         val bundle = Bundle()
         bundle.putParcelableArrayList("dataSourceBundle", dataSource)
-        // println(bundle.getParcelableArrayList<AddToWidget>("dataSourceBundle"))
         serviceIntent.putExtra("dataSource", bundle)
         views.setRemoteAdapter(R.id.appwidgetListView, serviceIntent)
 

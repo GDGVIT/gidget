@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginVertical="@dimen/_12sdp"
-    android:background="@android:color/black">
+    android:background="@drawable/appwidget_outer_bg">
 
     <RelativeLayout
         android:id="@+id/appwidgetRecyclerViewItemSection1"
@@ -43,13 +43,23 @@
         android:layout_below="@+id/appwidgetRecyclerViewItemSection1"
         android:layout_marginStart="@dimen/_10sdp">
 
-        <ImageView
-            android:id="@+id/appwidgetEventTypeIcon"
-            android:layout_width="@dimen/_16sdp"
-            android:layout_height="@dimen/_16sdp"
+        <RelativeLayout
+            android:id="@+id/appwidgetEventTypeIconRL"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_centerVertical="true"
-            android:layout_marginEnd="@dimen/_20sdp"
-            android:src="@drawable/ic_github_fork" />
+            android:layout_marginEnd="@dimen/_10sdp"
+            android:background="@drawable/appwidget_icon_bg">
+
+            <ImageView
+                android:id="@+id/appwidgetEventTypeIcon"
+                android:layout_width="@dimen/_12sdp"
+                android:layout_margin="@dimen/_10sdp"
+                android:layout_centerInParent="true"
+                android:layout_height="@dimen/_12sdp"
+                android:scaleType="fitXY"
+                android:src="@drawable/ic_github_fork" />
+        </RelativeLayout>
 
         <RelativeLayout
             android:id="@+id/appwidgetRecyclerViewItemSection2"
@@ -57,8 +67,8 @@
             android:layout_height="wrap_content"
             android:layout_marginEnd="@dimen/_10sdp"
             android:layout_marginBottom="@dimen/_10sdp"
-            android:layout_toEndOf="@+id/appwidgetEventTypeIcon"
-            android:background="@color/feedPageRecyclerItemColor">
+            android:layout_toEndOf="@+id/appwidgetEventTypeIconRL"
+            android:background="@drawable/appwidget_inner_bg">
 
             <RelativeLayout
                 android:id="@+id/appwidgetRecyclerViewItemRelativeLayout"

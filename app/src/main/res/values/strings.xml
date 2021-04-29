@@ -15,7 +15,7 @@
     <string name="icon_map">Icon Map</string>
     <string name="lorem_ipsum">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Elementum nec facilisi odio condimentum neque faucibus.</string>
     <string name="search">Search User / Organization</string>
-    <string name="organization">User / Organization</string>
+    <string name="organization">User / Org</string>
     <string name="user">User</string>
     <string name="repository">Repo</string>
     <string name="no_items_searched">No items searched…</string>
