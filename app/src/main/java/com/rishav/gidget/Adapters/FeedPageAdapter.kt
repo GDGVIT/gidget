@@ -17,6 +17,7 @@ import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.RecyclerView
 import com.rishav.gidget.Models.FeedPage.FeedPageModel
 import com.rishav.gidget.R
+import com.rishav.gidget.UI.ProfileActivity
 import com.squareup.picasso.Picasso
 import java.time.Duration
 import java.time.LocalDateTime
@@ -43,6 +44,12 @@ class FeedPageAdapter(
 
         // Profile Photo
         Picasso.get().load(currentItem.actor.avatar_url).into(holder.profilePhoto)
+        holder.profilePhotoCard.setOnClickListener {
+            val intent = Intent(context, ProfileActivity::class.java)
+            intent.putExtra("username", currentItem.actor.login)
+            intent.putExtra("owner", false)
+            context.startActivity(intent)
+        }
 
         // Event Photo
         setEventData(currentItem, holder)
@@ -172,6 +179,7 @@ class FeedPageAdapter(
     class FeedPageUserActivityViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val profilePhoto: ImageView =
             itemView.findViewById(R.id.feedPageRecyclerViewItemProfilePhoto)
+        val profilePhotoCard: CardView = itemView.findViewById(R.id.feedPageRecyclerViewItemProfilePhotoCard)
         val eventPhoto: ImageView = itemView.findViewById(R.id.feedPageEventTypeIcon)
         val username: TextView = itemView.findViewById(R.id.feedPageRecyclerViewItemUsername)
         val repositoryName: TextView = itemView.findViewById(R.id.feedPageRecyclerViewItemRepoName)

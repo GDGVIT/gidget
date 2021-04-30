@@ -3,11 +3,12 @@ package com.rishav.gidget.UI
 import android.graphics.Color
 import android.os.Bundle
 import android.view.inputmethod.EditorInfo
-import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageButton
+import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.rishav.gidget.Adapters.SearchPageRepoAdapter
@@ -31,30 +32,35 @@ class SearchActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_search)
+
         mService = Common.retroFitService
+
         val backButton: ImageButton = findViewById(R.id.searchPageBackButton)
         val searchText: EditText = findViewById(R.id.searchPageSearchText)
         val searchButton: ImageButton = findViewById(R.id.searchPageSearchButton)
-        val orgButton: Button = findViewById(R.id.searchPageOrganizationButton)
-        val repoButton: Button = findViewById(R.id.searchPageRepoButton)
+        val orgButton: CardView = findViewById(R.id.searchPageOrganizationButton)
+        val orgButtonText: TextView = findViewById(R.id.searchPageOrganizationButtonText)
+        val repoButton: CardView = findViewById(R.id.searchPageRepoButton)
+        val repoButtonText: TextView = findViewById(R.id.searchPageRepoButtonText)
         val recyclerView: RecyclerView = findViewById(R.id.searchPageRecyclerView)
+
         recyclerView.setHasFixedSize(true)
         layoutManager = LinearLayoutManager(this)
         recyclerView.layoutManager = layoutManager
+
         var searchType = "users"
         orgButton.setOnClickListener {
             searchType = "users"
             searchText.hint = "Search User / Organization"
-            repoButton.setTextColor(Color.WHITE)
-            orgButton.setTextColor(Color.parseColor("#61B1FF"))
+            repoButtonText.setTextColor(Color.WHITE)
+            orgButtonText.setTextColor(Color.parseColor("#61B1FF"))
             recyclerView.removeAllViewsInLayout()
         }
-
         repoButton.setOnClickListener {
             searchType = "repositories"
             searchText.hint = "Search Repositories"
-            orgButton.setTextColor(Color.WHITE)
-            repoButton.setTextColor(Color.parseColor("#61B1FF"))
+            orgButtonText.setTextColor(Color.WHITE)
+            repoButtonText.setTextColor(Color.parseColor("#61B1FF"))
             recyclerView.removeAllViewsInLayout()
         }
         searchButton.setOnClickListener {

@@ -47,14 +47,14 @@
                 android:layout_toStartOf="@id/searchPageSearchButton"
                 android:autofillHints="@string/username"
                 android:background="@null"
-                android:scrollHorizontally="true"
                 android:ellipsize="end"
-                android:maxLines="1"
                 android:ems="10"
                 android:fontFamily="@font/montserrat"
                 android:hint="@string/search"
                 android:imeOptions="actionSearch"
                 android:inputType="text"
+                android:maxLines="1"
+                android:scrollHorizontally="true"
                 android:textColor="@color/lightGrey"
                 android:textColorHint="@color/white"
                 android:textSize="@dimen/_12sdp" />
@@ -87,38 +87,91 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/searchPageSection1">
 
-        <Button
+        <androidx.cardview.widget.CardView
             android:id="@+id/searchPageOrganizationButton"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginEnd="@dimen/_8sdp"
             android:layout_weight="1"
-            android:foreground="?android:attr/selectableItemBackground"
+            android:foreground="?selectableItemBackground"
             android:clickable="true"
             android:focusable="true"
-            android:fontFamily="@font/nexa_bold"
-            android:text="@string/organization"
-            android:textAllCaps="false"
-            android:textColor="@color/blue"
-            android:textStyle="bold"
-            app:backgroundTint="@color/feedPageRecyclerItemColor"
-            android:background="@drawable/roundedbutton_30dp" />
+            app:cardBackgroundColor="@color/feedPageRecyclerItemColor"
+            app:cardCornerRadius="30dp">
 
-        <Button
+            <TextView
+                android:id="@+id/searchPageOrganizationButtonText"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginHorizontal="@dimen/_5sdp"
+                android:layout_marginVertical="@dimen/_10sdp"
+                android:fontFamily="@font/nexa_bold"
+                android:text="@string/organization"
+                android:textAlignment="center"
+                android:textAllCaps="false"
+                android:textColor="@color/blue"
+                android:textStyle="bold" />
+        </androidx.cardview.widget.CardView>
+
+        <androidx.cardview.widget.CardView
             android:id="@+id/searchPageRepoButton"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:foreground="?android:attr/selectableItemBackground"
+            android:foreground="?selectableItemBackground"
             android:clickable="true"
             android:focusable="true"
-            android:fontFamily="@font/nexa_bold"
-            android:maxLines="1"
-            android:text="@string/repository"
-            android:textAllCaps="false"
-            android:textColor="@color/white"
-            app:backgroundTint="@color/feedPageRecyclerItemColor"
-            android:background="@drawable/roundedbutton_30dp" />
+            app:cardBackgroundColor="@color/feedPageRecyclerItemColor"
+            app:cardCornerRadius="30dp">
+
+            <TextView
+                android:id="@+id/searchPageRepoButtonText"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginHorizontal="@dimen/_5sdp"
+                android:layout_marginVertical="@dimen/_10sdp"
+                android:fontFamily="@font/nexa_bold"
+                android:text="@string/repository"
+                android:textAlignment="center"
+                android:textAllCaps="false"
+                android:textColor="@color/white"
+                android:textStyle="normal" />
+        </androidx.cardview.widget.CardView>
+
+        <!--        <Button-->
+        <!--            android:id="@+id/searchPageOrganizationButton"-->
+        <!--            android:layout_width="0dp"-->
+        <!--            android:layout_height="wrap_content"-->
+        <!--            android:layout_marginEnd="@dimen/_8sdp"-->
+        <!--            android:layout_weight="1"-->
+        <!--            android:background="@drawable/roundedbutton_30dp"-->
+        <!--            android:clickable="true"-->
+        <!--            android:focusable="true"-->
+        <!--            android:fontFamily="@font/nexa_bold"-->
+        <!--            android:foreground="?android:attr/selectableItemBackgroundBorderless"-->
+        <!--            android:text="@string/organization"-->
+        <!--            android:textAllCaps="false"-->
+        <!--            android:textColor="@color/blue"-->
+        <!--            android:textStyle="bold"-->
+        <!--            app:backgroundTint="@color/feedPageRecyclerItemColor"-->
+        <!--            tools:targetApi="lollipop" />-->
+
+        <!--        <Button-->
+        <!--            android:id="@+id/searchPageRepoButton"-->
+        <!--            android:layout_width="0dp"-->
+        <!--            android:layout_height="wrap_content"-->
+        <!--            android:layout_weight="1"-->
+        <!--            android:background="@drawable/roundedbutton_30dp"-->
+        <!--            android:clickable="true"-->
+        <!--            android:focusable="true"-->
+        <!--            android:fontFamily="@font/nexa_bold"-->
+        <!--            android:foreground="?android:attr/selectableItemBackgroundBorderless"-->
+        <!--            android:maxLines="1"-->
+        <!--            android:text="@string/repository"-->
+        <!--            android:textAllCaps="false"-->
+        <!--            android:textColor="@color/white"-->
+        <!--            app:backgroundTint="@color/feedPageRecyclerItemColor"-->
+        <!--            tools:targetApi="lollipop" />-->
     </LinearLayout>
 
     <TextView

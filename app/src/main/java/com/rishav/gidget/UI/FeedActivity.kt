@@ -6,6 +6,7 @@ import android.view.View
 import android.widget.ImageView
 import android.widget.RelativeLayout
 import androidx.appcompat.app.AppCompatActivity
+import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.rishav.gidget.Adapters.FeedPageAdapter
@@ -38,7 +39,7 @@ class FeedActivity : AppCompatActivity() {
         val recyclerView: RecyclerView = findViewById(R.id.feedPageRecyclerView)
         val profilePhoto: ImageView = findViewById(R.id.feedPageProfilePhoto)
         val progressBar: RelativeLayout = findViewById(R.id.feedpageProgressBar)
-        val searchButton: ImageView = findViewById(R.id.feedPageSearchButton)
+        val searchButton: CardView = findViewById(R.id.feedPageSearchButton)
         recyclerView.setHasFixedSize(true)
 
         layoutManager = LinearLayoutManager(this)
@@ -83,11 +84,14 @@ class FeedActivity : AppCompatActivity() {
         val photoUrl = results.photoUrl
         Picasso.get().load(photoUrl).into(profilePhoto)
         profilePhoto.setOnClickListener {
-            startActivity(Intent(this, ProfileActivity::class.java))
+            val intent = Intent(this, ProfileActivity::class.java)
+            intent.putExtra("username", results.username)
+            intent.putExtra("owner", true)
+            startActivity(intent)
         }
     }
 
-    private fun navigateToSearchPage(searchButton: ImageView) {
+    private fun navigateToSearchPage(searchButton: CardView) {
         searchButton.setOnClickListener {
             startActivity(Intent(this, SearchActivity::class.java))
         }

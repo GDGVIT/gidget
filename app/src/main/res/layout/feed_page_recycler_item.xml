@@ -33,7 +33,10 @@
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="@dimen/_8sdp"
                 app:cardBackgroundColor="@android:color/transparent"
-                app:cardCornerRadius="30dp">
+                android:clickable="true"
+                app:cardCornerRadius="30dp"
+                android:foreground="?selectableItemBackground"
+                android:focusable="true">
 
                 <ImageView
                     android:id="@+id/feedPageRecyclerViewItemProfilePhoto"
