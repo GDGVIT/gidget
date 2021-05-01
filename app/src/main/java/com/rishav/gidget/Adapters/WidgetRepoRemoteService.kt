@@ -63,9 +63,6 @@ class WidgetRepoRemoteViewsFactory(
 
         views.setImageViewResource(R.id.appwidgetEventTypeIcon, currentItem.icon!!)
 
-        val fillIntent = Intent()
-        views.setOnClickFillInIntent(R.id.appwidgetRecyclerViewItemUsername, fillIntent)
-
         return views
     }
 

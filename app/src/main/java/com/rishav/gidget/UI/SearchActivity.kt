@@ -1,12 +1,11 @@
 package com.rishav.gidget.UI
 
+import android.content.Context
 import android.graphics.Color
 import android.os.Bundle
+import android.view.View
 import android.view.inputmethod.EditorInfo
-import android.widget.EditText
-import android.widget.ImageButton
-import android.widget.TextView
-import android.widget.Toast
+import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -43,6 +42,7 @@ class SearchActivity : AppCompatActivity() {
         val repoButton: CardView = findViewById(R.id.searchPageRepoButton)
         val repoButtonText: TextView = findViewById(R.id.searchPageRepoButtonText)
         val recyclerView: RecyclerView = findViewById(R.id.searchPageRecyclerView)
+        val progressBar: ProgressBar = findViewById(R.id.searchPageProgressBar)
 
         recyclerView.setHasFixedSize(true)
         layoutManager = LinearLayoutManager(this)
@@ -67,11 +67,11 @@ class SearchActivity : AppCompatActivity() {
             if (searchText.text.isNullOrEmpty() || searchText.text.isBlank())
                 Toast.makeText(this, "Empty search field", Toast.LENGTH_LONG).show()
             else
-                getSearchData(searchText.text.toString(), searchType, recyclerView)
+                getSearchData(this, searchText.text.toString(), searchType, recyclerView, progressBar)
         }
-        searchText.setOnEditorActionListener { textView, actionId, keyEvent ->
+        searchText.setOnEditorActionListener { _, actionId, _ ->
             if (actionId == EditorInfo.IME_ACTION_SEARCH) {
-                getSearchData(searchText.text.toString(), searchType, recyclerView)
+                getSearchData(this, searchText.text.toString(), searchType, recyclerView, progressBar)
             }
             false
         }
@@ -79,10 +79,13 @@ class SearchActivity : AppCompatActivity() {
     }
 
     private fun getSearchData(
+        context: Context,
         searchText: String,
         searchType: String,
-        recyclerView: RecyclerView
+        recyclerView: RecyclerView,
+        progressBar: ProgressBar
     ) {
+        progressBar.visibility = View.VISIBLE
         if (searchType == "users") {
             mService.searchUser(searchText, System.getenv("token") ?: "null")
                 .enqueue(object : Callback<SearchPageUserModel> {
@@ -91,6 +94,7 @@ class SearchActivity : AppCompatActivity() {
                         response: Response<SearchPageUserModel>
                     ) {
                         if (response.body() != null) {
+                            progressBar.visibility = View.GONE
                             userAdapter = SearchPageUserAdapter(
                                 this@SearchActivity,
                                 response.body()!!.items as MutableList<Items>,
@@ -102,6 +106,8 @@ class SearchActivity : AppCompatActivity() {
                     }
 
                     override fun onFailure(call: Call<SearchPageUserModel>, t: Throwable) {
+                        progressBar.visibility = View.GONE
+                        Toast.makeText(context, "Something went wrong! Please try again later", Toast.LENGTH_LONG).show()
                         println("Error - ${t.message}")
                     }
                 })
@@ -116,6 +122,7 @@ class SearchActivity : AppCompatActivity() {
                     response: Response<SearchPageRepoModel>
                 ) {
                     if (response.body() != null) {
+                        progressBar.visibility = View.GONE
                         repoAdapter = SearchPageRepoAdapter(
                             this@SearchActivity,
                             response.body()!!.items as MutableList<ItemsRepo>,
@@ -126,6 +133,8 @@ class SearchActivity : AppCompatActivity() {
                 }
 
                 override fun onFailure(call: Call<SearchPageRepoModel>, t: Throwable) {
+                    progressBar.visibility = View.GONE
+                    Toast.makeText(context, "Something went wrong! Please try again later", Toast.LENGTH_LONG).show()
                     println("Error - ${t.message}")
                 }
             })

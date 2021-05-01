@@ -81,6 +81,5 @@ internal fun updateAppWidget(
         views.setRemoteAdapter(R.id.appwidgetListView, serviceIntent)
 
         appWidgetManager.updateAppWidget(appWidgetId, views)
-        appWidgetManager.notifyAppWidgetViewDataChanged(appWidgetId, R.id.appwidgetListView)
     }
 }
