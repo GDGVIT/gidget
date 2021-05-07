@@ -53,15 +53,25 @@ class WidgetRepoRemoteViewsFactory(
         val views = RemoteViews(context.packageName, R.layout.appwidget_recycler_item)
         val currentItem = dataSource[position]
 
+        // setting the texts
         views.setTextViewText(R.id.appwidgetRecyclerViewItemUsername, currentItem.username)
         views.setTextViewText(R.id.appwidgetRecyclerViewItemRepoName, currentItem.name)
         views.setTextViewText(R.id.appwidgetRecyclerViewItemMessage, currentItem.message)
         views.setTextViewText(R.id.appwidgetRecyclerViewItemDate, currentItem.date)
 
+        // setting profilePhoto
         val profilePhotoBitmap: Bitmap = Picasso.get().load(currentItem.avatarUrl).get()
         views.setImageViewBitmap(R.id.appwidgetRecyclerViewItemProfilePhoto, profilePhotoBitmap)
 
+        // setting eventIcon
         views.setImageViewResource(R.id.appwidgetEventTypeIcon, currentItem.icon!!)
+
+        // setting clickIntent
+//        val bundle = Bundle()
+//        bundle.putParcelable("dataSourceBundle", dataSource[position])
+//        val clickIntent = Intent(context, GidgetWidget::class.java)
+//        val clickPendingIntent = PendingIntent.getBroadcast(context, 0, clickIntent, 0)
+//        views.setPendingIntentTemplate(R.id.appwidgetListView, clickPendingIntent)
 
         return views
     }

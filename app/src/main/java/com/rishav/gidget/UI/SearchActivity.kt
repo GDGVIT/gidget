@@ -5,7 +5,11 @@ import android.graphics.Color
 import android.os.Bundle
 import android.view.View
 import android.view.inputmethod.EditorInfo
-import android.widget.*
+import android.widget.EditText
+import android.widget.ImageButton
+import android.widget.ProgressBar
+import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -35,6 +39,7 @@ class SearchActivity : AppCompatActivity() {
         mService = Common.retroFitService
 
         val backButton: ImageButton = findViewById(R.id.searchPageBackButton)
+        val emptySearchTextView: TextView = findViewById(R.id.searchPageNoItemsSearchedText)
         val searchText: EditText = findViewById(R.id.searchPageSearchText)
         val searchButton: ImageButton = findViewById(R.id.searchPageSearchButton)
         val orgButton: CardView = findViewById(R.id.searchPageOrganizationButton)
@@ -55,6 +60,7 @@ class SearchActivity : AppCompatActivity() {
             repoButtonText.setTextColor(Color.WHITE)
             orgButtonText.setTextColor(Color.parseColor("#61B1FF"))
             recyclerView.removeAllViewsInLayout()
+            // emptySearchTextView.visibility = View.VISIBLE
         }
         repoButton.setOnClickListener {
             searchType = "repositories"
@@ -62,16 +68,31 @@ class SearchActivity : AppCompatActivity() {
             orgButtonText.setTextColor(Color.WHITE)
             repoButtonText.setTextColor(Color.parseColor("#61B1FF"))
             recyclerView.removeAllViewsInLayout()
+            // emptySearchTextView.visibility = View.VISIBLE
         }
         searchButton.setOnClickListener {
             if (searchText.text.isNullOrEmpty() || searchText.text.isBlank())
                 Toast.makeText(this, "Empty search field", Toast.LENGTH_LONG).show()
             else
-                getSearchData(this, searchText.text.toString(), searchType, recyclerView, progressBar)
+                getSearchData(
+                    this,
+                    searchText.text.toString(),
+                    searchType,
+                    recyclerView,
+                    emptySearchTextView,
+                    progressBar
+                )
         }
         searchText.setOnEditorActionListener { _, actionId, _ ->
             if (actionId == EditorInfo.IME_ACTION_SEARCH) {
-                getSearchData(this, searchText.text.toString(), searchType, recyclerView, progressBar)
+                getSearchData(
+                    this,
+                    searchText.text.toString(),
+                    searchType,
+                    recyclerView,
+                    emptySearchTextView,
+                    progressBar
+                )
             }
             false
         }
@@ -83,8 +104,10 @@ class SearchActivity : AppCompatActivity() {
         searchText: String,
         searchType: String,
         recyclerView: RecyclerView,
+        emptySearchTextView: TextView,
         progressBar: ProgressBar
     ) {
+        emptySearchTextView.visibility = View.GONE
         progressBar.visibility = View.VISIBLE
         if (searchType == "users") {
             mService.searchUser(searchText, System.getenv("token") ?: "null")
@@ -107,7 +130,12 @@ class SearchActivity : AppCompatActivity() {
 
                     override fun onFailure(call: Call<SearchPageUserModel>, t: Throwable) {
                         progressBar.visibility = View.GONE
-                        Toast.makeText(context, "Something went wrong! Please try again later", Toast.LENGTH_LONG).show()
+                        emptySearchTextView.visibility = View.VISIBLE
+                        Toast.makeText(
+                            context,
+                            "Something went wrong! Please try again later",
+                            Toast.LENGTH_LONG
+                        ).show()
                         println("Error - ${t.message}")
                     }
                 })
@@ -134,7 +162,11 @@ class SearchActivity : AppCompatActivity() {
 
                 override fun onFailure(call: Call<SearchPageRepoModel>, t: Throwable) {
                     progressBar.visibility = View.GONE
-                    Toast.makeText(context, "Something went wrong! Please try again later", Toast.LENGTH_LONG).show()
+                    Toast.makeText(
+                        context,
+                        "Something went wrong! Please try again later",
+                        Toast.LENGTH_LONG
+                    ).show()
                     println("Error - ${t.message}")
                 }
             })

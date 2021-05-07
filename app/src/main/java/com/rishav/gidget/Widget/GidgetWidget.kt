@@ -11,6 +11,7 @@ import android.widget.RemoteViews
 import com.rishav.gidget.Adapters.WidgetRepoRemoteService
 import com.rishav.gidget.R
 import com.rishav.gidget.Realm.AddToWidget
+import com.rishav.gidget.UI.MainActivity
 
 class GidgetWidget : AppWidgetProvider() {
     private var dataSource: ArrayList<AddToWidget> = arrayListOf()
@@ -69,16 +70,18 @@ internal fun updateAppWidget(
         views.setEmptyView(R.id.appwidgetListView, R.id.appwidgetEmptyViewText)
         appWidgetManager.updateAppWidget(appWidgetId, views)
     } else {
-        val clickIntent = Intent(context, GidgetWidget::class.java)
-        val clickPendingIntent = PendingIntent.getBroadcast(context, 0, clickIntent, 0)
-        views.setPendingIntentTemplate(R.id.appwidgetListView, clickPendingIntent)
-
+        // Widget Service Intent
         val serviceIntent = Intent(context, WidgetRepoRemoteService::class.java)
         serviceIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId)
         val bundle = Bundle()
         bundle.putParcelableArrayList("dataSourceBundle", dataSource)
         serviceIntent.putExtra("dataSource", bundle)
         views.setRemoteAdapter(R.id.appwidgetListView, serviceIntent)
+
+        // Button Intent
+        val buttonIntent = Intent(context, MainActivity::class.java)
+        val buttonPendingIntent = PendingIntent.getActivity(context, 0, buttonIntent, 0)
+        views.setOnClickPendingIntent(R.id.appWidgetRecyclerItem, buttonPendingIntent)
 
         appWidgetManager.updateAppWidget(appWidgetId, views)
     }

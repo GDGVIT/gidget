@@ -25,4 +25,12 @@
     <string name="add_widget">Add widget</string>
     <string name="appwidget_commit_message">commit message</string>
     <string name="empty_widget">Empty Widget</string>
+    <string name="picture">picture</string>
+    <string name="logout">Logout</string>
+    <string name="city">City</string>
+    <string name="bio">Bio</string>
+    <string name="following">Following</string>
+    <string name="numbersCount">0</string>
+    <string name="followers">Followers</string>
+    <string name="activity">Activity</string>
 </resources>

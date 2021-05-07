@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:tools="http://schemas.android.com/tools"
     android:background="@drawable/gradient_bg"
     android:paddingHorizontal="@dimen/_15sdp"
     android:paddingVertical="@dimen/_10sdp"
@@ -12,15 +12,13 @@
         android:id="@+id/appwidgetSection1"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:layout_marginBottom="@dimen/_10sdp">
+        android:layout_alignParentTop="true">
 
         <TextView
             android:id="@+id/appwidgetTitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
-            android:layout_margin="8dp"
             android:contentDescription="@string/appwidget_text"
             android:fontFamily="@font/nexa_bold"
             android:text="@string/app_name"
@@ -34,5 +32,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/appwidgetSection1"
+        android:background="@android:color/transparent"
+        android:cacheColorHint="@android:color/transparent"
         tools:listitem="@layout/appwidget_recycler_item" />
 </RelativeLayout>

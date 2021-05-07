@@ -1,6 +1,7 @@
 package com.rishav.gidget.UI
 
 import android.annotation.SuppressLint
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
@@ -13,6 +14,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.cardview.widget.CardView
 import com.google.firebase.auth.FirebaseAuth
 import com.rishav.gidget.Common.Common
+import com.rishav.gidget.Common.Utils
 import com.rishav.gidget.Interface.RetroFitService
 import com.rishav.gidget.Models.ProfilePage.ProfilePageModel
 import com.rishav.gidget.R
@@ -45,11 +47,13 @@ class ProfileActivity : AppCompatActivity() {
         val bioTV: TextView = findViewById(R.id.profilePageBio)
         val cityTV: TextView = findViewById(R.id.profilePageCity)
         val logoutButton: CardView = findViewById(R.id.profilePageLogoutButton)
+        val logoutButtonText: TextView = findViewById(R.id.profilePageLogoutButtonText)
         val progressBar: ProgressBar = findViewById(R.id.profilepageProgressBar)
 
         findViewById<ImageView>(R.id.profileBackButton).setOnClickListener { finish() }
 
         getProfileData(
+            this,
             username,
             owner,
             profilePhotoIV,
@@ -60,11 +64,13 @@ class ProfileActivity : AppCompatActivity() {
             bioTV,
             cityTV,
             logoutButton,
+            logoutButtonText,
             progressBar
         )
     }
 
     private fun getProfileData(
+        context: Context,
         username: String,
         owner: Boolean,
         profilePhotoIV: ImageView,
@@ -75,6 +81,7 @@ class ProfileActivity : AppCompatActivity() {
         bioTV: TextView,
         cityTV: TextView,
         logoutButton: CardView,
+        logoutButtonText: TextView,
         progressBar: ProgressBar
     ) {
         val profilePageView: RelativeLayout = findViewById(R.id.profilePageSection0)
@@ -99,7 +106,7 @@ class ProfileActivity : AppCompatActivity() {
                     profilePageView.visibility = View.VISIBLE
 
                     if (owner) {
-                        logoutButton.visibility = View.VISIBLE
+                        logoutButtonText.text = "Logout"
                         logoutButton.setOnClickListener {
                             mAuth.signOut()
                             Realm.removeDefaultConfiguration()
@@ -108,8 +115,12 @@ class ProfileActivity : AppCompatActivity() {
                             startActivity(Intent(applicationContext, MainActivity::class.java))
                             finishAffinity()
                         }
-                    } else
-                        logoutButton.visibility = View.GONE
+                    } else {
+                        logoutButtonText.text = "Add to widget"
+                        logoutButton.setOnClickListener {
+                            Utils().addToWidget(mService, true, username, "", context)
+                        }
+                    }
                 }
 
                 override fun onFailure(call: Call<ProfilePageModel>, t: Throwable) {

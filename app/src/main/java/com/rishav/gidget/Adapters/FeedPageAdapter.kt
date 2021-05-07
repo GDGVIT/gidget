@@ -56,6 +56,12 @@ class FeedPageAdapter(
 
         // Username Text
         holder.username.text = currentItem.actor.login
+        holder.username.setOnClickListener {
+            val intent = Intent(context, ProfileActivity::class.java)
+            intent.putExtra("username", currentItem.actor.login)
+            intent.putExtra("owner", false)
+            context.startActivity(intent)
+        }
 
         // Repository Name
         holder.repositoryName.text = currentItem.repo.name
@@ -179,12 +185,14 @@ class FeedPageAdapter(
     class FeedPageUserActivityViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val profilePhoto: ImageView =
             itemView.findViewById(R.id.feedPageRecyclerViewItemProfilePhoto)
-        val profilePhotoCard: CardView = itemView.findViewById(R.id.feedPageRecyclerViewItemProfilePhotoCard)
+        val profilePhotoCard: CardView =
+            itemView.findViewById(R.id.feedPageRecyclerViewItemProfilePhotoCard)
         val eventPhoto: ImageView = itemView.findViewById(R.id.feedPageEventTypeIcon)
         val username: TextView = itemView.findViewById(R.id.feedPageRecyclerViewItemUsername)
         val repositoryName: TextView = itemView.findViewById(R.id.feedPageRecyclerViewItemRepoName)
         val dateText: TextView = itemView.findViewById(R.id.feedPageRecyclerViewItemDate)
-        val feedPageRecyclerViewItem: CardView = itemView.findViewById(R.id.feedPageRecyclerViewItem)
+        val feedPageRecyclerViewItem: CardView =
+            itemView.findViewById(R.id.feedPageRecyclerViewItem)
         val message: TextView = itemView.findViewById(R.id.feedPageRecyclerViewItemMessage)
     }
 }

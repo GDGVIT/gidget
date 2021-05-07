@@ -6,10 +6,10 @@
     android:layout_height="wrap_content"
     android:layout_marginVertical="@dimen/_10sdp"
     android:background="?android:attr/selectableItemBackground"
-    tools:background="@android:color/transparent"
     android:clickable="true"
+    android:focusable="true"
     android:paddingHorizontal="@dimen/_20sdp"
-    android:focusable="true">
+    tools:background="@android:color/transparent">
 
 
     <androidx.cardview.widget.CardView
@@ -18,7 +18,8 @@
         android:layout_height="wrap_content"
         android:layout_alignParentStart="true"
         android:layout_centerVertical="true"
-        app:cardCornerRadius="50dp">
+        android:shape="ring"
+        app:cardCornerRadius="@dimen/_20sdp">
 
         <ImageView
             android:id="@+id/searchPageRecyclerItemProfilePhoto"
@@ -63,6 +64,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginVertical="@dimen/_2sdp"
+            android:layout_marginTop="@dimen/_2sdp"
             android:fontFamily="@font/montserrat"
             android:text="@string/country"
             android:textColor="@color/lightGrey"
@@ -75,19 +77,20 @@
         android:layout_height="wrap_content"
         android:layout_alignParentEnd="true"
         android:layout_centerVertical="true"
+        android:layout_marginStart="@dimen/_5sdp"
         app:cardBackgroundColor="@android:color/transparent"
-        app:cardCornerRadius="10dp">
+        app:cardCornerRadius="@dimen/_12sdp">
 
         <androidx.appcompat.widget.AppCompatImageButton
             android:id="@+id/searchPageAddToHomeButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="@dimen/_20sdp"
+            android:layout_height="@dimen/_20sdp"
             android:background="?android:attr/selectableItemBackground"
             android:clickable="true"
+            android:focusable="true"
             android:fontFamily="@font/nexa_bold"
             android:scaleType="fitCenter"
-            android:src="@drawable/ic_baseline_add_to_home_screen_24"
-            android:focusable="true" />
+            android:src="@drawable/ic_baseline_add_to_home_screen_24" />
     </androidx.cardview.widget.CardView>
 
 </RelativeLayout>
