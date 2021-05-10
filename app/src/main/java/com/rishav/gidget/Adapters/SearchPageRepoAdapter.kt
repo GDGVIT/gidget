@@ -31,7 +31,6 @@ class SearchPageRepoAdapter(
     @SuppressLint("SetTextI18n")
     override fun onBindViewHolder(holderRepo: SearchPageRepoViewHolder, position: Int) {
         val currentItem = searchPageDataList[position]
-        // val profileURL = "https://github.com/${currentItem.owner.login}"
 
         Picasso.get().load(currentItem.owner.avatar_url).into(holderRepo.profilePhoto)
 

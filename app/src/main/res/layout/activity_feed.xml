@@ -101,26 +101,15 @@
         android:scrollbars="vertical"
         tools:listitem="@layout/feed_page_recycler_item" />
 
-    <RelativeLayout
+    <ProgressBar
         android:id="@+id/feedpageProgressBar"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentBottom="true"
-        android:layout_marginStart="2dp"
-        android:layout_marginTop="-19dp"
-        android:layout_marginBottom="0dp"
-        android:gravity="center">
-
-        <ProgressBar
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:indeterminate="true"
-            android:indeterminateTint="@color/white"
-            android:minWidth="@dimen/_50sdp"
-            android:minHeight="@dimen/_50sdp"
-            android:visibility="gone"
-            tools:targetApi="lollipop" />
-    </RelativeLayout>
+        android:layout_height="wrap_content"
+        android:indeterminate="true"
+        android:indeterminateTint="@color/white"
+        android:minWidth="@dimen/_50sdp"
+        android:minHeight="@dimen/_50sdp"
+        android:visibility="visible"
+        android:layout_centerInParent="true"
+        tools:targetApi="lollipop" />
 </RelativeLayout>

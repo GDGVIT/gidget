@@ -4,7 +4,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import android.widget.ImageView
-import android.widget.RelativeLayout
+import android.widget.ProgressBar
 import androidx.appcompat.app.AppCompatActivity
 import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -38,7 +38,7 @@ class FeedActivity : AppCompatActivity() {
 
         val recyclerView: RecyclerView = findViewById(R.id.feedPageRecyclerView)
         val profilePhoto: ImageView = findViewById(R.id.feedPageProfilePhoto)
-        val progressBar: RelativeLayout = findViewById(R.id.feedpageProgressBar)
+        val progressBar: ProgressBar = findViewById(R.id.feedpageProgressBar)
         val searchButton: CardView = findViewById(R.id.feedPageSearchButton)
         recyclerView.setHasFixedSize(true)
 
@@ -52,7 +52,7 @@ class FeedActivity : AppCompatActivity() {
 
     private fun getFeedList(
         recyclerView: RecyclerView,
-        progressBar: RelativeLayout,
+        progressBar: ProgressBar,
         results: SignUp
     ) {
         progressBar.visibility = View.VISIBLE

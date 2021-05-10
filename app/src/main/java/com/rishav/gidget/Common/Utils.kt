@@ -20,6 +20,8 @@ import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
 class Utils {
+    val myOnClick = "myOnClickTag"
+
     fun addToWidget(
         mService: RetroFitService,
         isUser: Boolean,

@@ -60,7 +60,6 @@ class SearchActivity : AppCompatActivity() {
             repoButtonText.setTextColor(Color.WHITE)
             orgButtonText.setTextColor(Color.parseColor("#61B1FF"))
             recyclerView.removeAllViewsInLayout()
-            // emptySearchTextView.visibility = View.VISIBLE
         }
         repoButton.setOnClickListener {
             searchType = "repositories"
@@ -68,7 +67,6 @@ class SearchActivity : AppCompatActivity() {
             orgButtonText.setTextColor(Color.WHITE)
             repoButtonText.setTextColor(Color.parseColor("#61B1FF"))
             recyclerView.removeAllViewsInLayout()
-            // emptySearchTextView.visibility = View.VISIBLE
         }
         searchButton.setOnClickListener {
             if (searchText.text.isNullOrEmpty() || searchText.text.isBlank())

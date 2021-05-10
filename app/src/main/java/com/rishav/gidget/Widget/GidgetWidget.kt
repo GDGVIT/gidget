@@ -6,8 +6,10 @@ import android.appwidget.AppWidgetProvider
 import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
+import android.os.Build
 import android.os.Bundle
 import android.widget.RemoteViews
+import androidx.annotation.RequiresApi
 import com.rishav.gidget.Adapters.WidgetRepoRemoteService
 import com.rishav.gidget.R
 import com.rishav.gidget.Realm.AddToWidget
@@ -15,6 +17,8 @@ import com.rishav.gidget.UI.MainActivity
 
 class GidgetWidget : AppWidgetProvider() {
     private var dataSource: ArrayList<AddToWidget> = arrayListOf()
+
+    @RequiresApi(Build.VERSION_CODES.Q)
     override fun onUpdate(
         context: Context,
         appWidgetManager: AppWidgetManager,
@@ -58,6 +62,7 @@ class GidgetWidget : AppWidgetProvider() {
     override fun onDeleted(context: Context?, appWidgetIds: IntArray?) {}
 }
 
+@RequiresApi(Build.VERSION_CODES.Q)
 internal fun updateAppWidget(
     context: Context,
     appWidgetManager: AppWidgetManager,
@@ -70,6 +75,10 @@ internal fun updateAppWidget(
         views.setEmptyView(R.id.appwidgetListView, R.id.appwidgetEmptyViewText)
         appWidgetManager.updateAppWidget(appWidgetId, views)
     } else {
+        val clickIntent = Intent(context, GidgetWidget::class.java)
+        val clickPendingIntent = PendingIntent.getBroadcast(context, 0, clickIntent, 0)
+        views.setPendingIntentTemplate(R.id.appwidgetListView, clickPendingIntent)
+
         // Widget Service Intent
         val serviceIntent = Intent(context, WidgetRepoRemoteService::class.java)
         serviceIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId)
@@ -79,9 +88,11 @@ internal fun updateAppWidget(
         views.setRemoteAdapter(R.id.appwidgetListView, serviceIntent)
 
         // Button Intent
-        val buttonIntent = Intent(context, MainActivity::class.java)
-        val buttonPendingIntent = PendingIntent.getActivity(context, 0, buttonIntent, 0)
-        views.setOnClickPendingIntent(R.id.appWidgetRecyclerItem, buttonPendingIntent)
+        val buttonIntent =
+            Intent(context, MainActivity::class.java).addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP)
+        val buttonPendingIntent =
+            PendingIntent.getActivity(context, 0, buttonIntent, PendingIntent.FLAG_UPDATE_CURRENT)
+        views.setPendingIntentTemplate(R.id.appwidgetListView, buttonPendingIntent)
 
         appWidgetManager.updateAppWidget(appWidgetId, views)
     }

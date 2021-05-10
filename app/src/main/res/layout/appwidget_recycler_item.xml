@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginVertical="@dimen/_12sdp"
-    android:layout_marginStart="@dimen/_1sdp">
+    android:layout_marginHorizontal="@dimen/_1sdp">
 
     <RelativeLayout
         android:id="@+id/appwidgetRecyclerViewItemSection1"
@@ -18,8 +18,9 @@
             android:id="@+id/appwidgetRecyclerViewItemProfilePhoto"
             android:layout_width="@dimen/_24sdp"
             android:layout_height="@dimen/_24sdp"
+            android:layout_alignParentStart="true"
             android:layout_centerVertical="true"
-            android:layout_marginEnd="10dp"
+            android:contentDescription="@string/picture"
             android:src="@drawable/ic_baseline_person_24" />
 
         <TextView
@@ -28,92 +29,89 @@
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
             android:layout_marginStart="@dimen/_10sdp"
+            android:layout_toStartOf="@+id/appwidgetEventTypeIconRL"
             android:layout_toEndOf="@+id/appwidgetRecyclerViewItemProfilePhoto"
             android:fontFamily="@font/montserrat"
             android:maxLines="1"
-            android:text="john doe"
+            android:text="@string/name"
             android:textColor="@color/blue"
             android:textSize="@dimen/_12sdp"
             android:textStyle="bold" />
-    </RelativeLayout>
-
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/appwidgetRecyclerViewItemSection1">
 
         <RelativeLayout
             android:id="@+id/appwidgetEventTypeIconRL"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
             android:layout_centerVertical="true"
-            android:layout_marginEnd="@dimen/_10sdp"
             android:background="@drawable/appwidget_icon_bg">
 
             <ImageView
                 android:id="@+id/appwidgetEventTypeIcon"
-                android:layout_width="@dimen/_12sdp"
-                android:layout_height="@dimen/_12sdp"
+                android:layout_width="@dimen/_10sdp"
+                android:layout_height="@dimen/_10sdp"
                 android:layout_centerInParent="true"
                 android:layout_margin="@dimen/_6sdp"
                 android:contentDescription="@string/picture"
                 android:scaleType="fitXY"
                 android:src="@drawable/ic_github_fork" />
         </RelativeLayout>
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/appwidgetRecyclerViewItemSection2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/appwidgetRecyclerViewItemSection1"
+        android:layout_marginBottom="0dp"
+        android:background="@drawable/appwidget_inner_bg">
 
         <RelativeLayout
-            android:id="@+id/appwidgetRecyclerViewItemSection2"
+            android:id="@+id/appwidgetRecyclerViewItemRelativeLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="@dimen/_10sdp"
-            android:layout_marginBottom="0dp"
-            android:layout_toEndOf="@+id/appwidgetEventTypeIconRL"
-            android:background="@drawable/appwidget_inner_bg">
+            android:layout_margin="@dimen/_4sdp"
+            android:padding="@dimen/_4sdp">
 
             <RelativeLayout
-                android:id="@+id/appwidgetRecyclerViewItemRelativeLayout"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="@dimen/_4sdp"
-                android:padding="@dimen/_4sdp">
-
-                <RelativeLayout
-                    android:id="@+id/appwidgetRecyclerViewItemRepoNameRL"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content">
-
-                    <TextView
-                        android:id="@+id/appwidgetRecyclerViewItemRepoName"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:fontFamily="@font/nexa_bold"
-                        android:text="@string/repo_name"
-                        android:textColor="@color/white"
-                        android:textSize="@dimen/_11sdp" />
-
-                    <TextView
-                        android:id="@+id/appwidgetRecyclerViewItemDate"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_alignParentEnd="true"
-                        android:layout_marginStart="@dimen/_4sdp"
-                        android:text="@string/date"
-                        android:textColor="@color/lightGrey"
-                        android:textSize="@dimen/_8sdp" />
-                </RelativeLayout>
+                android:id="@+id/appwidgetRecyclerViewItemRepoNameRL"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
 
                 <TextView
-                    android:id="@+id/appwidgetRecyclerViewItemMessage"
+                    android:id="@+id/appwidgetRecyclerViewItemRepoName"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_below="@+id/appwidgetRecyclerViewItemRepoNameRL"
-                    android:layout_marginTop="@dimen/_5sdp"
-                    android:fontFamily="@font/montserrat"
-                    android:maxLines="3"
-                    android:text="@string/appwidget_commit_message"
+                    android:layout_alignParentStart="true"
+                    android:layout_toStartOf="@+id/appwidgetRecyclerViewItemDate"
+                    android:fontFamily="@font/nexa_bold"
+                    android:text="@string/repo_name"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/_11sdp" />
+
+                <TextView
+                    android:id="@+id/appwidgetRecyclerViewItemDate"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true"
+                    android:layout_centerVertical="true"
+                    android:layout_marginStart="@dimen/_4sdp"
+                    android:text="@string/date"
                     android:textColor="@color/lightGrey"
-                    android:textSize="@dimen/_10sdp" />
+                    android:textSize="@dimen/_8sdp" />
             </RelativeLayout>
+
+            <TextView
+                android:id="@+id/appwidgetRecyclerViewItemMessage"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/appwidgetRecyclerViewItemRepoNameRL"
+                android:layout_marginTop="@dimen/_5sdp"
+                android:fontFamily="@font/montserrat"
+                android:maxLines="3"
+                android:text="@string/appwidget_commit_message"
+                android:textColor="@color/lightGrey"
+                android:textSize="@dimen/_10sdp" />
         </RelativeLayout>
     </RelativeLayout>
 

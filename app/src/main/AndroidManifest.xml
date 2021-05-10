@@ -15,6 +15,7 @@
         <receiver android:name=".Widget.GidgetWidget">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+                <action android:name="myOnClickTag" />
             </intent-filter>
 
             <meta-data

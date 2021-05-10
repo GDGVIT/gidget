@@ -4,10 +4,14 @@ import android.appwidget.AppWidgetManager
 import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
+import android.net.Uri
 import android.os.Build
+import android.os.Bundle
+import android.view.View
 import android.widget.RemoteViews
 import android.widget.RemoteViewsService
 import androidx.annotation.RequiresApi
+import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.rishav.gidget.R
 import com.rishav.gidget.Realm.AddToWidget
 import com.squareup.picasso.Picasso
@@ -67,11 +71,9 @@ class WidgetRepoRemoteViewsFactory(
         views.setImageViewResource(R.id.appwidgetEventTypeIcon, currentItem.icon!!)
 
         // setting clickIntent
-//        val bundle = Bundle()
-//        bundle.putParcelable("dataSourceBundle", dataSource[position])
-//        val clickIntent = Intent(context, GidgetWidget::class.java)
-//        val clickPendingIntent = PendingIntent.getBroadcast(context, 0, clickIntent, 0)
-//        views.setPendingIntentTemplate(R.id.appwidgetListView, clickPendingIntent)
+        val clickIntent = Intent()
+        clickIntent.putExtra("dataSource", dataSource[position])
+        views.setOnClickFillInIntent(R.id.appWidgetRecyclerItem, clickIntent)
 
         return views
     }

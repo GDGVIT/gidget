@@ -98,7 +98,7 @@
                 android:layout_marginEnd="@dimen/_10sdp"
                 android:layout_toEndOf="@+id/feedPageEventTypeIconCard"
                 app:cardBackgroundColor="@color/feedPageRecyclerItemColor"
-                app:cardCornerRadius="10dp">
+                app:cardCornerRadius="@dimen/_8sdp">
 
                 <RelativeLayout
                     android:id="@+id/feedPageRecyclerViewItemRelativeLayout"
