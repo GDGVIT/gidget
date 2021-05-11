@@ -12,13 +12,12 @@ import android.os.Bundle
 import android.widget.RemoteViews
 import android.widget.Toast
 import androidx.annotation.RequiresApi
-import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.rishav.gidget.Adapters.MyBroadcastReceiver
 import com.rishav.gidget.Adapters.WidgetRepoRemoteService
+import com.rishav.gidget.Common.Utils
 import com.rishav.gidget.R
 import com.rishav.gidget.Realm.AddToWidget
 import com.rishav.gidget.UI.MainActivity
-import com.rishav.gidget.Common.Utils
 import com.rishav.gidget.UI.SearchActivity
 
 class GidgetWidget : AppWidgetProvider() {
@@ -100,7 +99,7 @@ internal fun updateAppWidget(
     val searchPendingIntent: PendingIntent = PendingIntent.getActivity(context, 0, searchIntent, 0)
     views.setOnClickPendingIntent(R.id.appwidgetRefreshButton, searchPendingIntent)
 
-    //Main Widget
+    // Main Widget
     val clickIntent = Intent(context, GidgetWidget::class.java)
     val clickPendingIntent = PendingIntent.getBroadcast(context, 0, clickIntent, 0)
     views.setPendingIntentTemplate(R.id.appwidgetListView, clickPendingIntent)

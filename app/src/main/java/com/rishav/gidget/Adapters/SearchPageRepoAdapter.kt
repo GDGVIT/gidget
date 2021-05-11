@@ -59,7 +59,7 @@ class SearchPageRepoAdapter(
         // Add to widget
         holderRepo.addToWidgetButton.setOnClickListener { addToWidget(currentItem) }
 
-        //onClick
+        // onClick
         holderRepo.currentView.setOnClickListener { navigateToExternal(currentItem.owner.login) }
     }
 

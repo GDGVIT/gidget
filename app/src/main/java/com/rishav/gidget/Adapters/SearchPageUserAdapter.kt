@@ -76,7 +76,7 @@ class SearchPageUserAdapter(
         // Add to widget
         holderUser.addToWidgetButton.setOnClickListener { addToWidget(currentItem) }
 
-        //onClick
+        // onClick
         holderUser.currentView.setOnClickListener { navigateToExternal(currentItem.login) }
     }
 

@@ -65,8 +65,6 @@ class WidgetRepoRemoteViewsFactory(
         clickIntent.putExtra("dataSource", dataSource[position])
         views.setOnClickFillInIntent(R.id.appWidgetRecyclerItem, clickIntent)
 
-
-
         return views
     }
 
