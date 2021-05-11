@@ -15,13 +15,15 @@
         <receiver android:name=".Widget.GidgetWidget">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
-                <action android:name="myOnClickTag" />
+                <action android:name="onWidgetItemClicked" />
             </intent-filter>
 
             <meta-data
                 android:name="android.appwidget.provider"
                 android:resource="@xml/gidget_widget_info" />
         </receiver>
+
+        <receiver android:name=".Adapters.MyBroadcastReceiver" />
 
         <activity android:name=".UI.SearchActivity" />
         <activity android:name=".UI.ProfileActivity" />

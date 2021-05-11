@@ -2,6 +2,8 @@ package com.rishav.gidget.Adapters
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.content.Intent
+import android.net.Uri
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -9,7 +11,9 @@ import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import android.widget.ImageButton
 import android.widget.ImageView
+import android.widget.RelativeLayout
 import android.widget.TextView
+import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 import com.rishav.gidget.Common.Common
 import com.rishav.gidget.Common.Utils
@@ -71,6 +75,9 @@ class SearchPageUserAdapter(
 
         // Add to widget
         holderUser.addToWidgetButton.setOnClickListener { addToWidget(currentItem) }
+
+        //onClick
+        holderUser.currentView.setOnClickListener { navigateToExternal(currentItem.login) }
     }
 
     override fun getItemCount(): Int = searchPageDataList.size
@@ -80,11 +87,19 @@ class SearchPageUserAdapter(
         Utils().addToWidget(mService, true, currentItem.login, "", context)
     }
 
+    private fun navigateToExternal(username: String) {
+        Toast.makeText(context, "Opening in external site", Toast.LENGTH_LONG).show()
+        val uri: Uri = Uri.parse("https://github.com/$username")
+        val clickIntent = Intent(Intent.ACTION_VIEW, uri).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+        context.startActivity(clickIntent)
+    }
+
     class SearchPageUserViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val profilePhoto: ImageView = itemView.findViewById(R.id.searchPageRecyclerItemProfilePhoto)
         val name: TextView = itemView.findViewById(R.id.searchPageRecyclerItemNameText)
         val username: TextView = itemView.findViewById(R.id.searchPageRecyclerItemUsernameText)
         val location: TextView = itemView.findViewById(R.id.searchPageRecyclerItemLocationText)
         val addToWidgetButton: ImageButton = itemView.findViewById(R.id.searchPageAddToHomeButton)
+        val currentView: RelativeLayout = itemView.findViewById(R.id.searchPageRecyclerViewRL)
     }
 }

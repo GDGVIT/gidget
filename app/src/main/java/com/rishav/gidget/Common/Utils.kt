@@ -7,6 +7,7 @@ import android.content.Intent
 import android.os.Build
 import android.widget.Toast
 import androidx.annotation.RequiresApi
+import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.rishav.gidget.Interface.RetroFitService
 import com.rishav.gidget.Models.Widget.WidgetRepoModel
 import com.rishav.gidget.R
@@ -15,12 +16,17 @@ import com.rishav.gidget.Widget.GidgetWidget
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import java.io.File
 import java.time.Duration
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
 class Utils {
-    val myOnClick = "myOnClickTag"
+    companion object {
+        fun getOnWidgetItemClickedAction(): String {
+            return "onWidgetItemClicked"
+        }
+    }
 
     fun addToWidget(
         mService: RetroFitService,
@@ -198,3 +204,25 @@ class Utils {
         }
     }
 }
+
+
+//File("widget.txt").bufferedWriter().use { out ->
+//    dataSource.forEach { addToWidget ->
+//        out.write("username, ${addToWidget.username}")
+//        out.newLine()
+//        out.write("name, ${addToWidget.name}")
+//        out.newLine()
+//        out.write("message, ${addToWidget.message}")
+//        out.newLine()
+//        out.write("date, ${addToWidget.date}")
+//        out.newLine()
+//        out.write("avatarUrl, ${addToWidget.avatarUrl}")
+//        out.newLine()
+//        out.write("icon, ${addToWidget.icon}")
+//        out.newLine()
+//    }
+//}
+//
+//File("widget.txt").bufferedReader().useLines { result ->
+//    result.forEach { line -> println(line) }
+//}

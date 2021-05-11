@@ -1,52 +1,41 @@
 package com.rishav.gidget.Adapters
 
-import android.appwidget.AppWidgetManager
+import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
-import android.net.Uri
 import android.os.Build
 import android.os.Bundle
-import android.view.View
 import android.widget.RemoteViews
 import android.widget.RemoteViewsService
 import androidx.annotation.RequiresApi
-import androidx.localbroadcastmanager.content.LocalBroadcastManager
+import com.rishav.gidget.Common.Utils
 import com.rishav.gidget.R
 import com.rishav.gidget.Realm.AddToWidget
 import com.squareup.picasso.Picasso
 
 class WidgetRepoRemoteService : RemoteViewsService() {
     override fun onGetViewFactory(intent: Intent?): RemoteViewsFactory {
-        return WidgetRepoRemoteViewsFactory(applicationContext, intent!!)
+        return WidgetRepoRemoteViewsFactory(applicationContext)
     }
 }
 
 class WidgetRepoRemoteViewsFactory(
     private val context: Context,
-    intent: Intent,
 ) :
     RemoteViewsService.RemoteViewsFactory {
     private lateinit var dataSource: ArrayList<AddToWidget>
-    private var appWidgetId = 0
-
-    init {
-        appWidgetId = intent.getIntExtra(
-            AppWidgetManager.EXTRA_APPWIDGET_ID,
-            AppWidgetManager.INVALID_APPWIDGET_ID
-        )
-
-        if (intent.extras != null) {
-            if (intent.extras!!.containsKey("dataSource")) {
-                val bundle = intent.extras!!.getBundle("dataSource")
-                dataSource = bundle!!.getParcelableArrayList("dataSourceBundle")!!
-            }
-        }
-    }
 
     override fun onCreate() {}
 
-    override fun onDataSetChanged() {}
+    override fun onDataSetChanged() {
+        try {
+            val res: ArrayList<AddToWidget> = MyBroadcastReceiver.exportDataSource()
+            dataSource = res
+        } catch (error: Exception) {
+            println(error)
+        }
+    }
 
     override fun onDestroy() = dataSource.clear()
 
@@ -71,20 +60,38 @@ class WidgetRepoRemoteViewsFactory(
         views.setImageViewResource(R.id.appwidgetEventTypeIcon, currentItem.icon!!)
 
         // setting clickIntent
-        val clickIntent = Intent()
+        val clickIntent = Intent(context, WidgetRepoRemoteService::class.java)
+        clickIntent.action = Utils.getOnWidgetItemClickedAction()
         clickIntent.putExtra("dataSource", dataSource[position])
         views.setOnClickFillInIntent(R.id.appWidgetRecyclerItem, clickIntent)
+
+
 
         return views
     }
 
-    override fun getLoadingView(): RemoteViews? {
-        return null
-    }
+    override fun getLoadingView(): RemoteViews? = null
 
     override fun getViewTypeCount(): Int = 1
 
     override fun getItemId(position: Int): Long = position.toLong()
 
     override fun hasStableIds(): Boolean = true
+}
+
+class MyBroadcastReceiver : BroadcastReceiver() {
+    override fun onReceive(context: Context?, intent: Intent?) {
+        if (intent != null && intent.extras != null) {
+            if (intent.hasExtra("dataSource")) {
+                val bundle: Bundle = intent.getBundleExtra("dataSource")!!
+                dataSource = bundle.getParcelableArrayList("dataSourceBundle")!!
+            } else
+                println("No bundle received")
+        }
+    }
+
+    companion object {
+        private lateinit var dataSource: ArrayList<AddToWidget>
+        fun exportDataSource(): ArrayList<AddToWidget> = dataSource
+    }
 }
