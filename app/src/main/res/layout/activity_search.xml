@@ -9,8 +9,8 @@
 
     <ImageButton
         android:id="@+id/searchPageBackButton"
-        android:layout_width="22dp"
-        android:layout_height="19dp"
+        android:layout_width="@dimen/_18sdp"
+        android:layout_height="@dimen/_18sdp"
         android:layout_marginVertical="@dimen/_14sdp"
         android:layout_marginStart="@dimen/_8sdp"
         android:background="?android:attr/selectableItemBackground"

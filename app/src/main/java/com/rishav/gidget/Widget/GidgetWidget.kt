@@ -10,6 +10,7 @@ import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.widget.RemoteViews
+import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.rishav.gidget.Adapters.MyBroadcastReceiver
@@ -18,6 +19,7 @@ import com.rishav.gidget.R
 import com.rishav.gidget.Realm.AddToWidget
 import com.rishav.gidget.UI.MainActivity
 import com.rishav.gidget.Common.Utils
+import com.rishav.gidget.UI.SearchActivity
 
 class GidgetWidget : AppWidgetProvider() {
     private var dataSource: ArrayList<AddToWidget> = arrayListOf()
@@ -70,7 +72,9 @@ class GidgetWidget : AppWidgetProvider() {
         super.onReceive(context, intent)
     }
 
-    override fun onEnabled(context: Context) {}
+    override fun onEnabled(context: Context) {
+        Toast.makeText(context, "", Toast.LENGTH_LONG).show()
+    }
 
     override fun onDisabled(context: Context) {}
 
@@ -87,11 +91,14 @@ internal fun updateAppWidget(
     val views = RemoteViews(context.packageName, R.layout.gidget_widget)
 
     // Button Intent
-    val buttonIntent =
-        Intent(context, MainActivity::class.java).addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP)
+    val buttonIntent = Intent(context, MainActivity::class.java).addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP)
     val buttonPendingIntent = PendingIntent.getActivity(context, 0, buttonIntent, 0)
     views.setOnClickPendingIntent(R.id.appWidgetLogo, buttonPendingIntent)
     views.setOnClickPendingIntent(R.id.appwidgetTitle, buttonPendingIntent)
+
+    val searchIntent = Intent(context, SearchActivity::class.java).addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP)
+    val searchPendingIntent: PendingIntent = PendingIntent.getActivity(context, 0, searchIntent, 0)
+    views.setOnClickPendingIntent(R.id.appwidgetRefreshButton, searchPendingIntent)
 
     //Main Widget
     val clickIntent = Intent(context, GidgetWidget::class.java)
@@ -100,7 +107,7 @@ internal fun updateAppWidget(
 
     if (dataSource.isNullOrEmpty()) {
         views.setEmptyView(R.id.appwidgetListView, R.id.appwidgetEmptyViewText)
-        appWidgetManager.updateAppWidget(appWidgetId, views)
+        views.setOnClickPendingIntent(R.id.appwidgetEmptyViewText, buttonPendingIntent)
     } else {
         // Widget Service Intent
         val serviceIntent = Intent(context, WidgetRepoRemoteService::class.java)

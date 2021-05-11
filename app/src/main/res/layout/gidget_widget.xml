@@ -52,6 +52,19 @@
             android:src="@drawable/ic_baseline_refresh_24" />
     </RelativeLayout>
 
+    <TextView
+        android:id="@+id/appwidgetEmptyViewText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:clickable="true"
+        android:focusable="true"
+        android:fontFamily="@font/montserrat"
+        android:text="@string/empty_widget"
+        android:textColor="@color/lightGrey"
+        android:textSize="@dimen/_10sdp"
+        android:visibility="gone" />
+
     <ListView
         android:id="@+id/appwidgetListView"
         android:layout_width="match_parent"

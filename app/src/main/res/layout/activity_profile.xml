@@ -26,10 +26,11 @@
 
                 <ImageView
                     android:id="@+id/profileBackButton"
-                    android:layout_width="@dimen/_20sdp"
-                    android:layout_height="@dimen/_20sdp"
+                    android:layout_width="@dimen/_18sdp"
+                    android:layout_height="@dimen/_18sdp"
                     android:layout_alignParentStart="true"
                     android:layout_marginEnd="10dp"
+                    android:layout_toEndOf="@+id/profilePageAppName"
                     android:background="?android:attr/selectableItemBackground"
                     android:clickable="true"
                     android:contentDescription="@string/picture"
@@ -37,17 +38,31 @@
                     android:src="@drawable/ic_baseline_arrow_back_24" />
 
                 <TextView
+                    android:id="@+id/profilePageAppName"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_centerInParent="true"
-                    android:layout_centerHorizontal="true"
+                    android:layout_centerVertical="true"
+                    android:layout_marginEnd="@dimen/_10sdp"
+                    android:layout_toStartOf="@+id/profilePageLogo"
                     android:fontFamily="@font/nexa_bold"
                     android:text="@string/app_name"
                     android:textColor="@color/white"
-                    android:textSize="24sp" />
+                    android:textSize="@dimen/_10sdp"
+                    tools:ignore="RelativeOverlap" />
+
+                <ImageButton
+                    android:id="@+id/profilePageLogo"
+                    android:layout_width="@dimen/_18sdp"
+                    android:layout_height="@dimen/_18sdp"
+                    android:layout_alignParentEnd="true"
+                    android:layout_centerVertical="true"
+                    android:layout_marginEnd="@dimen/_10sdp"
+                    android:background="@android:color/transparent"
+                    android:contentDescription="@string/picture"
+                    android:scaleType="fitCenter"
+                    android:src="@drawable/gidget_icon" />
 
             </RelativeLayout>
-
         </androidx.appcompat.widget.Toolbar>
     </com.google.android.material.appbar.AppBarLayout>
 
