@@ -9,13 +9,17 @@
 
     <ImageButton
         android:id="@+id/searchPageBackButton"
-        android:layout_width="@dimen/_20sdp"
-        android:layout_height="@dimen/_20sdp"
+        android:layout_width="@dimen/_18sdp"
+        android:layout_height="@dimen/_18sdp"
         android:layout_marginVertical="@dimen/_14sdp"
         android:layout_marginStart="@dimen/_8sdp"
-        android:background="@android:color/transparent"
+        android:background="?android:attr/selectableItemBackground"
+        android:clickable="true"
+        android:contentDescription="@string/picture"
+        android:focusable="true"
         android:scaleType="fitCenter"
-        android:src="@drawable/ic_baseline_arrow_back_24" />
+        android:src="@drawable/ic_baseline_arrow_back_24"
+        tools:background="@android:color/transparent" />
 
     <androidx.cardview.widget.CardView
         android:id="@+id/searchPageSection1"
@@ -44,14 +48,17 @@
                 android:layout_toStartOf="@id/searchPageSearchButton"
                 android:autofillHints="@string/username"
                 android:background="@null"
+                android:ellipsize="end"
                 android:ems="10"
                 android:fontFamily="@font/montserrat"
                 android:hint="@string/search"
                 android:imeOptions="actionSearch"
-                android:textSize="@dimen/_12sdp"
                 android:inputType="text"
+                android:maxLines="1"
+                android:scrollHorizontally="true"
                 android:textColor="@color/lightGrey"
-                android:textColorHint="@color/white" />
+                android:textColorHint="@color/white"
+                android:textSize="@dimen/_12sdp" />
 
             <ImageButton
                 android:id="@+id/searchPageSearchButton"
@@ -59,9 +66,13 @@
                 android:layout_height="30dp"
                 android:layout_alignParentEnd="true"
                 android:layout_centerVertical="true"
-                android:background="@color/feedPageRecyclerItemColor"
+                android:background="?android:attr/selectableItemBackground"
+                android:clickable="true"
+                android:contentDescription="@string/picture"
+                android:focusable="true"
                 android:scaleType="fitCenter"
-                android:src="@drawable/ic_baseline_search_24" />
+                android:src="@drawable/ic_baseline_search_24"
+                tools:background="@color/feedPageRecyclerItemColor" />
         </RelativeLayout>
     </androidx.cardview.widget.CardView>
 
@@ -78,48 +89,68 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/searchPageSection1">
 
-        <Button
+        <androidx.cardview.widget.CardView
             android:id="@+id/searchPageOrganizationButton"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginEnd="@dimen/_8sdp"
-            android:layout_weight="2"
-            android:background="@drawable/roundedbutton_30dp"
-            android:fontFamily="@font/nexa_bold"
-            android:text="@string/organization"
-            android:textAllCaps="false"
-            android:textColor="@color/white"
-            android:textStyle="bold"
-            app:backgroundTint="@color/feedPageRecyclerItemColor" />
+            android:layout_weight="1"
+            android:clickable="true"
+            android:focusable="true"
+            android:foreground="?selectableItemBackground"
+            app:cardBackgroundColor="@color/feedPageRecyclerItemColor"
+            app:cardCornerRadius="30dp">
 
-        <Button
+            <TextView
+                android:id="@+id/searchPageOrganizationButtonText"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginHorizontal="@dimen/_5sdp"
+                android:layout_marginVertical="@dimen/_10sdp"
+                android:fontFamily="@font/nexa_bold"
+                android:text="@string/organization"
+                android:textAlignment="center"
+                android:textAllCaps="false"
+                android:textColor="@color/blue"
+                android:textStyle="bold" />
+        </androidx.cardview.widget.CardView>
+
+        <androidx.cardview.widget.CardView
             android:id="@+id/searchPageRepoButton"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:background="@drawable/roundedbutton_30dp"
-            android:fontFamily="@font/nexa_bold"
-            android:maxLines="1"
-            android:text="@string/repository"
-            android:textAllCaps="false"
-            android:textColor="@color/blue"
-            app:backgroundTint="@color/feedPageRecyclerItemColor" />
+            android:clickable="true"
+            android:focusable="true"
+            android:foreground="?selectableItemBackground"
+            app:cardBackgroundColor="@color/feedPageRecyclerItemColor"
+            app:cardCornerRadius="30dp">
+
+            <TextView
+                android:id="@+id/searchPageRepoButtonText"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginHorizontal="@dimen/_5sdp"
+                android:layout_marginVertical="@dimen/_10sdp"
+                android:fontFamily="@font/nexa_bold"
+                android:text="@string/repository"
+                android:textAlignment="center"
+                android:textAllCaps="false"
+                android:textColor="@color/white"
+                android:textStyle="normal" />
+        </androidx.cardview.widget.CardView>
     </LinearLayout>
 
     <TextView
         android:id="@+id/searchPageNoItemsSearchedText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:fontFamily="@font/lato"
+        android:layout_centerInParent="true"
+        android:fontFamily="@font/montserrat"
         android:text="@string/no_items_searched"
         android:textColor="@color/lightGrey"
         android:textSize="@dimen/_14sdp"
-        android:visibility="gone"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:visibility="visible" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/searchPageRecyclerView"
@@ -127,11 +158,18 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/searchPageSection2"
         android:layout_marginTop="16dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/searchPageSection2"
-        tools:listitem="@layout/search_page_recycler_item">
+        android:scrollbars="vertical"
+        tools:listitem="@layout/search_page_recycler_item" />
 
-    </androidx.recyclerview.widget.RecyclerView>
+    <ProgressBar
+        android:id="@+id/searchPageProgressBar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:indeterminate="true"
+        android:indeterminateTint="@color/white"
+        android:minWidth="@dimen/_50sdp"
+        android:minHeight="@dimen/_50sdp"
+        android:visibility="gone"
+        tools:targetApi="lollipop" />
 </RelativeLayout>

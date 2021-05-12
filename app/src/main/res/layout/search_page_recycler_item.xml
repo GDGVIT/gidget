@@ -2,11 +2,15 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/searchPageRecyclerViewRL"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginVertical="@dimen/_10sdp"
-    android:background="@android:color/transparent"
-    android:paddingHorizontal="@dimen/_20sdp">
+    android:background="?android:attr/selectableItemBackground"
+    android:clickable="true"
+    android:focusable="true"
+    android:paddingHorizontal="@dimen/_20sdp"
+    android:paddingVertical="@dimen/_8sdp"
+    tools:background="@android:color/transparent">
 
 
     <androidx.cardview.widget.CardView
@@ -15,7 +19,8 @@
         android:layout_height="wrap_content"
         android:layout_alignParentStart="true"
         android:layout_centerVertical="true"
-        app:cardCornerRadius="50dp">
+        android:shape="ring"
+        app:cardCornerRadius="@dimen/_20sdp">
 
         <ImageView
             android:id="@+id/searchPageRecyclerItemProfilePhoto"
@@ -39,7 +44,6 @@
             android:id="@+id/searchPageRecyclerItemNameText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginVertical="@dimen/_5sdp"
             android:fontFamily="@font/montserrat"
             android:text="@string/name"
             android:textColor="@color/blue"
@@ -59,7 +63,7 @@
             android:id="@+id/searchPageRecyclerItemLocationText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginVertical="@dimen/_2sdp"
+            android:layout_marginTop="@dimen/_4sdp"
             android:fontFamily="@font/montserrat"
             android:text="@string/country"
             android:textColor="@color/lightGrey"
@@ -72,14 +76,17 @@
         android:layout_height="wrap_content"
         android:layout_alignParentEnd="true"
         android:layout_centerVertical="true"
+        android:layout_marginStart="@dimen/_5sdp"
         app:cardBackgroundColor="@android:color/transparent"
-        app:cardCornerRadius="10dp">
+        app:cardCornerRadius="@dimen/_12sdp">
 
         <androidx.appcompat.widget.AppCompatImageButton
             android:id="@+id/searchPageAddToHomeButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="@dimen/_20sdp"
+            android:layout_height="@dimen/_20sdp"
             android:background="?android:attr/selectableItemBackground"
+            android:clickable="true"
+            android:focusable="true"
             android:fontFamily="@font/nexa_bold"
             android:scaleType="fitCenter"
             android:src="@drawable/ic_baseline_add_to_home_screen_24" />

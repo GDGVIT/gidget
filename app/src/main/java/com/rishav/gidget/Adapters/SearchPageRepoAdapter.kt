@@ -1,6 +1,9 @@
 package com.rishav.gidget.Adapters
 
+import android.annotation.SuppressLint
 import android.content.Context
+import android.content.Intent
+import android.net.Uri
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -8,13 +11,16 @@ import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import android.widget.ImageButton
 import android.widget.ImageView
+import android.widget.RelativeLayout
 import android.widget.TextView
+import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
+import com.rishav.gidget.Common.Common
+import com.rishav.gidget.Common.Utils
+import com.rishav.gidget.Interface.RetroFitService
 import com.rishav.gidget.Models.SearchPage.ItemsRepo
 import com.rishav.gidget.R
-import com.rishav.gidget.Realm.AddToWidget
 import com.squareup.picasso.Picasso
-import io.realm.Realm
 
 class SearchPageRepoAdapter(
     private val context: Context,
@@ -26,13 +32,13 @@ class SearchPageRepoAdapter(
         return SearchPageRepoViewHolder(itemView)
     }
 
+    @SuppressLint("SetTextI18n")
     override fun onBindViewHolder(holderRepo: SearchPageRepoViewHolder, position: Int) {
         val currentItem = searchPageDataList[position]
-        // val profileURL = "https://github.com/${currentItem.owner.login}"
 
         Picasso.get().load(currentItem.owner.avatar_url).into(holderRepo.profilePhoto)
 
-        val type = if (!currentItem.private)
+        val type = if (currentItem.private)
             "Private"
         else
             "Public"
@@ -51,35 +57,24 @@ class SearchPageRepoAdapter(
         lastPosition = position
 
         // Add to widget
-        holderRepo.addToWidgetButton.setOnClickListener {
-            val realm: Realm = Realm.getDefaultInstance()
-            if (realm.isEmpty) {
-                addDataToReam(realm, currentItem)
-            } else {
-                val results = realm.where(AddToWidget::class.java).findAll()
-                if (results.isEmpty()) {
-                    addDataToReam(realm, currentItem)
-                } else {
-                    realm.beginTransaction()
-                    results.deleteAllFromRealm()
-                    realm.commitTransaction()
+        holderRepo.addToWidgetButton.setOnClickListener { addToWidget(currentItem) }
 
-                    addDataToReam(realm, currentItem)
-                }
-            }
-        }
+        // onClick
+        holderRepo.currentView.setOnClickListener { navigateToExternal(currentItem.owner.login) }
     }
 
     override fun getItemCount(): Int = searchPageDataList.size
 
-    private fun addDataToReam(realm: Realm, currentItem: ItemsRepo) {
-        val addToWidget = AddToWidget()
-        addToWidget.username = currentItem.full_name
-        addToWidget.type = "Repo"
+    private fun addToWidget(currentItem: ItemsRepo) {
+        val mService: RetroFitService = Common.retroFitService
+        Utils().addToWidget(mService, false, currentItem.owner.login, currentItem.name, context)
+    }
 
-        realm.beginTransaction()
-        realm.copyToRealm(addToWidget)
-        realm.commitTransaction()
+    private fun navigateToExternal(username: String) {
+        Toast.makeText(context, "Opening in external site", Toast.LENGTH_LONG).show()
+        val uri: Uri = Uri.parse("https://github.com/$username")
+        val clickIntent = Intent(Intent.ACTION_VIEW, uri).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+        context.startActivity(clickIntent)
     }
 
     class SearchPageRepoViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
@@ -88,5 +83,6 @@ class SearchPageRepoAdapter(
         val username: TextView = itemView.findViewById(R.id.searchPageRecyclerItemUsernameText)
         val location: TextView = itemView.findViewById(R.id.searchPageRecyclerItemLocationText)
         val addToWidgetButton: ImageButton = itemView.findViewById(R.id.searchPageAddToHomeButton)
+        val currentView: RelativeLayout = itemView.findViewById(R.id.searchPageRecyclerViewRL)
     }
 }

@@ -1,5 +1,6 @@
 package com.rishav.gidget.Adapters
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
@@ -10,12 +11,13 @@ import android.view.ViewGroup
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import android.widget.ImageView
-import android.widget.RelativeLayout
 import android.widget.TextView
 import androidx.annotation.RequiresApi
+import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.RecyclerView
 import com.rishav.gidget.Models.FeedPage.FeedPageModel
 import com.rishav.gidget.R
+import com.rishav.gidget.UI.ProfileActivity
 import com.squareup.picasso.Picasso
 import java.time.Duration
 import java.time.LocalDateTime
@@ -42,12 +44,24 @@ class FeedPageAdapter(
 
         // Profile Photo
         Picasso.get().load(currentItem.actor.avatar_url).into(holder.profilePhoto)
+        holder.profilePhotoCard.setOnClickListener {
+            val intent = Intent(context, ProfileActivity::class.java)
+            intent.putExtra("username", currentItem.actor.login)
+            intent.putExtra("owner", false)
+            context.startActivity(intent)
+        }
 
         // Event Photo
         setEventData(currentItem, holder)
 
         // Username Text
         holder.username.text = currentItem.actor.login
+        holder.username.setOnClickListener {
+            val intent = Intent(context, ProfileActivity::class.java)
+            intent.putExtra("username", currentItem.actor.login)
+            intent.putExtra("owner", false)
+            context.startActivity(intent)
+        }
 
         // Repository Name
         holder.repositoryName.text = currentItem.repo.name
@@ -65,7 +79,7 @@ class FeedPageAdapter(
         lastPosition = position
 
         // Open Repository
-        holder.recyclerViewItemRelativeLayout.setOnClickListener {
+        holder.feedPageRecyclerViewItem.setOnClickListener {
             val uri: Uri = Uri.parse("https://github.com/${currentItem.repo.name}")
             context.startActivity(
                 Intent(
@@ -83,6 +97,7 @@ class FeedPageAdapter(
         holder.itemView.clearAnimation()
     }
 
+    @SuppressLint("SetTextI18n")
     private fun setEventData(currentItem: FeedPageModel, holder: FeedPageUserActivityViewHolder) {
         when (currentItem.type) {
             "CommitCommentEvent" -> {
@@ -170,12 +185,14 @@ class FeedPageAdapter(
     class FeedPageUserActivityViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val profilePhoto: ImageView =
             itemView.findViewById(R.id.feedPageRecyclerViewItemProfilePhoto)
+        val profilePhotoCard: CardView =
+            itemView.findViewById(R.id.feedPageRecyclerViewItemProfilePhotoCard)
         val eventPhoto: ImageView = itemView.findViewById(R.id.feedPageEventTypeIcon)
         val username: TextView = itemView.findViewById(R.id.feedPageRecyclerViewItemUsername)
         val repositoryName: TextView = itemView.findViewById(R.id.feedPageRecyclerViewItemRepoName)
         val dateText: TextView = itemView.findViewById(R.id.feedPageRecyclerViewItemDate)
-        val recyclerViewItemRelativeLayout: RelativeLayout =
-            itemView.findViewById(R.id.feedPageRecyclerViewItemRelativeLayout)
+        val feedPageRecyclerViewItem: CardView =
+            itemView.findViewById(R.id.feedPageRecyclerViewItem)
         val message: TextView = itemView.findViewById(R.id.feedPageRecyclerViewItemMessage)
     }
 }

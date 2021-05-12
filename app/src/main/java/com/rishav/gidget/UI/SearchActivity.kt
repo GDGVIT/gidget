@@ -1,12 +1,17 @@
 package com.rishav.gidget.UI
 
+import android.content.Context
 import android.graphics.Color
 import android.os.Bundle
+import android.view.View
 import android.view.inputmethod.EditorInfo
-import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageButton
+import android.widget.ProgressBar
+import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.rishav.gidget.Adapters.SearchPageRepoAdapter
@@ -30,38 +35,62 @@ class SearchActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_search)
+
         mService = Common.retroFitService
+
         val backButton: ImageButton = findViewById(R.id.searchPageBackButton)
+        val emptySearchTextView: TextView = findViewById(R.id.searchPageNoItemsSearchedText)
         val searchText: EditText = findViewById(R.id.searchPageSearchText)
         val searchButton: ImageButton = findViewById(R.id.searchPageSearchButton)
-        val orgButton: Button = findViewById(R.id.searchPageOrganizationButton)
-        val repoButton: Button = findViewById(R.id.searchPageRepoButton)
+        val orgButton: CardView = findViewById(R.id.searchPageOrganizationButton)
+        val orgButtonText: TextView = findViewById(R.id.searchPageOrganizationButtonText)
+        val repoButton: CardView = findViewById(R.id.searchPageRepoButton)
+        val repoButtonText: TextView = findViewById(R.id.searchPageRepoButtonText)
         val recyclerView: RecyclerView = findViewById(R.id.searchPageRecyclerView)
+        val progressBar: ProgressBar = findViewById(R.id.searchPageProgressBar)
+
         recyclerView.setHasFixedSize(true)
         layoutManager = LinearLayoutManager(this)
         recyclerView.layoutManager = layoutManager
+
         var searchType = "users"
         orgButton.setOnClickListener {
             searchType = "users"
             searchText.hint = "Search User / Organization"
-            repoButton.setTextColor(Color.WHITE)
-            orgButton.setTextColor(Color.parseColor("#61B1FF"))
+            repoButtonText.setTextColor(Color.WHITE)
+            orgButtonText.setTextColor(Color.parseColor("#61B1FF"))
             recyclerView.removeAllViewsInLayout()
         }
-
         repoButton.setOnClickListener {
             searchType = "repositories"
             searchText.hint = "Search Repositories"
-            orgButton.setTextColor(Color.WHITE)
-            repoButton.setTextColor(Color.parseColor("#61B1FF"))
+            orgButtonText.setTextColor(Color.WHITE)
+            repoButtonText.setTextColor(Color.parseColor("#61B1FF"))
             recyclerView.removeAllViewsInLayout()
         }
         searchButton.setOnClickListener {
-            getSearchData(searchText.text.toString(), searchType, recyclerView)
+            if (searchText.text.isNullOrEmpty() || searchText.text.isBlank())
+                Toast.makeText(this, "Empty search field", Toast.LENGTH_LONG).show()
+            else
+                getSearchData(
+                    this,
+                    searchText.text.toString(),
+                    searchType,
+                    recyclerView,
+                    emptySearchTextView,
+                    progressBar
+                )
         }
-        searchText.setOnEditorActionListener { textView, actionId, keyEvent ->
+        searchText.setOnEditorActionListener { _, actionId, _ ->
             if (actionId == EditorInfo.IME_ACTION_SEARCH) {
-                getSearchData(searchText.text.toString(), searchType, recyclerView)
+                getSearchData(
+                    this,
+                    searchText.text.toString(),
+                    searchType,
+                    recyclerView,
+                    emptySearchTextView,
+                    progressBar
+                )
             }
             false
         }
@@ -69,18 +98,24 @@ class SearchActivity : AppCompatActivity() {
     }
 
     private fun getSearchData(
+        context: Context,
         searchText: String,
         searchType: String,
-        recyclerView: RecyclerView
+        recyclerView: RecyclerView,
+        emptySearchTextView: TextView,
+        progressBar: ProgressBar
     ) {
+        emptySearchTextView.visibility = View.GONE
+        progressBar.visibility = View.VISIBLE
         if (searchType == "users") {
-            mService.searchUser(searchText, System.getenv("token") ?: "null")
+            mService.searchUser(searchText, "token ${System.getenv("token")}")
                 .enqueue(object : Callback<SearchPageUserModel> {
                     override fun onResponse(
                         call: Call<SearchPageUserModel>,
                         response: Response<SearchPageUserModel>
                     ) {
                         if (response.body() != null) {
+                            progressBar.visibility = View.GONE
                             userAdapter = SearchPageUserAdapter(
                                 this@SearchActivity,
                                 response.body()!!.items as MutableList<Items>,
@@ -92,20 +127,27 @@ class SearchActivity : AppCompatActivity() {
                     }
 
                     override fun onFailure(call: Call<SearchPageUserModel>, t: Throwable) {
+                        progressBar.visibility = View.GONE
+                        emptySearchTextView.visibility = View.VISIBLE
+                        Toast.makeText(
+                            context,
+                            "Something went wrong! Please try again later",
+                            Toast.LENGTH_LONG
+                        ).show()
                         println("Error - ${t.message}")
                     }
                 })
         } else if (searchType == "repositories") {
             mService.searchRepo(
                 searchText,
-                System.getenv("token")
-                    ?: "null"
+                "token ${System.getenv("token")}"
             ).enqueue(object : Callback<SearchPageRepoModel> {
                 override fun onResponse(
                     call: Call<SearchPageRepoModel>,
                     response: Response<SearchPageRepoModel>
                 ) {
                     if (response.body() != null) {
+                        progressBar.visibility = View.GONE
                         repoAdapter = SearchPageRepoAdapter(
                             this@SearchActivity,
                             response.body()!!.items as MutableList<ItemsRepo>,
@@ -116,6 +158,12 @@ class SearchActivity : AppCompatActivity() {
                 }
 
                 override fun onFailure(call: Call<SearchPageRepoModel>, t: Throwable) {
+                    progressBar.visibility = View.GONE
+                    Toast.makeText(
+                        context,
+                        "Something went wrong! Please try again later",
+                        Toast.LENGTH_LONG
+                    ).show()
                     println("Error - ${t.message}")
                 }
             })

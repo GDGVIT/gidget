@@ -2,10 +2,10 @@
     <string name="app_name">Gidget</string>
     <string name="signInMethod">singInMethod</string>
     <string name="providerID">providerID</string>
-    <string name="username">username</string>
+    <string name="username">sampleUsername</string>
     <string name="photoUrl">photoUrl</string>
     <string name="UID">uid</string>
-    <string name="name">name</string>
+    <string name="name">Sample Name</string>
     <string name="email">email</string>
     <string name="welcome_to_gidget">Welcome to Gidget</string>
     <string name="login_with">Login with</string>
@@ -14,8 +14,8 @@
     <string name="repo_name">Repo Name</string>
     <string name="icon_map">Icon Map</string>
     <string name="lorem_ipsum">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Elementum nec facilisi odio condimentum neque faucibus.</string>
-    <string name="search">Search Users / Organization</string>
-    <string name="organization">User / Organization</string>
+    <string name="search">Search User / Organization</string>
+    <string name="organization">User / Org</string>
     <string name="user">User</string>
     <string name="repository">Repo</string>
     <string name="no_items_searched">No items searched…</string>
@@ -24,4 +24,13 @@
     <string name="appwidget_text">EXAMPLE</string>
     <string name="add_widget">Add widget</string>
     <string name="appwidget_commit_message">commit message</string>
+    <string name="empty_widget">Add an user or repo to this widget</string>
+    <string name="picture">picture</string>
+    <string name="logout">Logout</string>
+    <string name="city">City</string>
+    <string name="bio">Bio</string>
+    <string name="following">Following</string>
+    <string name="numbersCount">0</string>
+    <string name="followers">Followers</string>
+    <string name="activity">Activity</string>
 </resources>

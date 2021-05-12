@@ -39,6 +39,13 @@ interface RetroFitService {
     @GET("repos/{owner}/{repo}/events")
     fun widgetRepoEvents(
         @Path("owner") owner: String,
-        @Path("repo") repo: String
+        @Path("repo") repo: String,
+        @Header("Authorization") token: String
+    ): Call<MutableList<WidgetRepoModel>>
+
+    @GET("users/{user}/events")
+    fun widgetUserEvents(
+        @Path("user") user: String,
+        @Header("Authorization") token: String
     ): Call<MutableList<WidgetRepoModel>>
 }

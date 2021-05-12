@@ -13,9 +13,8 @@ data class WidgetRepoModel(
 
 data class Actor(
     @SerializedName("id") val id: Int,
-    @SerializedName("login") val login: String,
+    @SerializedName("login") var login: String,
     @SerializedName("display_login") val display_login: String,
-    @SerializedName("gravatar_id") val gravatar_id: String,
     @SerializedName("url") val url: String,
     @SerializedName("avatar_url") val avatar_url: String
 )

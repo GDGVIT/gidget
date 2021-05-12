@@ -1,19 +1,23 @@
 package com.rishav.gidget.UI
 
 import android.annotation.SuppressLint
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.view.View
 import android.widget.ImageView
+import android.widget.ProgressBar
+import android.widget.RelativeLayout
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.cardview.widget.CardView
 import com.google.firebase.auth.FirebaseAuth
 import com.rishav.gidget.Common.Common
+import com.rishav.gidget.Common.Utils
 import com.rishav.gidget.Interface.RetroFitService
 import com.rishav.gidget.Models.ProfilePage.ProfilePageModel
 import com.rishav.gidget.R
-import com.rishav.gidget.Realm.SignUp
 import com.squareup.picasso.Picasso
 import io.realm.Realm
 import retrofit2.Call
@@ -28,9 +32,9 @@ class ProfileActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_profile)
 
-        Realm.init(applicationContext)
-        val realm: Realm = Realm.getDefaultInstance()
-        val results = realm.where(SignUp::class.java).findAll().first()
+        val bundle: Bundle = intent.extras!!
+        val username: String = bundle.getString("username")!!
+        val owner: Boolean = bundle.getBoolean("owner")
 
         mService = Common.retroFitService
         mAuth = FirebaseAuth.getInstance()
@@ -43,12 +47,15 @@ class ProfileActivity : AppCompatActivity() {
         val bioTV: TextView = findViewById(R.id.profilePageBio)
         val cityTV: TextView = findViewById(R.id.profilePageCity)
         val logoutButton: CardView = findViewById(R.id.profilePageLogoutButton)
-        findViewById<ImageView>(R.id.profileBackButton).setOnClickListener {
-            finish()
-        }
+        val logoutButtonText: TextView = findViewById(R.id.profilePageLogoutButtonText)
+        val progressBar: ProgressBar = findViewById(R.id.profilepageProgressBar)
+
+        findViewById<ImageView>(R.id.profileBackButton).setOnClickListener { finish() }
 
         getProfileData(
-            results!!,
+            this,
+            username,
+            owner,
             profilePhotoIV,
             nameTV,
             usernameTV,
@@ -56,12 +63,16 @@ class ProfileActivity : AppCompatActivity() {
             followingTV,
             bioTV,
             cityTV,
-            logoutButton
+            logoutButton,
+            logoutButtonText,
+            progressBar
         )
     }
 
     private fun getProfileData(
-        results: SignUp,
+        context: Context,
+        username: String,
+        owner: Boolean,
         profilePhotoIV: ImageView,
         nameTV: TextView,
         usernameTV: TextView,
@@ -70,8 +81,13 @@ class ProfileActivity : AppCompatActivity() {
         bioTV: TextView,
         cityTV: TextView,
         logoutButton: CardView,
+        logoutButtonText: TextView,
+        progressBar: ProgressBar
     ) {
-        mService.getProfileInfo(results.username, System.getenv("token") ?: "null")
+        val profilePageView: RelativeLayout = findViewById(R.id.profilePageSection0)
+        profilePageView.visibility = View.GONE
+        progressBar.visibility = View.VISIBLE
+        mService.getProfileInfo(username, "token ${System.getenv("token")}")
             .enqueue(object : Callback<ProfilePageModel> {
                 @SuppressLint("SetTextI18n")
                 override fun onResponse(
@@ -86,15 +102,30 @@ class ProfileActivity : AppCompatActivity() {
                     bioTV.text = response.body()!!.bio
                     cityTV.text = response.body()!!.location
 
-                    logoutButton.setOnClickListener {
-                        mAuth.signOut()
-                        Realm.removeDefaultConfiguration()
-                        startActivity(Intent(applicationContext, MainActivity::class.java))
-                        finishAffinity()
+                    progressBar.visibility = View.GONE
+                    profilePageView.visibility = View.VISIBLE
+
+                    if (owner) {
+                        logoutButtonText.text = "Logout"
+                        logoutButton.setOnClickListener {
+                            mAuth.signOut()
+                            Realm.removeDefaultConfiguration()
+                            Toast.makeText(applicationContext, "Logged out", Toast.LENGTH_LONG)
+                                .show()
+                            startActivity(Intent(applicationContext, MainActivity::class.java))
+                            finishAffinity()
+                        }
+                    } else {
+                        logoutButtonText.text = "Add to widget"
+                        logoutButton.setOnClickListener {
+                            Utils().addToWidget(mService, true, username, "", context)
+                        }
                     }
                 }
 
                 override fun onFailure(call: Call<ProfilePageModel>, t: Throwable) {
+                    progressBar.visibility = View.GONE
+                    profilePageView.visibility = View.VISIBLE
                     println("Error occurred - $t")
                     Toast.makeText(baseContext, "Something went wrong...", Toast.LENGTH_LONG).show()
                 }
