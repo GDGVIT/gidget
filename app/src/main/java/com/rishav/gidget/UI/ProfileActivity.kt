@@ -87,7 +87,7 @@ class ProfileActivity : AppCompatActivity() {
         val profilePageView: RelativeLayout = findViewById(R.id.profilePageSection0)
         profilePageView.visibility = View.GONE
         progressBar.visibility = View.VISIBLE
-        mService.getProfileInfo(username, System.getenv("token") ?: "null")
+        mService.getProfileInfo(username, "token ${System.getenv("token")}")
             .enqueue(object : Callback<ProfilePageModel> {
                 @SuppressLint("SetTextI18n")
                 override fun onResponse(

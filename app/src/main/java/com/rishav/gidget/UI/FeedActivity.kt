@@ -56,7 +56,7 @@ class FeedActivity : AppCompatActivity() {
         results: SignUp
     ) {
         progressBar.visibility = View.VISIBLE
-        mService.getActivityList(results.username, System.getenv("token") ?: "null")
+        mService.getActivityList(results.username, "token ${System.getenv("token")}")
             .enqueue(object : Callback<MutableList<FeedPageModel>> {
                 override fun onResponse(
                     call: Call<MutableList<FeedPageModel>>,

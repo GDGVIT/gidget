@@ -47,7 +47,7 @@ class SearchPageUserAdapter(
         holderUser.username.text = "@${currentItem.login}"
 
         // getProfileDetails
-        mService.getProfileInfo(currentItem.login, System.getenv("token") ?: "null")
+        mService.getProfileInfo(currentItem.login, "token ${System.getenv("token")}")
             .enqueue(object : Callback<ProfilePageModel> {
                 override fun onResponse(
                     call: Call<ProfilePageModel>,

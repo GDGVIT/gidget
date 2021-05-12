@@ -108,7 +108,7 @@ class SearchActivity : AppCompatActivity() {
         emptySearchTextView.visibility = View.GONE
         progressBar.visibility = View.VISIBLE
         if (searchType == "users") {
-            mService.searchUser(searchText, System.getenv("token") ?: "null")
+            mService.searchUser(searchText, "token ${System.getenv("token")}")
                 .enqueue(object : Callback<SearchPageUserModel> {
                     override fun onResponse(
                         call: Call<SearchPageUserModel>,
@@ -140,8 +140,7 @@ class SearchActivity : AppCompatActivity() {
         } else if (searchType == "repositories") {
             mService.searchRepo(
                 searchText,
-                System.getenv("token")
-                    ?: "null"
+                "token ${System.getenv("token")}"
             ).enqueue(object : Callback<SearchPageRepoModel> {
                 override fun onResponse(
                     call: Call<SearchPageRepoModel>,
