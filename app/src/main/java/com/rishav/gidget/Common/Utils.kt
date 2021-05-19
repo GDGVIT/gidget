@@ -34,7 +34,10 @@ class Utils {
         context: Context
     ) {
         if (isUser)
-            mService.widgetUserEvents(username, "token ${System.getenv("token")}")
+            mService.widgetUserEvents(
+                username,
+                "token ${Security.getToken()}"
+            )
                 .enqueue(object : Callback<MutableList<WidgetRepoModel>> {
                     @RequiresApi(Build.VERSION_CODES.O)
                     override fun onResponse(
@@ -77,7 +80,11 @@ class Utils {
                     }
                 })
         else
-            mService.widgetRepoEvents(username, name, "token ${System.getenv("token")}")
+            mService.widgetRepoEvents(
+                username,
+                name,
+                "token ${Security.getToken()}"
+            )
                 .enqueue(object : Callback<MutableList<WidgetRepoModel>> {
                     @RequiresApi(Build.VERSION_CODES.O)
                     override fun onResponse(

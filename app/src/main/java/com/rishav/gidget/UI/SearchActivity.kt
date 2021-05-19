@@ -17,6 +17,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.rishav.gidget.Adapters.SearchPageRepoAdapter
 import com.rishav.gidget.Adapters.SearchPageUserAdapter
 import com.rishav.gidget.Common.Common
+import com.rishav.gidget.Common.Security
 import com.rishav.gidget.Interface.RetroFitService
 import com.rishav.gidget.Models.SearchPage.Items
 import com.rishav.gidget.Models.SearchPage.ItemsRepo
@@ -108,7 +109,10 @@ class SearchActivity : AppCompatActivity() {
         emptySearchTextView.visibility = View.GONE
         progressBar.visibility = View.VISIBLE
         if (searchType == "users") {
-            mService.searchUser(searchText, "token ${System.getenv("token")}")
+            mService.searchUser(
+                searchText,
+                "token ${Security.getToken()}"
+            )
                 .enqueue(object : Callback<SearchPageUserModel> {
                     override fun onResponse(
                         call: Call<SearchPageUserModel>,
@@ -140,7 +144,7 @@ class SearchActivity : AppCompatActivity() {
         } else if (searchType == "repositories") {
             mService.searchRepo(
                 searchText,
-                "token ${System.getenv("token")}"
+                "token ${Security.getToken()}"
             ).enqueue(object : Callback<SearchPageRepoModel> {
                 override fun onResponse(
                     call: Call<SearchPageRepoModel>,

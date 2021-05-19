@@ -16,6 +16,7 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 import com.rishav.gidget.Common.Common
+import com.rishav.gidget.Common.Security
 import com.rishav.gidget.Common.Utils
 import com.rishav.gidget.Interface.RetroFitService
 import com.rishav.gidget.Models.ProfilePage.ProfilePageModel
@@ -47,7 +48,10 @@ class SearchPageUserAdapter(
         holderUser.username.text = "@${currentItem.login}"
 
         // getProfileDetails
-        mService.getProfileInfo(currentItem.login, "token ${System.getenv("token")}")
+        mService.getProfileInfo(
+            currentItem.login,
+            "token ${Security.getToken()}"
+        )
             .enqueue(object : Callback<ProfilePageModel> {
                 override fun onResponse(
                     call: Call<ProfilePageModel>,

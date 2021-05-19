@@ -63,17 +63,15 @@ class GidgetWidget : AppWidgetProvider() {
             if (intent.extras!!.containsKey("dataSource") || intent.hasExtra("dataSource")) {
                 val clickedItem: AddToWidget = intent.getParcelableExtra("dataSource")!!
                 val uri: Uri = Uri.parse("https://github.com/${clickedItem.name}")
-                val clickIntent =
-                    Intent(Intent.ACTION_VIEW, uri).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                val clickIntent = Intent(Intent.ACTION_VIEW, uri).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                Toast.makeText(context, "Item clicked - ${clickedItem.name}", Toast.LENGTH_LONG).show()
                 context.startActivity(clickIntent)
             }
         }
         super.onReceive(context, intent)
     }
 
-    override fun onEnabled(context: Context) {
-        Toast.makeText(context, "", Toast.LENGTH_LONG).show()
-    }
+    override fun onEnabled(context: Context) {}
 
     override fun onDisabled(context: Context) {}
 

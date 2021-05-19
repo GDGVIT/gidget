@@ -14,6 +14,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.cardview.widget.CardView
 import com.google.firebase.auth.FirebaseAuth
 import com.rishav.gidget.Common.Common
+import com.rishav.gidget.Common.Security
 import com.rishav.gidget.Common.Utils
 import com.rishav.gidget.Interface.RetroFitService
 import com.rishav.gidget.Models.ProfilePage.ProfilePageModel
@@ -87,7 +88,10 @@ class ProfileActivity : AppCompatActivity() {
         val profilePageView: RelativeLayout = findViewById(R.id.profilePageSection0)
         profilePageView.visibility = View.GONE
         progressBar.visibility = View.VISIBLE
-        mService.getProfileInfo(username, "token ${System.getenv("token")}")
+        mService.getProfileInfo(
+            username,
+            "token ${Security.getToken()}"
+        )
             .enqueue(object : Callback<ProfilePageModel> {
                 @SuppressLint("SetTextI18n")
                 override fun onResponse(

@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.rishav.gidget.Adapters.FeedPageAdapter
 import com.rishav.gidget.Common.Common
+import com.rishav.gidget.Common.Security
 import com.rishav.gidget.Interface.RetroFitService
 import com.rishav.gidget.Models.FeedPage.FeedPageModel
 import com.rishav.gidget.R
@@ -48,6 +49,9 @@ class FeedActivity : AppCompatActivity() {
         getFeedList(recyclerView, progressBar, results!!)
         getProfilePhoto(profilePhoto, results)
         navigateToSearchPage(searchButton)
+
+        println("TOKEN")
+        println(System.getenv("token"))
     }
 
     private fun getFeedList(
@@ -56,7 +60,10 @@ class FeedActivity : AppCompatActivity() {
         results: SignUp
     ) {
         progressBar.visibility = View.VISIBLE
-        mService.getActivityList(results.username, "token ${System.getenv("token")}")
+        mService.getActivityList(
+            results.username,
+            "token ${Security.getToken()}"
+        )
             .enqueue(object : Callback<MutableList<FeedPageModel>> {
                 override fun onResponse(
                     call: Call<MutableList<FeedPageModel>>,
