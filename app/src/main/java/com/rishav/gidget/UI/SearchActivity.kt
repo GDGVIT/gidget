@@ -124,6 +124,7 @@ class SearchActivity : AppCompatActivity() {
                                 this@SearchActivity,
                                 response.body()!!.items as MutableList<Items>,
                                 mService,
+                                progressBar
                             )
                             userAdapter.notifyDataSetChanged()
                             recyclerView.adapter = userAdapter
@@ -155,6 +156,7 @@ class SearchActivity : AppCompatActivity() {
                         repoAdapter = SearchPageRepoAdapter(
                             this@SearchActivity,
                             response.body()!!.items as MutableList<ItemsRepo>,
+                            progressBar
                         )
                         repoAdapter.notifyDataSetChanged()
                         recyclerView.adapter = repoAdapter

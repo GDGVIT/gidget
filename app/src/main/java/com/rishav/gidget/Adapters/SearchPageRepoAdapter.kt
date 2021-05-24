@@ -9,11 +9,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
-import android.widget.ImageButton
-import android.widget.ImageView
-import android.widget.RelativeLayout
-import android.widget.TextView
-import android.widget.Toast
+import android.widget.*
 import androidx.recyclerview.widget.RecyclerView
 import com.rishav.gidget.Common.Common
 import com.rishav.gidget.Common.Utils
@@ -25,6 +21,7 @@ import com.squareup.picasso.Picasso
 class SearchPageRepoAdapter(
     private val context: Context,
     private val searchPageDataList: MutableList<ItemsRepo>,
+    private val progressBar: ProgressBar
 ) : RecyclerView.Adapter<SearchPageRepoAdapter.SearchPageRepoViewHolder>() {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SearchPageRepoViewHolder {
         val itemView = LayoutInflater.from(parent.context)
@@ -57,7 +54,9 @@ class SearchPageRepoAdapter(
         lastPosition = position
 
         // Add to widget
-        holderRepo.addToWidgetButton.setOnClickListener { addToWidget(currentItem) }
+        holderRepo.addToWidgetButton.setOnClickListener {
+            addToWidget(currentItem, progressBar)
+        }
 
         // onClick
         holderRepo.currentView.setOnClickListener { navigateToExternal(currentItem.owner.login) }
@@ -65,9 +64,16 @@ class SearchPageRepoAdapter(
 
     override fun getItemCount(): Int = searchPageDataList.size
 
-    private fun addToWidget(currentItem: ItemsRepo) {
+    private fun addToWidget(currentItem: ItemsRepo, progressBar: ProgressBar) {
         val mService: RetroFitService = Common.retroFitService
-        Utils().addToWidget(mService, false, currentItem.owner.login, currentItem.name, context)
+        Utils().addToWidget(
+            mService,
+            false,
+            currentItem.owner.login,
+            currentItem.name,
+            context,
+            progressBar
+        )
     }
 
     private fun navigateToExternal(username: String) {

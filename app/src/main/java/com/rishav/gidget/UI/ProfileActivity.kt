@@ -122,7 +122,7 @@ class ProfileActivity : AppCompatActivity() {
                     } else {
                         logoutButtonText.text = "Add to widget"
                         logoutButton.setOnClickListener {
-                            Utils().addToWidget(mService, true, username, "", context)
+                            Utils().addToWidget(mService, true, username, "", context, progressBar)
                         }
                     }
                 }

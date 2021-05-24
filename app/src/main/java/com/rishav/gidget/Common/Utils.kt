@@ -5,6 +5,8 @@ import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
 import android.os.Build
+import android.view.View
+import android.widget.ProgressBar
 import android.widget.Toast
 import androidx.annotation.RequiresApi
 import com.rishav.gidget.Interface.RetroFitService
@@ -31,8 +33,10 @@ class Utils {
         isUser: Boolean,
         username: String,
         name: String,
-        context: Context
+        context: Context,
+        progressBar: ProgressBar
     ) {
+        progressBar.visibility = View.VISIBLE
         if (isUser)
             mService.widgetUserEvents(
                 username,
@@ -70,12 +74,16 @@ class Utils {
                                 context.sendBroadcast(widgetIntent)
                             }
 
+                            progressBar.visibility = View.GONE
                             Toast.makeText(context, "Added to widget", Toast.LENGTH_LONG).show()
-                        } else
+                        } else {
+                            progressBar.visibility = View.GONE
                             Toast.makeText(context, "Could not add", Toast.LENGTH_LONG).show()
+                        }
                     }
 
                     override fun onFailure(call: Call<MutableList<WidgetRepoModel>>, t: Throwable) {
+                        progressBar.visibility = View.GONE
                         println("ERROR - ${t.message}")
                     }
                 })
@@ -118,12 +126,16 @@ class Utils {
                                 context.sendBroadcast(widgetIntent)
                             }
 
+                            progressBar.visibility = View.GONE
                             Toast.makeText(context, "Added to widget", Toast.LENGTH_LONG).show()
-                        } else
+                        } else {
+                            progressBar.visibility = View.GONE
                             Toast.makeText(context, "Could not add", Toast.LENGTH_LONG).show()
+                        }
                     }
 
                     override fun onFailure(call: Call<MutableList<WidgetRepoModel>>, t: Throwable) {
+                        progressBar.visibility = View.GONE
                         println("ERROR - ${t.message}")
                     }
                 })

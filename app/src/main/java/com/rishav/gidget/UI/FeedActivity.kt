@@ -49,9 +49,6 @@ class FeedActivity : AppCompatActivity() {
         getFeedList(recyclerView, progressBar, results!!)
         getProfilePhoto(profilePhoto, results)
         navigateToSearchPage(searchButton)
-
-        println("TOKEN")
-        println(System.getenv("token"))
     }
 
     private fun getFeedList(

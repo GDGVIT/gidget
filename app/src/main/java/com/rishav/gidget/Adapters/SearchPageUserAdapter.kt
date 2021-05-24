@@ -9,11 +9,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
-import android.widget.ImageButton
-import android.widget.ImageView
-import android.widget.RelativeLayout
-import android.widget.TextView
-import android.widget.Toast
+import android.widget.*
 import androidx.recyclerview.widget.RecyclerView
 import com.rishav.gidget.Common.Common
 import com.rishav.gidget.Common.Security
@@ -31,6 +27,7 @@ class SearchPageUserAdapter(
     private val context: Context,
     private val searchPageDataList: MutableList<Items>,
     private val mService: RetroFitService,
+    private val progressBar: ProgressBar
 ) : RecyclerView.Adapter<SearchPageUserAdapter.SearchPageUserViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SearchPageUserViewHolder {
@@ -78,7 +75,7 @@ class SearchPageUserAdapter(
         lastPosition = position
 
         // Add to widget
-        holderUser.addToWidgetButton.setOnClickListener { addToWidget(currentItem) }
+        holderUser.addToWidgetButton.setOnClickListener { addToWidget(currentItem, progressBar) }
 
         // onClick
         holderUser.currentView.setOnClickListener { navigateToExternal(currentItem.login) }
@@ -86,9 +83,9 @@ class SearchPageUserAdapter(
 
     override fun getItemCount(): Int = searchPageDataList.size
 
-    private fun addToWidget(currentItem: Items) {
+    private fun addToWidget(currentItem: Items, progressBar: ProgressBar) {
         val mService: RetroFitService = Common.retroFitService
-        Utils().addToWidget(mService, true, currentItem.login, "", context)
+        Utils().addToWidget(mService, true, currentItem.login, "", context, progressBar)
     }
 
     private fun navigateToExternal(username: String) {
