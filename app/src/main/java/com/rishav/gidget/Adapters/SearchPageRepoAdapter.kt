@@ -21,7 +21,6 @@ import com.squareup.picasso.Picasso
 class SearchPageRepoAdapter(
     private val context: Context,
     private val searchPageDataList: MutableList<ItemsRepo>,
-    private val progressBar: ProgressBar
 ) : RecyclerView.Adapter<SearchPageRepoAdapter.SearchPageRepoViewHolder>() {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SearchPageRepoViewHolder {
         val itemView = LayoutInflater.from(parent.context)
@@ -55,7 +54,7 @@ class SearchPageRepoAdapter(
 
         // Add to widget
         holderRepo.addToWidgetButton.setOnClickListener {
-            addToWidget(currentItem, progressBar)
+            addToWidget(currentItem)
         }
 
         // onClick
@@ -64,15 +63,14 @@ class SearchPageRepoAdapter(
 
     override fun getItemCount(): Int = searchPageDataList.size
 
-    private fun addToWidget(currentItem: ItemsRepo, progressBar: ProgressBar) {
+    private fun addToWidget(currentItem: ItemsRepo) {
         val mService: RetroFitService = Common.retroFitService
         Utils().addToWidget(
             mService,
             false,
             currentItem.owner.login,
             currentItem.name,
-            context,
-            progressBar
+            context
         )
     }
 

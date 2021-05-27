@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/alertDialog"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/darkestBlue">
+
+    <TextView
+        android:id="@+id/alertTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="@dimen/_20sdp"
+        android:fontFamily="@font/nexa_bold"
+        android:text="@string/adding_to_widget_loading"
+        android:textColor="@color/white"
+        android:textSize="@dimen/_15sdp" />
+
+    <ProgressBar
+        android:id="@+id/alertProgressBar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/alertTitle"
+        android:layout_marginTop="@dimen/_40sdp"
+        android:layout_marginBottom="@dimen/_20sdp"
+        android:indeterminate="true"
+        android:indeterminateTint="@color/white"
+        android:minWidth="@dimen/_5sdp"
+        android:minHeight="@dimen/_20sdp"
+        android:visibility="visible"
+        tools:targetApi="lollipop" />
+</RelativeLayout>

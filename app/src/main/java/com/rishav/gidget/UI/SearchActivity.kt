@@ -5,11 +5,7 @@ import android.graphics.Color
 import android.os.Bundle
 import android.view.View
 import android.view.inputmethod.EditorInfo
-import android.widget.EditText
-import android.widget.ImageButton
-import android.widget.ProgressBar
-import android.widget.TextView
-import android.widget.Toast
+import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -79,7 +75,7 @@ class SearchActivity : AppCompatActivity() {
                     searchType,
                     recyclerView,
                     emptySearchTextView,
-                    progressBar
+                    progressBar,
                 )
         }
         searchText.setOnEditorActionListener { _, actionId, _ ->
@@ -90,7 +86,7 @@ class SearchActivity : AppCompatActivity() {
                     searchType,
                     recyclerView,
                     emptySearchTextView,
-                    progressBar
+                    progressBar,
                 )
             }
             false
@@ -104,7 +100,7 @@ class SearchActivity : AppCompatActivity() {
         searchType: String,
         recyclerView: RecyclerView,
         emptySearchTextView: TextView,
-        progressBar: ProgressBar
+        progressBar: ProgressBar,
     ) {
         emptySearchTextView.visibility = View.GONE
         progressBar.visibility = View.VISIBLE
@@ -124,7 +120,6 @@ class SearchActivity : AppCompatActivity() {
                                 this@SearchActivity,
                                 response.body()!!.items as MutableList<Items>,
                                 mService,
-                                progressBar
                             )
                             userAdapter.notifyDataSetChanged()
                             recyclerView.adapter = userAdapter
@@ -155,9 +150,7 @@ class SearchActivity : AppCompatActivity() {
                         progressBar.visibility = View.GONE
                         repoAdapter = SearchPageRepoAdapter(
                             this@SearchActivity,
-                            response.body()!!.items as MutableList<ItemsRepo>,
-                            progressBar
-                        )
+                            response.body()!!.items as MutableList<ItemsRepo>)
                         repoAdapter.notifyDataSetChanged()
                         recyclerView.adapter = repoAdapter
                     }

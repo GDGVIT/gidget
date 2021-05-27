@@ -5,11 +5,7 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
-import android.widget.ImageView
-import android.widget.ProgressBar
-import android.widget.RelativeLayout
-import android.widget.TextView
-import android.widget.Toast
+import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.cardview.widget.CardView
 import com.google.firebase.auth.FirebaseAuth
@@ -122,7 +118,7 @@ class ProfileActivity : AppCompatActivity() {
                     } else {
                         logoutButtonText.text = "Add to widget"
                         logoutButton.setOnClickListener {
-                            Utils().addToWidget(mService, true, username, "", context, progressBar)
+                            Utils().addToWidget(mService, true, username, "", context)
                         }
                     }
                 }

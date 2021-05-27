@@ -27,7 +27,6 @@ class SearchPageUserAdapter(
     private val context: Context,
     private val searchPageDataList: MutableList<Items>,
     private val mService: RetroFitService,
-    private val progressBar: ProgressBar
 ) : RecyclerView.Adapter<SearchPageUserAdapter.SearchPageUserViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SearchPageUserViewHolder {
@@ -75,7 +74,9 @@ class SearchPageUserAdapter(
         lastPosition = position
 
         // Add to widget
-        holderUser.addToWidgetButton.setOnClickListener { addToWidget(currentItem, progressBar) }
+        holderUser.addToWidgetButton.setOnClickListener {
+            addToWidget(currentItem)
+        }
 
         // onClick
         holderUser.currentView.setOnClickListener { navigateToExternal(currentItem.login) }
@@ -83,9 +84,9 @@ class SearchPageUserAdapter(
 
     override fun getItemCount(): Int = searchPageDataList.size
 
-    private fun addToWidget(currentItem: Items, progressBar: ProgressBar) {
+    private fun addToWidget(currentItem: Items) {
         val mService: RetroFitService = Common.retroFitService
-        Utils().addToWidget(mService, true, currentItem.login, "", context, progressBar)
+        Utils().addToWidget(mService, true, currentItem.login, "", context)
     }
 
     private fun navigateToExternal(username: String) {

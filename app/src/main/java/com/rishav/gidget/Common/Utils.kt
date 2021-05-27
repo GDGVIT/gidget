@@ -1,12 +1,13 @@
 package com.rishav.gidget.Common
 
+import android.annotation.SuppressLint
+import android.app.AlertDialog
 import android.appwidget.AppWidgetManager
 import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
 import android.os.Build
-import android.view.View
-import android.widget.ProgressBar
+import android.view.LayoutInflater
 import android.widget.Toast
 import androidx.annotation.RequiresApi
 import com.rishav.gidget.Interface.RetroFitService
@@ -34,9 +35,9 @@ class Utils {
         username: String,
         name: String,
         context: Context,
-        progressBar: ProgressBar
     ) {
-        progressBar.visibility = View.VISIBLE
+        val alertDialog = alertDialog(context)
+
         if (isUser)
             mService.widgetUserEvents(
                 username,
@@ -70,20 +71,25 @@ class Utils {
                             if (ids.isNotEmpty()) {
                                 val widgetIntent = Intent(context, GidgetWidget::class.java)
                                 widgetIntent.action = AppWidgetManager.ACTION_APPWIDGET_UPDATE
-                                widgetIntent.putParcelableArrayListExtra("dataSource", dataSource)
+                                widgetIntent.putParcelableArrayListExtra(
+                                    "dataSource",
+                                    dataSource
+                                )
                                 context.sendBroadcast(widgetIntent)
                             }
 
-                            progressBar.visibility = View.GONE
+                            alertDialog.dismiss()
                             Toast.makeText(context, "Added to widget", Toast.LENGTH_LONG).show()
                         } else {
-                            progressBar.visibility = View.GONE
                             Toast.makeText(context, "Could not add", Toast.LENGTH_LONG).show()
                         }
                     }
 
-                    override fun onFailure(call: Call<MutableList<WidgetRepoModel>>, t: Throwable) {
-                        progressBar.visibility = View.GONE
+                    override fun onFailure(
+                        call: Call<MutableList<WidgetRepoModel>>,
+                        t: Throwable
+                    ) {
+                        alertDialog.dismiss()
                         println("ERROR - ${t.message}")
                     }
                 })
@@ -122,23 +128,29 @@ class Utils {
                             if (ids.isNotEmpty()) {
                                 val widgetIntent = Intent(context, GidgetWidget::class.java)
                                 widgetIntent.action = AppWidgetManager.ACTION_APPWIDGET_UPDATE
-                                widgetIntent.putParcelableArrayListExtra("dataSource", dataSource)
+                                widgetIntent.putParcelableArrayListExtra(
+                                    "dataSource",
+                                    dataSource
+                                )
                                 context.sendBroadcast(widgetIntent)
                             }
 
-                            progressBar.visibility = View.GONE
+                            alertDialog.dismiss()
                             Toast.makeText(context, "Added to widget", Toast.LENGTH_LONG).show()
                         } else {
-                            progressBar.visibility = View.GONE
+                            alertDialog.dismiss()
                             Toast.makeText(context, "Could not add", Toast.LENGTH_LONG).show()
                         }
                     }
 
-                    override fun onFailure(call: Call<MutableList<WidgetRepoModel>>, t: Throwable) {
-                        progressBar.visibility = View.GONE
+                    override fun onFailure(
+                        call: Call<MutableList<WidgetRepoModel>>,
+                        t: Throwable
+                    ) {
                         println("ERROR - ${t.message}")
                     }
                 })
+
     }
 
     private fun getEventData(currentItem: WidgetRepoModel): List<String> {
@@ -219,5 +231,15 @@ class Utils {
             differenceTime.toDays() <= 1 -> "${differenceTime.toDays()} day ago"
             else -> "${differenceTime.toDays()} days ago"
         }
+    }
+
+    @SuppressLint("InflateParams")
+    private fun alertDialog(context: Context): AlertDialog {
+        val alertDialogView =
+            LayoutInflater.from(context).inflate(R.layout.loading_alertdialog, null)
+
+        val alertDialogBuilder = AlertDialog.Builder(context).setView(alertDialogView)
+            .setCancelable(false)
+        return alertDialogBuilder.show()
     }
 }
