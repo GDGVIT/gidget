@@ -150,7 +150,6 @@ class Utils {
                         println("ERROR - ${t.message}")
                     }
                 })
-
     }
 
     private fun getEventData(currentItem: WidgetRepoModel): List<String> {

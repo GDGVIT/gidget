@@ -5,7 +5,11 @@ import android.graphics.Color
 import android.os.Bundle
 import android.view.View
 import android.view.inputmethod.EditorInfo
-import android.widget.*
+import android.widget.EditText
+import android.widget.ImageButton
+import android.widget.ProgressBar
+import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -150,7 +154,8 @@ class SearchActivity : AppCompatActivity() {
                         progressBar.visibility = View.GONE
                         repoAdapter = SearchPageRepoAdapter(
                             this@SearchActivity,
-                            response.body()!!.items as MutableList<ItemsRepo>)
+                            response.body()!!.items as MutableList<ItemsRepo>
+                        )
                         repoAdapter.notifyDataSetChanged()
                         recyclerView.adapter = repoAdapter
                     }
