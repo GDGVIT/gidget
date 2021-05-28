@@ -1,8 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/alertDialog"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/darkestBlue">
@@ -31,4 +29,21 @@
         android:minHeight="@dimen/_20sdp"
         android:visibility="visible"
         tools:targetApi="lollipop" />
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/alertCancel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/alertProgressBar"
+        android:layout_alignParentEnd="true"
+        android:layout_marginEnd="@dimen/_20sdp"
+        android:layout_marginBottom="@dimen/_20sdp"
+        android:background="@color/feedPageRecyclerItemColor"
+        android:fontFamily="@font/montserrat"
+        android:minWidth="@dimen/_60sdp"
+        android:minHeight="@dimen/_25sdp"
+        android:text="@string/cancel"
+        android:textColor="@color/blue"
+        android:textStyle="bold"
+        android:textSize="@dimen/_10sdp"/>
 </RelativeLayout>

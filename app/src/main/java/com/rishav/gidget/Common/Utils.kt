@@ -8,6 +8,7 @@ import android.content.Context
 import android.content.Intent
 import android.os.Build
 import android.view.LayoutInflater
+import android.widget.Button
 import android.widget.Toast
 import androidx.annotation.RequiresApi
 import com.rishav.gidget.Interface.RetroFitService
@@ -36,120 +37,133 @@ class Utils {
         name: String,
         context: Context,
     ) {
+        val ids: IntArray = AppWidgetManager.getInstance(context)
+            .getAppWidgetIds(ComponentName(context, GidgetWidget::class.java))
         val alertDialog = alertDialog(context)
+        if (ids.isNotEmpty()) {
+            if (isUser)
+                mService.widgetUserEvents(
+                    username,
+                    "token ${Security.getToken()}"
+                )
+                    .enqueue(object : Callback<MutableList<WidgetRepoModel>> {
+                        @RequiresApi(Build.VERSION_CODES.O)
+                        override fun onResponse(
+                            call: Call<MutableList<WidgetRepoModel>>,
+                            response: Response<MutableList<WidgetRepoModel>>
+                        ) {
+                            if (response.body() != null) {
+                                val dataSource: ArrayList<AddToWidget> = arrayListOf()
+                                for (res in response.body()!!) {
+                                    val addToWidget = AddToWidget()
+                                    val eventsList: List<String> = getEventData(res)
 
-        if (isUser)
-            mService.widgetUserEvents(
-                username,
-                "token ${Security.getToken()}"
-            )
-                .enqueue(object : Callback<MutableList<WidgetRepoModel>> {
-                    @RequiresApi(Build.VERSION_CODES.O)
-                    override fun onResponse(
-                        call: Call<MutableList<WidgetRepoModel>>,
-                        response: Response<MutableList<WidgetRepoModel>>
-                    ) {
-                        if (response.body() != null) {
-                            val dataSource: ArrayList<AddToWidget> = arrayListOf()
-                            for (res in response.body()!!) {
-                                val addToWidget = AddToWidget()
-                                val eventsList: List<String> = getEventData(res)
+                                    addToWidget.username = res.actor.login
+                                    addToWidget.name = res.repo.name
+                                    addToWidget.avatarUrl = res.actor.avatar_url
+                                    addToWidget.icon = eventsList[1].toInt()
+                                    addToWidget.message = eventsList[0]
+                                    addToWidget.date = getDate(res)
 
-                                addToWidget.username = res.actor.login
-                                addToWidget.name = res.repo.name
-                                addToWidget.avatarUrl = res.actor.avatar_url
-                                addToWidget.icon = eventsList[1].toInt()
-                                addToWidget.message = eventsList[0]
-                                addToWidget.date = getDate(res)
-
-                                dataSource.add(addToWidget)
-                            }
-                            val ids: IntArray =
-                                AppWidgetManager.getInstance(context).getAppWidgetIds(
-                                    ComponentName(context, GidgetWidget::class.java)
-                                )
-                            if (ids.isNotEmpty()) {
+                                    dataSource.add(addToWidget)
+                                }
                                 val widgetIntent = Intent(context, GidgetWidget::class.java)
-                                widgetIntent.action = AppWidgetManager.ACTION_APPWIDGET_UPDATE
+                                widgetIntent.action =
+                                    AppWidgetManager.ACTION_APPWIDGET_UPDATE
                                 widgetIntent.putParcelableArrayListExtra(
                                     "dataSource",
                                     dataSource
                                 )
                                 context.sendBroadcast(widgetIntent)
+                                if (alertDialog.isShowing)
+                                    alertDialog.dismiss()
+                                Toast.makeText(
+                                    context,
+                                    "Added to widget",
+                                    Toast.LENGTH_LONG
+                                ).show()
                             }
-
-                            alertDialog.dismiss()
-                            Toast.makeText(context, "Added to widget", Toast.LENGTH_LONG).show()
-                        } else {
-                            Toast.makeText(context, "Could not add", Toast.LENGTH_LONG).show()
                         }
-                    }
 
-                    override fun onFailure(
-                        call: Call<MutableList<WidgetRepoModel>>,
-                        t: Throwable
-                    ) {
-                        alertDialog.dismiss()
-                        println("ERROR - ${t.message}")
-                    }
-                })
-        else
-            mService.widgetRepoEvents(
-                username,
-                name,
-                "token ${Security.getToken()}"
-            )
-                .enqueue(object : Callback<MutableList<WidgetRepoModel>> {
-                    @RequiresApi(Build.VERSION_CODES.O)
-                    override fun onResponse(
-                        call: Call<MutableList<WidgetRepoModel>>,
-                        response: Response<MutableList<WidgetRepoModel>>
-                    ) {
-                        if (response.body() != null) {
-                            val dataSource: ArrayList<AddToWidget> = arrayListOf()
-                            for (res in response.body()!!) {
-                                val addToWidget = AddToWidget()
-                                val eventsList: List<String> = getEventData(res)
-
-                                addToWidget.username = res.actor.login
-                                addToWidget.name = res.repo.name
-                                addToWidget.avatarUrl = res.actor.avatar_url
-                                addToWidget.icon = eventsList[1].toInt()
-                                addToWidget.message = eventsList[0]
-                                addToWidget.date = getDate(res)
-
-                                dataSource.add(addToWidget)
+                        override fun onFailure(
+                            call: Call<MutableList<WidgetRepoModel>>,
+                            t: Throwable
+                        ) {
+                            if (alertDialog.isShowing) {
+                                Toast.makeText(context, "Could not add widget", Toast.LENGTH_LONG)
+                                    .show()
+                                alertDialog.dismiss()
                             }
+                            println("ERROR - ${t.message}")
+                        }
+                    })
+            else
+                mService.widgetRepoEvents(
+                    username,
+                    name,
+                    "token ${Security.getToken()}"
+                )
+                    .enqueue(object : Callback<MutableList<WidgetRepoModel>> {
+                        @RequiresApi(Build.VERSION_CODES.O)
+                        override fun onResponse(
+                            call: Call<MutableList<WidgetRepoModel>>,
+                            response: Response<MutableList<WidgetRepoModel>>
+                        ) {
+                            if (response.body() != null) {
+                                val dataSource: ArrayList<AddToWidget> = arrayListOf()
+                                for (res in response.body()!!) {
+                                    val addToWidget = AddToWidget()
+                                    val eventsList: List<String> = getEventData(res)
 
-                            val ids: IntArray =
-                                AppWidgetManager.getInstance(context).getAppWidgetIds(
-                                    ComponentName(context, GidgetWidget::class.java)
-                                )
-                            if (ids.isNotEmpty()) {
+                                    addToWidget.username = res.actor.login
+                                    addToWidget.name = res.repo.name
+                                    addToWidget.avatarUrl = res.actor.avatar_url
+                                    addToWidget.icon = eventsList[1].toInt()
+                                    addToWidget.message = eventsList[0]
+                                    addToWidget.date = getDate(res)
+
+                                    dataSource.add(addToWidget)
+                                }
+
                                 val widgetIntent = Intent(context, GidgetWidget::class.java)
-                                widgetIntent.action = AppWidgetManager.ACTION_APPWIDGET_UPDATE
+                                widgetIntent.action =
+                                    AppWidgetManager.ACTION_APPWIDGET_UPDATE
                                 widgetIntent.putParcelableArrayListExtra(
                                     "dataSource",
                                     dataSource
                                 )
                                 context.sendBroadcast(widgetIntent)
+                                if (alertDialog.isShowing)
+                                    alertDialog.dismiss()
+                                Toast.makeText(
+                                    context,
+                                    "Added to widget",
+                                    Toast.LENGTH_LONG
+                                ).show()
                             }
-
-                            alertDialog.dismiss()
-                            Toast.makeText(context, "Added to widget", Toast.LENGTH_LONG).show()
-                        } else {
-                            alertDialog.dismiss()
-                            Toast.makeText(context, "Could not add", Toast.LENGTH_LONG).show()
                         }
-                    }
 
-                    override fun onFailure(
-                        call: Call<MutableList<WidgetRepoModel>>,
-                        t: Throwable
-                    ) {
-                        println("ERROR - ${t.message}")
-                    }
-                })
+                        override fun onFailure(
+                            call: Call<MutableList<WidgetRepoModel>>,
+                            t: Throwable
+                        ) {
+                            if (alertDialog.isShowing) {
+                                Toast.makeText(context, "Could not add widget", Toast.LENGTH_LONG)
+                                    .show()
+                                alertDialog.dismiss()
+                            }
+                            println("ERROR - ${t.message}")
+                        }
+                    })
+        } else {
+            if (alertDialog.isShowing)
+                alertDialog.dismiss()
+            Toast.makeText(
+                context,
+                "Please add widget to home screen first",
+                Toast.LENGTH_LONG
+            ).show()
+        }
     }
 
     private fun getEventData(currentItem: WidgetRepoModel): List<String> {
@@ -236,9 +250,14 @@ class Utils {
     private fun alertDialog(context: Context): AlertDialog {
         val alertDialogView =
             LayoutInflater.from(context).inflate(R.layout.loading_alertdialog, null)
+        val alertDialogBuilder =
+            AlertDialog.Builder(context).setView(alertDialogView).setCancelable(false)
+        val alertDialog = alertDialogBuilder.show()
 
-        val alertDialogBuilder = AlertDialog.Builder(context).setView(alertDialogView)
-            .setCancelable(false)
-        return alertDialogBuilder.show()
+        alertDialogView.findViewById<Button>(R.id.alertCancel).setOnClickListener {
+            alertDialog.dismiss()
+            Toast.makeText(context, "User Cancelled", Toast.LENGTH_LONG).show()
+        }
+        return alertDialog
     }
 }
