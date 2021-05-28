@@ -16,14 +16,13 @@
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
                 <action android:name="onWidgetItemClicked" />
+                <action android:name="updateWidgetWithDatasource" />
             </intent-filter>
 
             <meta-data
                 android:name="android.appwidget.provider"
                 android:resource="@xml/gidget_widget_info" />
         </receiver>
-
-        <receiver android:name=".Adapters.MyBroadcastReceiver" />
 
         <activity android:name=".UI.SearchActivity" />
         <activity android:name=".UI.ProfileActivity" />

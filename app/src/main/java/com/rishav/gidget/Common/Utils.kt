@@ -6,11 +6,15 @@ import android.appwidget.AppWidgetManager
 import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
 import android.os.Build
 import android.view.LayoutInflater
 import android.widget.Button
 import android.widget.Toast
 import androidx.annotation.RequiresApi
+import androidx.preference.PreferenceManager
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
 import com.rishav.gidget.Interface.RetroFitService
 import com.rishav.gidget.Models.Widget.WidgetRepoModel
 import com.rishav.gidget.R
@@ -19,14 +23,27 @@ import com.rishav.gidget.Widget.GidgetWidget
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import java.lang.reflect.Type
 import java.time.Duration
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
 class Utils {
     companion object {
-        fun getOnWidgetItemClickedAction(): String {
-            return "onWidgetItemClicked"
+        fun getOnWidgetItemClickedAction(): String = "onWidgetItemClicked"
+        fun getUpdateWidgetAction(): String = "updateWidgetWithDatasource"
+
+        fun getArrayList(context: Context): ArrayList<AddToWidget> {
+            val prefs: SharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
+            val gson = Gson()
+            val json: String = prefs.getString("dataSource", null).toString()
+            val type: Type = object : TypeToken<ArrayList<AddToWidget?>?>() {}.type
+            return gson.fromJson(json, type)
+        }
+
+        fun deleteArrayList(context: Context) {
+            val prefs: SharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
+            prefs.edit().clear().apply()
         }
     }
 
@@ -67,21 +84,14 @@ class Utils {
 
                                     dataSource.add(addToWidget)
                                 }
+
+                                saveArrayList(arrayList = dataSource, context = context)
                                 val widgetIntent = Intent(context, GidgetWidget::class.java)
-                                widgetIntent.action =
-                                    AppWidgetManager.ACTION_APPWIDGET_UPDATE
-                                widgetIntent.putParcelableArrayListExtra(
-                                    "dataSource",
-                                    dataSource
-                                )
+                                widgetIntent.action = getUpdateWidgetAction()
                                 context.sendBroadcast(widgetIntent)
                                 if (alertDialog.isShowing)
                                     alertDialog.dismiss()
-                                Toast.makeText(
-                                    context,
-                                    "Added to widget",
-                                    Toast.LENGTH_LONG
-                                ).show()
+                                Toast.makeText(context, "Added to widget", Toast.LENGTH_LONG).show()
                             }
                         }
 
@@ -125,21 +135,13 @@ class Utils {
                                     dataSource.add(addToWidget)
                                 }
 
+                                saveArrayList(arrayList = dataSource, context = context)
                                 val widgetIntent = Intent(context, GidgetWidget::class.java)
-                                widgetIntent.action =
-                                    AppWidgetManager.ACTION_APPWIDGET_UPDATE
-                                widgetIntent.putParcelableArrayListExtra(
-                                    "dataSource",
-                                    dataSource
-                                )
+                                widgetIntent.action = getUpdateWidgetAction()
                                 context.sendBroadcast(widgetIntent)
                                 if (alertDialog.isShowing)
                                     alertDialog.dismiss()
-                                Toast.makeText(
-                                    context,
-                                    "Added to widget",
-                                    Toast.LENGTH_LONG
-                                ).show()
+                                Toast.makeText(context, "Added to widget", Toast.LENGTH_LONG).show()
                             }
                         }
 
@@ -158,12 +160,18 @@ class Utils {
         } else {
             if (alertDialog.isShowing)
                 alertDialog.dismiss()
-            Toast.makeText(
-                context,
-                "Please add widget to home screen first",
-                Toast.LENGTH_LONG
-            ).show()
+            Toast.makeText(context, "Please add widget to home screen first", Toast.LENGTH_LONG)
+                .show()
         }
+    }
+
+    private fun saveArrayList(arrayList: ArrayList<AddToWidget>, context: Context) {
+        val prefs: SharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
+        val editor: SharedPreferences.Editor = prefs.edit()
+        val gson = Gson()
+        val json: String = gson.toJson(arrayList)
+        editor.putString("dataSource", json)
+        editor.apply()
     }
 
     private fun getEventData(currentItem: WidgetRepoModel): List<String> {
