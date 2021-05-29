@@ -12,11 +12,11 @@ import android.widget.RemoteViews
 import android.widget.Toast
 import androidx.annotation.RequiresApi
 import com.rishav.gidget.Adapters.WidgetRepoRemoteService
+import com.rishav.gidget.Common.Common
 import com.rishav.gidget.Common.Utils
 import com.rishav.gidget.R
 import com.rishav.gidget.Realm.AddToWidget
 import com.rishav.gidget.UI.MainActivity
-import com.rishav.gidget.UI.SearchActivity
 
 class GidgetWidget : AppWidgetProvider() {
     private var dataSource: ArrayList<AddToWidget> = arrayListOf()
@@ -40,32 +40,15 @@ class GidgetWidget : AppWidgetProvider() {
 
     @RequiresApi(Build.VERSION_CODES.Q)
     override fun onReceive(context: Context?, intent: Intent?) {
-        if (intent != null && context != null && intent.action == Utils.getUpdateWidgetAction()) {
-            dataSource = Utils.getArrayList(context)
+        if (intent != null && context != null && intent.action == Utils.getUpdateWidgetAction())
+            widgetActionUpdate(context)
 
-            val appWidgetManager = AppWidgetManager.getInstance(context)
-            val appWidgetIds =
-                appWidgetManager.getAppWidgetIds(
-                    ComponentName(
-                        context,
-                        GidgetWidget::class.java
-                    )
-                )
+        if (intent != null && context != null && intent.extras != null && intent.action == Utils.getOnWidgetItemClickedAction())
+            onItemClicked(intent = intent, context = context)
 
-            onUpdate(context, appWidgetManager, appWidgetIds)
-        }
+        if (intent != null && context != null && intent.action == Utils.getOnRefreshButtonClicked())
+            onWidgetRefresh(context)
 
-        if (intent != null && context != null && intent.extras != null && intent.action == Utils.getOnWidgetItemClickedAction()) {
-            if (intent.extras!!.containsKey("dataSource") || intent.hasExtra("dataSource")) {
-                val clickedItem: AddToWidget = intent.getParcelableExtra("dataSource")!!
-                val uri: Uri = Uri.parse("https://github.com/${clickedItem.name}")
-                val clickIntent =
-                    Intent(Intent.ACTION_VIEW, uri).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-                Toast.makeText(context, "Item clicked - ${clickedItem.name}", Toast.LENGTH_LONG)
-                    .show()
-                context.startActivity(clickIntent)
-            }
-        }
         super.onReceive(context, intent)
     }
 
@@ -76,6 +59,45 @@ class GidgetWidget : AppWidgetProvider() {
     override fun onDeleted(context: Context?, appWidgetIds: IntArray?) {
         dataSource.clear()
         Utils.deleteArrayList(context!!)
+    }
+
+    private fun onItemClicked(intent: Intent, context: Context) {
+        if (intent.extras!!.containsKey("dataSource") || intent.hasExtra("dataSource")) {
+            val clickedItem: AddToWidget = intent.getParcelableExtra("dataSource")!!
+            val uri: Uri = Uri.parse("https://github.com/${clickedItem.name}")
+            val clickIntent =
+                Intent(Intent.ACTION_VIEW, uri).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+            Toast.makeText(context, clickedItem.name, Toast.LENGTH_LONG).show()
+            context.startActivity(clickIntent)
+        }
+    }
+
+    @RequiresApi(Build.VERSION_CODES.Q)
+    private fun widgetActionUpdate(context: Context) {
+        dataSource = Utils.getArrayList(context)
+        val appWidgetManager = AppWidgetManager.getInstance(context)
+        val appWidgetIds =
+            appWidgetManager.getAppWidgetIds(
+                ComponentName(
+                    context,
+                    GidgetWidget::class.java
+                )
+            )
+        onUpdate(context, appWidgetManager, appWidgetIds)
+    }
+
+    @RequiresApi(Build.VERSION_CODES.Q)
+    private fun onWidgetRefresh(context: Context) {
+        val userMap: MutableMap<String, String> = Utils.getUserDetails(context)
+        Utils().addToWidget(
+            mService = Common.retroFitService,
+            isUser = userMap["isUser"]!!.toBoolean(),
+            isWidget = true,
+            username = userMap["username"]!!,
+            name = userMap["name"]!!,
+            context = context
+        )
+        widgetActionUpdate(context)
     }
 }
 
@@ -95,10 +117,14 @@ internal fun updateAppWidget(
     views.setOnClickPendingIntent(R.id.appWidgetLogo, buttonPendingIntent)
     views.setOnClickPendingIntent(R.id.appwidgetTitle, buttonPendingIntent)
 
-    val searchIntent =
-        Intent(context, SearchActivity::class.java).addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP)
-    val searchPendingIntent: PendingIntent = PendingIntent.getActivity(context, 0, searchIntent, 0)
-    views.setOnClickPendingIntent(R.id.appwidgetRefreshButton, searchPendingIntent)
+//    val searchIntent = Intent(context, SearchActivity::class.java).addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP)
+//    val searchPendingIntent: PendingIntent = PendingIntent.getActivity(context, 0, searchIntent, 0)
+//    views.setOnClickPendingIntent(R.id.appwidgetRefreshButton, searchPendingIntent)
+    val refreshIntent = Intent(context, GidgetWidget::class.java)
+    refreshIntent.action = Utils.getOnRefreshButtonClicked()
+    val refreshPendingIntent =
+        PendingIntent.getBroadcast(context, 0, refreshIntent, PendingIntent.FLAG_UPDATE_CURRENT)
+    views.setOnClickPendingIntent(R.id.appwidgetRefreshButton, refreshPendingIntent)
 
     // Main Widget
     val clickIntent = Intent(context, GidgetWidget::class.java)

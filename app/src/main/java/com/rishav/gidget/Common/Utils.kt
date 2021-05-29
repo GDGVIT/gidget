@@ -32,6 +32,7 @@ class Utils {
     companion object {
         fun getOnWidgetItemClickedAction(): String = "onWidgetItemClicked"
         fun getUpdateWidgetAction(): String = "updateWidgetWithDatasource"
+        fun getOnRefreshButtonClicked(): String = "onRefreshButtonClicked"
 
         fun getArrayList(context: Context): ArrayList<AddToWidget> {
             val prefs: SharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
@@ -45,18 +46,32 @@ class Utils {
             val prefs: SharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
             prefs.edit().clear().apply()
         }
+
+        fun getUserDetails(context: Context): MutableMap<String, String> {
+            val userMap: MutableMap<String, String> = mutableMapOf()
+            val prefs: SharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
+            if (prefs.all.isNotEmpty()) {
+                userMap["username"] = prefs.getString("username", null).toString()
+                userMap["name"] = prefs.getString("name", null).toString()
+                userMap["isUser"] = prefs.getString("isUser", null).toString()
+            }
+            return userMap
+        }
     }
 
     fun addToWidget(
         mService: RetroFitService,
         isUser: Boolean,
+        isWidget: Boolean,
         username: String,
         name: String,
         context: Context,
     ) {
         val ids: IntArray = AppWidgetManager.getInstance(context)
             .getAppWidgetIds(ComponentName(context, GidgetWidget::class.java))
-        val alertDialog = alertDialog(context)
+        var alertDialog: AlertDialog? = null
+        if (!isWidget)
+            alertDialog = alertDialog(context)
         if (ids.isNotEmpty()) {
             if (isUser)
                 mService.widgetUserEvents(
@@ -85,13 +100,22 @@ class Utils {
                                     dataSource.add(addToWidget)
                                 }
 
-                                saveArrayList(arrayList = dataSource, context = context)
-                                val widgetIntent = Intent(context, GidgetWidget::class.java)
-                                widgetIntent.action = getUpdateWidgetAction()
-                                context.sendBroadcast(widgetIntent)
-                                if (alertDialog.isShowing)
-                                    alertDialog.dismiss()
-                                Toast.makeText(context, "Added to widget", Toast.LENGTH_LONG).show()
+                                saveArrayList(
+                                    arrayList = dataSource,
+                                    context = context,
+                                    username = username,
+                                    name = name,
+                                    isUser = isUser
+                                )
+                                if (!isWidget && alertDialog != null) {
+                                    val widgetIntent = Intent(context, GidgetWidget::class.java)
+                                    widgetIntent.action = getUpdateWidgetAction()
+                                    context.sendBroadcast(widgetIntent)
+                                    if (alertDialog.isShowing)
+                                        alertDialog.dismiss()
+                                    Toast.makeText(context, "Added to widget", Toast.LENGTH_LONG).show()
+                                } else if (isWidget)
+                                    Toast.makeText(context, "Widget refreshed", Toast.LENGTH_LONG).show()
                             }
                         }
 
@@ -99,11 +123,11 @@ class Utils {
                             call: Call<MutableList<WidgetRepoModel>>,
                             t: Throwable
                         ) {
-                            if (alertDialog.isShowing) {
-                                Toast.makeText(context, "Could not add widget", Toast.LENGTH_LONG)
-                                    .show()
+                            if (alertDialog != null && alertDialog.isShowing && !isWidget) {
+                                Toast.makeText(context, "Could not add widget", Toast.LENGTH_LONG).show()
                                 alertDialog.dismiss()
-                            }
+                            } else if (isWidget)
+                                Toast.makeText(context, "Widget refresh unsuccessful", Toast.LENGTH_LONG).show()
                             println("ERROR - ${t.message}")
                         }
                     })
@@ -135,13 +159,23 @@ class Utils {
                                     dataSource.add(addToWidget)
                                 }
 
-                                saveArrayList(arrayList = dataSource, context = context)
-                                val widgetIntent = Intent(context, GidgetWidget::class.java)
-                                widgetIntent.action = getUpdateWidgetAction()
-                                context.sendBroadcast(widgetIntent)
-                                if (alertDialog.isShowing)
-                                    alertDialog.dismiss()
-                                Toast.makeText(context, "Added to widget", Toast.LENGTH_LONG).show()
+                                saveArrayList(
+                                    arrayList = dataSource,
+                                    context = context,
+                                    username = username,
+                                    name = name,
+                                    isUser = isUser
+                                )
+                                if (!isWidget) {
+                                    val widgetIntent = Intent(context, GidgetWidget::class.java)
+                                    widgetIntent.action = getUpdateWidgetAction()
+                                    context.sendBroadcast(widgetIntent)
+                                    if (alertDialog != null && alertDialog.isShowing)
+                                        alertDialog.dismiss()
+                                    Toast.makeText(context, "Added to widget", Toast.LENGTH_LONG)
+                                        .show()
+                                } else if (isWidget)
+                                    Toast.makeText(context, "Widget refreshed", Toast.LENGTH_LONG).show()
                             }
                         }
 
@@ -149,28 +183,36 @@ class Utils {
                             call: Call<MutableList<WidgetRepoModel>>,
                             t: Throwable
                         ) {
-                            if (alertDialog.isShowing) {
-                                Toast.makeText(context, "Could not add widget", Toast.LENGTH_LONG)
-                                    .show()
+                            if (alertDialog != null && alertDialog.isShowing && !isWidget) {
+                                Toast.makeText(context, "Could not add widget", Toast.LENGTH_LONG).show()
                                 alertDialog.dismiss()
-                            }
+                            } else if (isWidget)
+                                Toast.makeText(context, "Widget refresh unsuccessful", Toast.LENGTH_LONG).show()
                             println("ERROR - ${t.message}")
                         }
                     })
         } else {
-            if (alertDialog.isShowing)
+            if (alertDialog != null && alertDialog.isShowing && !isWidget)
                 alertDialog.dismiss()
-            Toast.makeText(context, "Please add widget to home screen first", Toast.LENGTH_LONG)
-                .show()
+            Toast.makeText(context, "Please add widget to home screen", Toast.LENGTH_LONG).show()
         }
     }
 
-    private fun saveArrayList(arrayList: ArrayList<AddToWidget>, context: Context) {
+    private fun saveArrayList(
+        arrayList: ArrayList<AddToWidget>,
+        context: Context,
+        username: String,
+        name: String,
+        isUser: Boolean
+    ) {
         val prefs: SharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
         val editor: SharedPreferences.Editor = prefs.edit()
         val gson = Gson()
         val json: String = gson.toJson(arrayList)
         editor.putString("dataSource", json)
+        editor.putString("username", username)
+        editor.putString("name", name)
+        editor.putString("isUser", isUser.toString())
         editor.apply()
     }
 
@@ -215,6 +257,10 @@ class Utils {
             "PullRequestEvent" -> listOf(
                 "User made a pull request",
                 R.drawable.ic_github_pull_request.toString()
+            )
+            "PullRequestReviewEvent" -> listOf(
+                "User reviewed a pull request",
+                R.drawable.pull_request_review_event.toString()
             )
             "PullRequestReviewCommentEvent" -> listOf(
                 "User commented on a pull request review",

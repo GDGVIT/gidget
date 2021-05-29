@@ -140,6 +140,10 @@ class FeedPageAdapter(
                 holder.eventPhoto.setImageResource(R.drawable.ic_github_pull_request)
                 holder.message.text = "User made a pull request"
             }
+            "PullRequestReviewEvent" -> listOf(
+                "User reviewed a pull request",
+                R.drawable.pull_request_review_event.toString()
+            )
             "PullRequestReviewCommentEvent" -> {
                 holder.eventPhoto.setImageResource(R.drawable.ic_baseline_comment_24)
                 holder.message.text = "User commented on a pull request review"

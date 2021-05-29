@@ -114,15 +114,20 @@ class ProfileActivity : AppCompatActivity() {
                         logoutButton.setOnClickListener {
                             mAuth.signOut()
                             Realm.removeDefaultConfiguration()
-                            Toast.makeText(applicationContext, "Logged out", Toast.LENGTH_LONG)
-                                .show()
+                            Toast.makeText(applicationContext, "Logged out", Toast.LENGTH_LONG).show()
                             startActivity(Intent(applicationContext, MainActivity::class.java))
                             finishAffinity()
                         }
                     } else {
                         logoutButtonText.text = "Add to widget"
                         logoutButton.setOnClickListener {
-                            Utils().addToWidget(mService, true, username, "", context)
+                            Utils().addToWidget(
+                                mService, true,
+                                isWidget = false,
+                                username = username,
+                                name = "",
+                                context = context
+                            )
                         }
                     }
                 }

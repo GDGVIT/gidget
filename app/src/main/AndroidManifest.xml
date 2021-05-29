@@ -17,6 +17,7 @@
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
                 <action android:name="onWidgetItemClicked" />
                 <action android:name="updateWidgetWithDatasource" />
+                <action android:name="onRefreshButtonClicked" />
             </intent-filter>
 
             <meta-data

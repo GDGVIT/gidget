@@ -90,7 +90,14 @@ class SearchPageUserAdapter(
 
     private fun addToWidget(currentItem: Items) {
         val mService: RetroFitService = Common.retroFitService
-        Utils().addToWidget(mService, true, currentItem.login, "", context)
+        Utils().addToWidget(
+            mService,
+            isUser = true,
+            isWidget = false,
+            username = currentItem.login,
+            name = "",
+            context = context
+        )
     }
 
     private fun navigateToExternal(username: String) {
