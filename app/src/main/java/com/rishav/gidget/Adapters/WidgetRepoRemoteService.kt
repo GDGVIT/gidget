@@ -7,6 +7,7 @@ import android.os.Build
 import android.widget.RemoteViews
 import android.widget.RemoteViewsService
 import androidx.annotation.RequiresApi
+import com.rishav.gidget.Common.RoundedTransformation
 import com.rishav.gidget.Common.Utils
 import com.rishav.gidget.R
 import com.rishav.gidget.Realm.AddToWidget
@@ -51,7 +52,9 @@ class WidgetRepoRemoteViewsFactory(
         views.setTextViewText(R.id.appwidgetRecyclerViewItemDate, currentItem.date)
 
         // setting profilePhoto
-        val profilePhotoBitmap: Bitmap = Picasso.get().load(currentItem.avatarUrl).get()
+        val profilePhotoBitmap: Bitmap =
+            Picasso.get().load(currentItem.avatarUrl).error(R.drawable.github_logo)
+                .transform(RoundedTransformation(300, 0)).get()
         views.setImageViewBitmap(R.id.appwidgetRecyclerViewItemProfilePhoto, profilePhotoBitmap)
 
         // setting eventIcon

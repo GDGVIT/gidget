@@ -7,6 +7,12 @@ import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
+import android.graphics.Bitmap
+import android.graphics.BitmapShader
+import android.graphics.Canvas
+import android.graphics.Paint
+import android.graphics.RectF
+import android.graphics.Shader
 import android.os.Build
 import android.view.LayoutInflater
 import android.widget.Button
@@ -20,6 +26,7 @@ import com.rishav.gidget.Models.Widget.WidgetRepoModel
 import com.rishav.gidget.R
 import com.rishav.gidget.Realm.AddToWidget
 import com.rishav.gidget.Widget.GidgetWidget
+import com.squareup.picasso.Transformation
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -113,9 +120,11 @@ class Utils {
                                     context.sendBroadcast(widgetIntent)
                                     if (alertDialog.isShowing)
                                         alertDialog.dismiss()
-                                    Toast.makeText(context, "Added to widget", Toast.LENGTH_LONG).show()
+                                    Toast.makeText(context, "Added to widget", Toast.LENGTH_LONG)
+                                        .show()
                                 } else if (isWidget)
-                                    Toast.makeText(context, "Widget refreshed", Toast.LENGTH_LONG).show()
+                                    Toast.makeText(context, "Widget refreshed", Toast.LENGTH_LONG)
+                                        .show()
                             }
                         }
 
@@ -124,10 +133,15 @@ class Utils {
                             t: Throwable
                         ) {
                             if (alertDialog != null && alertDialog.isShowing && !isWidget) {
-                                Toast.makeText(context, "Could not add widget", Toast.LENGTH_LONG).show()
+                                Toast.makeText(context, "Could not add widget", Toast.LENGTH_LONG)
+                                    .show()
                                 alertDialog.dismiss()
                             } else if (isWidget)
-                                Toast.makeText(context, "Widget refresh unsuccessful", Toast.LENGTH_LONG).show()
+                                Toast.makeText(
+                                    context,
+                                    "Widget refresh unsuccessful",
+                                    Toast.LENGTH_LONG
+                                ).show()
                             println("ERROR - ${t.message}")
                         }
                     })
@@ -175,7 +189,8 @@ class Utils {
                                     Toast.makeText(context, "Added to widget", Toast.LENGTH_LONG)
                                         .show()
                                 } else if (isWidget)
-                                    Toast.makeText(context, "Widget refreshed", Toast.LENGTH_LONG).show()
+                                    Toast.makeText(context, "Widget refreshed", Toast.LENGTH_LONG)
+                                        .show()
                             }
                         }
 
@@ -184,10 +199,15 @@ class Utils {
                             t: Throwable
                         ) {
                             if (alertDialog != null && alertDialog.isShowing && !isWidget) {
-                                Toast.makeText(context, "Could not add widget", Toast.LENGTH_LONG).show()
+                                Toast.makeText(context, "Could not add widget", Toast.LENGTH_LONG)
+                                    .show()
                                 alertDialog.dismiss()
                             } else if (isWidget)
-                                Toast.makeText(context, "Widget refresh unsuccessful", Toast.LENGTH_LONG).show()
+                                Toast.makeText(
+                                    context,
+                                    "Widget refresh unsuccessful",
+                                    Toast.LENGTH_LONG
+                                ).show()
                             println("ERROR - ${t.message}")
                         }
                     })
@@ -313,5 +333,35 @@ class Utils {
             Toast.makeText(context, "User Cancelled", Toast.LENGTH_LONG).show()
         }
         return alertDialog
+    }
+}
+
+class RoundedTransformation(
+    private val radius: Int, // dp
+    private var margin: Int
+) : Transformation {
+    override fun transform(source: Bitmap): Bitmap {
+        val paint = Paint()
+        paint.isAntiAlias = true
+        paint.shader = BitmapShader(source, Shader.TileMode.CLAMP, Shader.TileMode.CLAMP)
+        val output = Bitmap.createBitmap(source.width, source.height, Bitmap.Config.ARGB_8888)
+        val canvas = Canvas(output)
+        canvas.drawRoundRect(
+            RectF(
+                margin.toFloat(),
+                margin.toFloat(),
+                (source.width - margin).toFloat(),
+                (source.height - margin).toFloat()
+            ),
+            radius.toFloat(), radius.toFloat(), paint
+        )
+        if (source != output) {
+            source.recycle()
+        }
+        return output
+    }
+
+    override fun key(): String {
+        return "rounded"
     }
 }
