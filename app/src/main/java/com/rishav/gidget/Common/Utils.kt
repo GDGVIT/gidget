@@ -33,6 +33,7 @@ import retrofit2.Response
 import java.lang.reflect.Type
 import java.time.Duration
 import java.time.LocalDateTime
+import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 
 class Utils {
@@ -310,7 +311,7 @@ class Utils {
     private fun getDate(currentItem: WidgetRepoModel): String {
         val dateTimePattern = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss'Z'")
         val createDate = LocalDateTime.parse(currentItem.created_at, dateTimePattern)
-        val currentDate = LocalDateTime.now()
+        val currentDate = LocalDateTime.now(ZoneId.of("Etc/UTC"))
         val differenceTime = Duration.between(currentDate, createDate).abs()
         return when {
             differenceTime.toMinutes() < 60 -> "${differenceTime.toMinutes()} minutes ago"

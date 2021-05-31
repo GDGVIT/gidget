@@ -21,6 +21,7 @@ import com.rishav.gidget.UI.ProfileActivity
 import com.squareup.picasso.Picasso
 import java.time.Duration
 import java.time.LocalDateTime
+import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 
 class FeedPageAdapter(
@@ -175,7 +176,7 @@ class FeedPageAdapter(
     private fun setDate(holder: FeedPageUserActivityViewHolder, currentItem: FeedPageModel) {
         val dateTimePattern = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss'Z'")
         val createDate = LocalDateTime.parse(currentItem.created_at, dateTimePattern)
-        val currentDate = LocalDateTime.now()
+        val currentDate = LocalDateTime.now(ZoneId.of("Etc/UTC"))
         val differenceTime = Duration.between(currentDate, createDate).abs()
         val finalResult: String = when {
             differenceTime.toMinutes() < 60 -> "${differenceTime.toMinutes()} minutes ago"
