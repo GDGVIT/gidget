@@ -15,7 +15,9 @@ import android.graphics.RectF
 import android.graphics.Shader
 import android.os.Build
 import android.view.LayoutInflater
+import android.view.View
 import android.widget.Button
+import android.widget.RemoteViews
 import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.preference.PreferenceManager
@@ -81,6 +83,15 @@ class Utils {
         if (!isWidget)
             alertDialog = alertDialog(context)
         if (ids.isNotEmpty()) {
+            val views = RemoteViews(context.packageName, R.layout.gidget_widget)
+            val appWidgetManager = AppWidgetManager.getInstance(context)
+            val appWidgetIds = appWidgetManager.getAppWidgetIds(ComponentName(context, GidgetWidget::class.java))
+
+            views.setViewVisibility(R.id.appwidgetProgressBar, View.VISIBLE)
+            appWidgetManager.updateAppWidget(appWidgetIds, views)
+
+            views.setViewVisibility(R.id.appwidgetProgressBar, View.GONE)
+
             if (isUser)
                 mService.widgetUserEvents(
                     username,
@@ -124,8 +135,8 @@ class Utils {
                                     Toast.makeText(context, "Added to widget", Toast.LENGTH_LONG)
                                         .show()
                                 } else if (isWidget)
-                                    Toast.makeText(context, "Widget refreshed", Toast.LENGTH_LONG)
-                                        .show()
+                                    Toast.makeText(context, "Widget refreshed", Toast.LENGTH_LONG).show()
+                                appWidgetManager.updateAppWidget(appWidgetIds, views)
                             }
                         }
 
@@ -134,16 +145,12 @@ class Utils {
                             t: Throwable
                         ) {
                             if (alertDialog != null && alertDialog.isShowing && !isWidget) {
-                                Toast.makeText(context, "Could not add widget", Toast.LENGTH_LONG)
-                                    .show()
+                                Toast.makeText(context, "Could not add widget", Toast.LENGTH_LONG).show()
                                 alertDialog.dismiss()
                             } else if (isWidget)
-                                Toast.makeText(
-                                    context,
-                                    "Widget refresh unsuccessful",
-                                    Toast.LENGTH_LONG
-                                ).show()
+                                Toast.makeText(context, "Widget refresh unsuccessful", Toast.LENGTH_LONG).show()
                             println("ERROR - ${t.message}")
+                            appWidgetManager.updateAppWidget(appWidgetIds, views)
                         }
                     })
             else
@@ -190,8 +197,8 @@ class Utils {
                                     Toast.makeText(context, "Added to widget", Toast.LENGTH_LONG)
                                         .show()
                                 } else if (isWidget)
-                                    Toast.makeText(context, "Widget refreshed", Toast.LENGTH_LONG)
-                                        .show()
+                                    Toast.makeText(context, "Widget refreshed", Toast.LENGTH_LONG).show()
+                                appWidgetManager.updateAppWidget(appWidgetIds, views)
                             }
                         }
 
@@ -210,6 +217,7 @@ class Utils {
                                     Toast.LENGTH_LONG
                                 ).show()
                             println("ERROR - ${t.message}")
+                            appWidgetManager.updateAppWidget(appWidgetIds, views)
                         }
                     })
         } else {

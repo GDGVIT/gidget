@@ -29,8 +29,7 @@ class WidgetRepoRemoteViewsFactory(
 
     override fun onDataSetChanged() {
         try {
-            val res: ArrayList<AddToWidget> = Utils.getArrayList(context)
-            dataSource = res
+            dataSource = Utils.getArrayList(context)
         } catch (error: Exception) {
             println(error)
         }

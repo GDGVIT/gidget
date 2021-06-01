@@ -77,12 +77,7 @@ class GidgetWidget : AppWidgetProvider() {
         dataSource = Utils.getArrayList(context)
         val appWidgetManager = AppWidgetManager.getInstance(context)
         val appWidgetIds =
-            appWidgetManager.getAppWidgetIds(
-                ComponentName(
-                    context,
-                    GidgetWidget::class.java
-                )
-            )
+            appWidgetManager.getAppWidgetIds(ComponentName(context, GidgetWidget::class.java))
         onUpdate(context, appWidgetManager, appWidgetIds)
     }
 
@@ -117,9 +112,6 @@ internal fun updateAppWidget(
     views.setOnClickPendingIntent(R.id.appWidgetLogo, buttonPendingIntent)
     views.setOnClickPendingIntent(R.id.appwidgetTitle, buttonPendingIntent)
 
-//    val searchIntent = Intent(context, SearchActivity::class.java).addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP)
-//    val searchPendingIntent: PendingIntent = PendingIntent.getActivity(context, 0, searchIntent, 0)
-//    views.setOnClickPendingIntent(R.id.appwidgetRefreshButton, searchPendingIntent)
     val refreshIntent = Intent(context, GidgetWidget::class.java)
     refreshIntent.action = Utils.getOnRefreshButtonClicked()
     val refreshPendingIntent =
@@ -138,9 +130,7 @@ internal fun updateAppWidget(
         // Widget Service Intent
         val serviceIntent = Intent(context, WidgetRepoRemoteService::class.java)
         views.setRemoteAdapter(R.id.appwidgetListView, serviceIntent)
-
         appWidgetManager.notifyAppWidgetViewDataChanged(appWidgetId, R.id.appwidgetListView)
     }
-
     appWidgetManager.updateAppWidget(appWidgetId, views)
 }
