@@ -12,6 +12,7 @@ import android.widget.RemoteViews
 import android.widget.Toast
 import androidx.annotation.RequiresApi
 import com.rishav.gidget.Adapters.WidgetRepoRemoteService
+import com.rishav.gidget.Common.AppWidgetAlarm
 import com.rishav.gidget.Common.Common
 import com.rishav.gidget.Common.Utils
 import com.rishav.gidget.R
@@ -54,11 +55,18 @@ class GidgetWidget : AppWidgetProvider() {
 
     override fun onEnabled(context: Context) {}
 
-    override fun onDisabled(context: Context) {}
+    override fun onDisabled(context: Context) {
+        val appwidgetAlarm = AppWidgetAlarm(context.applicationContext)
+        appwidgetAlarm.stopAlarm()
+        dataSource.clear()
+        Utils.deleteArrayList(context)
+    }
 
     override fun onDeleted(context: Context?, appWidgetIds: IntArray?) {
+        val appwidgetAlarm = AppWidgetAlarm(context!!.applicationContext)
+        appwidgetAlarm.stopAlarm()
         dataSource.clear()
-        Utils.deleteArrayList(context!!)
+        Utils.deleteArrayList(context)
     }
 
     private fun onItemClicked(intent: Intent, context: Context) {
@@ -84,15 +92,17 @@ class GidgetWidget : AppWidgetProvider() {
     @RequiresApi(Build.VERSION_CODES.Q)
     private fun onWidgetRefresh(context: Context) {
         val userMap: MutableMap<String, String> = Utils.getUserDetails(context)
-        Utils().addToWidget(
-            mService = Common.retroFitService,
-            isUser = userMap["isUser"]!!.toBoolean(),
-            isWidget = true,
-            username = userMap["username"]!!,
-            name = userMap["name"]!!,
-            context = context
-        )
-        widgetActionUpdate(context)
+        if (userMap.isNotEmpty()) {
+            Utils().addToWidget(
+                mService = Common.retroFitService,
+                isUser = userMap["isUser"]!!.toBoolean(),
+                isWidget = true,
+                username = userMap["username"]!!,
+                name = userMap["name"]!!,
+                context = context
+            )
+            widgetActionUpdate(context)
+        }
     }
 }
 

@@ -44,6 +44,7 @@
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
             android:layout_centerVertical="true"
+            android:layout_marginStart="@dimen/_14sdp"
             android:background="@drawable/appwidget_icon_bg">
 
             <ImageView
@@ -95,7 +96,7 @@
                     android:layout_height="wrap_content"
                     android:layout_alignParentEnd="true"
                     android:layout_centerVertical="true"
-                    android:layout_marginStart="@dimen/_4sdp"
+                    android:layout_marginStart="@dimen/_5sdp"
                     android:text="@string/date"
                     android:textColor="@color/lightGrey"
                     android:textSize="@dimen/_8sdp" />

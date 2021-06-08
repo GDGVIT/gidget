@@ -85,7 +85,8 @@ class Utils {
         if (ids.isNotEmpty()) {
             val views = RemoteViews(context.packageName, R.layout.gidget_widget)
             val appWidgetManager = AppWidgetManager.getInstance(context)
-            val appWidgetIds = appWidgetManager.getAppWidgetIds(ComponentName(context, GidgetWidget::class.java))
+            val appWidgetIds =
+                appWidgetManager.getAppWidgetIds(ComponentName(context, GidgetWidget::class.java))
 
             views.setViewVisibility(R.id.appwidgetProgressBar, View.VISIBLE)
             appWidgetManager.updateAppWidget(appWidgetIds, views)
@@ -130,12 +131,16 @@ class Utils {
                                     val widgetIntent = Intent(context, GidgetWidget::class.java)
                                     widgetIntent.action = getUpdateWidgetAction()
                                     context.sendBroadcast(widgetIntent)
+                                    val appwidgetAlarm = AppWidgetAlarm(context.applicationContext)
+                                    appwidgetAlarm.startAlarm()
+
                                     if (alertDialog.isShowing)
                                         alertDialog.dismiss()
-                                    Toast.makeText(context, "Added to widget", Toast.LENGTH_LONG)
+                                    Toast.makeText(context, "Added to Gidget", Toast.LENGTH_LONG)
                                         .show()
                                 } else if (isWidget)
-                                    Toast.makeText(context, "Widget refreshed", Toast.LENGTH_LONG).show()
+                                    Toast.makeText(context, "Gidget refreshed", Toast.LENGTH_LONG)
+                                        .show()
                                 appWidgetManager.updateAppWidget(appWidgetIds, views)
                             }
                         }
@@ -145,10 +150,15 @@ class Utils {
                             t: Throwable
                         ) {
                             if (alertDialog != null && alertDialog.isShowing && !isWidget) {
-                                Toast.makeText(context, "Could not add widget", Toast.LENGTH_LONG).show()
+                                Toast.makeText(context, "Could not add Gidget", Toast.LENGTH_LONG)
+                                    .show()
                                 alertDialog.dismiss()
                             } else if (isWidget)
-                                Toast.makeText(context, "Widget refresh unsuccessful", Toast.LENGTH_LONG).show()
+                                Toast.makeText(
+                                    context,
+                                    "Gidget refresh unsuccessful",
+                                    Toast.LENGTH_LONG
+                                ).show()
                             println("ERROR - ${t.message}")
                             appWidgetManager.updateAppWidget(appWidgetIds, views)
                         }
@@ -188,16 +198,20 @@ class Utils {
                                     name = name,
                                     isUser = isUser
                                 )
-                                if (!isWidget) {
+                                if (!isWidget && alertDialog != null) {
                                     val widgetIntent = Intent(context, GidgetWidget::class.java)
                                     widgetIntent.action = getUpdateWidgetAction()
                                     context.sendBroadcast(widgetIntent)
-                                    if (alertDialog != null && alertDialog.isShowing)
+                                    val appwidgetAlarm = AppWidgetAlarm(context.applicationContext)
+                                    appwidgetAlarm.startAlarm()
+
+                                    if (alertDialog.isShowing)
                                         alertDialog.dismiss()
-                                    Toast.makeText(context, "Added to widget", Toast.LENGTH_LONG)
+                                    Toast.makeText(context, "Added to Gidget", Toast.LENGTH_LONG)
                                         .show()
                                 } else if (isWidget)
-                                    Toast.makeText(context, "Widget refreshed", Toast.LENGTH_LONG).show()
+                                    Toast.makeText(context, "Gidget refreshed", Toast.LENGTH_LONG)
+                                        .show()
                                 appWidgetManager.updateAppWidget(appWidgetIds, views)
                             }
                         }
@@ -207,13 +221,13 @@ class Utils {
                             t: Throwable
                         ) {
                             if (alertDialog != null && alertDialog.isShowing && !isWidget) {
-                                Toast.makeText(context, "Could not add widget", Toast.LENGTH_LONG)
+                                Toast.makeText(context, "Could not add Gidget", Toast.LENGTH_LONG)
                                     .show()
                                 alertDialog.dismiss()
                             } else if (isWidget)
                                 Toast.makeText(
                                     context,
-                                    "Widget refresh unsuccessful",
+                                    "Gidget refresh unsuccessful",
                                     Toast.LENGTH_LONG
                                 ).show()
                             println("ERROR - ${t.message}")
@@ -223,7 +237,7 @@ class Utils {
         } else {
             if (alertDialog != null && alertDialog.isShowing && !isWidget)
                 alertDialog.dismiss()
-            Toast.makeText(context, "Please add widget to home screen", Toast.LENGTH_LONG).show()
+            Toast.makeText(context, "Please add Gidget to home screen", Toast.LENGTH_LONG).show()
         }
     }
 
@@ -322,9 +336,11 @@ class Utils {
         val currentDate = LocalDateTime.now(ZoneId.of("Etc/UTC"))
         val differenceTime = Duration.between(currentDate, createDate).abs()
         return when {
-            differenceTime.toMinutes() < 60 -> "${differenceTime.toMinutes()} minutes ago"
-            differenceTime.toHours() < 24 -> "${differenceTime.toHours()} hours ago"
-            differenceTime.toDays() <= 1 -> "${differenceTime.toDays()} day ago"
+            differenceTime.seconds < 60 -> "${differenceTime.seconds} secs ago"
+            differenceTime.toMinutes().toInt() == 1 -> "${differenceTime.toMinutes()} min ago"
+            differenceTime.toMinutes() < 60 -> "${differenceTime.toMinutes()} mins ago"
+            differenceTime.toHours() < 24 -> "${differenceTime.toHours()} hrs ago"
+            differenceTime.toDays().toInt() == 1 -> "${differenceTime.toDays()} day ago"
             else -> "${differenceTime.toDays()} days ago"
         }
     }
