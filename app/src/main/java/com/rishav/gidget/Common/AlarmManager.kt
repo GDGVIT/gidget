@@ -9,7 +9,7 @@ import java.util.Calendar
 
 class AppWidgetAlarm(private val context: Context) {
     private val alarmID = 0
-    private val intervalMillis : Long = 1200000
+    private val intervalMillis: Long = 1200000
 
     fun startAlarm() {
         val calendar: Calendar = Calendar.getInstance()
@@ -20,7 +20,7 @@ class AppWidgetAlarm(private val context: Context) {
             PendingIntent.getBroadcast(context, 0, intent, 0)
         }
         with(context.getSystemService(Context.ALARM_SERVICE) as AlarmManager) {
-            setRepeating(AlarmManager.RTC,calendar.timeInMillis, intervalMillis ,alarmIntent)
+            setRepeating(AlarmManager.RTC, calendar.timeInMillis, intervalMillis, alarmIntent)
         }
     }
 
