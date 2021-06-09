@@ -1,14 +1,13 @@
 package com.rishav.gidget.Adapters
 
-import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
 import android.os.Build
-import android.os.Bundle
 import android.widget.RemoteViews
 import android.widget.RemoteViewsService
 import androidx.annotation.RequiresApi
+import com.rishav.gidget.Common.RoundedTransformation
 import com.rishav.gidget.Common.Utils
 import com.rishav.gidget.R
 import com.rishav.gidget.Realm.AddToWidget
@@ -24,14 +23,13 @@ class WidgetRepoRemoteViewsFactory(
     private val context: Context,
 ) :
     RemoteViewsService.RemoteViewsFactory {
-    private lateinit var dataSource: ArrayList<AddToWidget>
+    private var dataSource: ArrayList<AddToWidget> = arrayListOf()
 
     override fun onCreate() {}
 
     override fun onDataSetChanged() {
         try {
-            val res: ArrayList<AddToWidget> = MyBroadcastReceiver.exportDataSource()
-            dataSource = res
+            dataSource = Utils.getArrayList(context)
         } catch (error: Exception) {
             println(error)
         }
@@ -53,7 +51,9 @@ class WidgetRepoRemoteViewsFactory(
         views.setTextViewText(R.id.appwidgetRecyclerViewItemDate, currentItem.date)
 
         // setting profilePhoto
-        val profilePhotoBitmap: Bitmap = Picasso.get().load(currentItem.avatarUrl).get()
+        val profilePhotoBitmap: Bitmap =
+            Picasso.get().load(currentItem.avatarUrl).error(R.drawable.github_logo)
+                .transform(RoundedTransformation(300, 0)).get()
         views.setImageViewBitmap(R.id.appwidgetRecyclerViewItemProfilePhoto, profilePhotoBitmap)
 
         // setting eventIcon
@@ -75,21 +75,4 @@ class WidgetRepoRemoteViewsFactory(
     override fun getItemId(position: Int): Long = position.toLong()
 
     override fun hasStableIds(): Boolean = true
-}
-
-class MyBroadcastReceiver : BroadcastReceiver() {
-    override fun onReceive(context: Context?, intent: Intent?) {
-        if (intent != null && intent.extras != null) {
-            if (intent.hasExtra("dataSource")) {
-                val bundle: Bundle = intent.getBundleExtra("dataSource")!!
-                dataSource = bundle.getParcelableArrayList("dataSourceBundle")!!
-            } else
-                println("No bundle received")
-        }
-    }
-
-    companion object {
-        private lateinit var dataSource: ArrayList<AddToWidget>
-        fun exportDataSource(): ArrayList<AddToWidget> = dataSource
-    }
 }

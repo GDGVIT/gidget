@@ -57,7 +57,9 @@ class SearchPageRepoAdapter(
         lastPosition = position
 
         // Add to widget
-        holderRepo.addToWidgetButton.setOnClickListener { addToWidget(currentItem) }
+        holderRepo.addToWidgetButton.setOnClickListener {
+            addToWidget(currentItem)
+        }
 
         // onClick
         holderRepo.currentView.setOnClickListener { navigateToExternal(currentItem.owner.login) }
@@ -67,7 +69,14 @@ class SearchPageRepoAdapter(
 
     private fun addToWidget(currentItem: ItemsRepo) {
         val mService: RetroFitService = Common.retroFitService
-        Utils().addToWidget(mService, false, currentItem.owner.login, currentItem.name, context)
+        Utils().addToWidget(
+            mService = mService,
+            isUser = false,
+            isWidget = false,
+            username = currentItem.owner.login,
+            name = currentItem.name,
+            context = context
+        )
     }
 
     private fun navigateToExternal(username: String) {

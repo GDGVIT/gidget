@@ -12,7 +12,6 @@
     android:paddingVertical="@dimen/_8sdp"
     tools:background="@android:color/transparent">
 
-
     <androidx.cardview.widget.CardView
         android:id="@+id/searchPageRecyclerItemProfilePhotoCover"
         android:layout_width="wrap_content"

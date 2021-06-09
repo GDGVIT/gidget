@@ -18,6 +18,7 @@ android {
         targetSdkVersion 30
         versionCode 1
         versionName "1.0"
+        buildConfigField "String", "TOKEN", "\"${System.getenv("token")}\""
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         multiDexEnabled true
@@ -60,4 +61,5 @@ dependencies {
     implementation 'com.squareup.retrofit2:converter-moshi:2.9.0'
     implementation 'com.squareup.picasso:picasso:2.71828'
     implementation 'com.intuit.sdp:sdp-android:1.0.6'
+    implementation 'androidx.preference:preference:1.1.1'
 }

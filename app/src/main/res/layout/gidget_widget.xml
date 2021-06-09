@@ -65,11 +65,25 @@
         android:textSize="@dimen/_10sdp"
         android:visibility="gone" />
 
+    <ProgressBar
+        android:id="@+id/appwidgetProgressBar"
+        style="@style/Widget.AppCompat.ProgressBar.Horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/appwidgetSection1"
+        android:layout_marginTop="@dimen/_5sdp"
+        android:backgroundTint="@android:color/transparent"
+        android:indeterminate="true"
+        android:indeterminateTint="@color/blue"
+        android:minHeight="@dimen/_1sdp"
+        android:visibility="gone"
+        tools:targetApi="lollipop" />
+
     <ListView
         android:id="@+id/appwidgetListView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/appwidgetSection1"
+        android:layout_below="@+id/appwidgetProgressBar"
         android:background="@android:color/transparent"
         tools:listitem="@layout/appwidget_recycler_item" />
 </RelativeLayout>

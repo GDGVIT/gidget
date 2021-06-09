@@ -8,20 +8,27 @@ import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Build
-import android.os.Bundle
+import android.view.View
 import android.widget.RemoteViews
 import android.widget.Toast
 import androidx.annotation.RequiresApi
-import com.rishav.gidget.Adapters.MyBroadcastReceiver
 import com.rishav.gidget.Adapters.WidgetRepoRemoteService
+import com.rishav.gidget.Common.AppWidgetAlarm
+import com.rishav.gidget.Common.Common
+import com.rishav.gidget.Common.Security
 import com.rishav.gidget.Common.Utils
+import com.rishav.gidget.Models.Widget.WidgetRepoModel
 import com.rishav.gidget.R
 import com.rishav.gidget.Realm.AddToWidget
 import com.rishav.gidget.UI.MainActivity
-import com.rishav.gidget.UI.SearchActivity
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 
 class GidgetWidget : AppWidgetProvider() {
     private var dataSource: ArrayList<AddToWidget> = arrayListOf()
+    private val utils = Utils()
+    private val mService = Common.retroFitService
 
     @RequiresApi(Build.VERSION_CODES.Q)
     override fun onUpdate(
@@ -42,42 +49,177 @@ class GidgetWidget : AppWidgetProvider() {
 
     @RequiresApi(Build.VERSION_CODES.Q)
     override fun onReceive(context: Context?, intent: Intent?) {
-        if (intent != null && context != null && intent.extras != null && intent.action == AppWidgetManager.ACTION_APPWIDGET_UPDATE) {
-            if (intent.extras!!.containsKey("dataSource") || intent.hasExtra("dataSource")) {
-                dataSource = intent.getParcelableArrayListExtra("dataSource")!!
+        if (intent != null && context != null && intent.action == Utils.getUpdateWidgetAction())
+            widgetActionUpdate(context)
 
-                val appWidgetManager = AppWidgetManager.getInstance(context)
-                val appWidgetIds =
-                    appWidgetManager.getAppWidgetIds(
-                        ComponentName(
-                            context,
-                            GidgetWidget::class.java
-                        )
-                    )
+        if (intent != null && context != null && intent.extras != null && intent.action == Utils.getOnWidgetItemClickedAction())
+            onItemClicked(intent = intent, context = context)
 
-                onUpdate(context, appWidgetManager, appWidgetIds)
-            }
-        }
+        if (intent != null && context != null && intent.action == Utils.getOnRefreshButtonClicked())
+            onWidgetRefresh(context)
 
-        if (intent != null && context != null && intent.extras != null && intent.action == Utils.getOnWidgetItemClickedAction()) {
-            if (intent.extras!!.containsKey("dataSource") || intent.hasExtra("dataSource")) {
-                val clickedItem: AddToWidget = intent.getParcelableExtra("dataSource")!!
-                val uri: Uri = Uri.parse("https://github.com/${clickedItem.name}")
-                val clickIntent =
-                    Intent(Intent.ACTION_VIEW, uri).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-                context.startActivity(clickIntent)
-            }
-        }
         super.onReceive(context, intent)
     }
 
-    override fun onEnabled(context: Context) {
-        Toast.makeText(context, "", Toast.LENGTH_LONG).show()
+    override fun onEnabled(context: Context) {}
+
+    override fun onDisabled(context: Context) {
+        val appwidgetAlarm = AppWidgetAlarm(context.applicationContext)
+        appwidgetAlarm.stopAlarm()
+        dataSource.clear()
+        Utils.deleteArrayList(context)
     }
 
-    override fun onDisabled(context: Context) {}
+    override fun onDeleted(context: Context?, appWidgetIds: IntArray?) {
+        val appwidgetAlarm = AppWidgetAlarm(context!!.applicationContext)
+        appwidgetAlarm.stopAlarm()
+        dataSource.clear()
+        Utils.deleteArrayList(context)
+    }
 
-    override fun onDeleted(context: Context?, appWidgetIds: IntArray?) {}
+    private fun onItemClicked(intent: Intent, context: Context) {
+        if (intent.extras!!.containsKey("dataSource") || intent.hasExtra("dataSource")) {
+            val clickedItem: AddToWidget = intent.getParcelableExtra("dataSource")!!
+            val uri: Uri = Uri.parse("https://github.com/${clickedItem.name}")
+            val clickIntent =
+                Intent(Intent.ACTION_VIEW, uri).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+            Toast.makeText(context, clickedItem.name, Toast.LENGTH_LONG).show()
+            context.startActivity(clickIntent)
+        }
+    }
+
+    @RequiresApi(Build.VERSION_CODES.Q)
+    private fun widgetActionUpdate(context: Context) {
+        dataSource = Utils.getArrayList(context)
+        val appWidgetManager = AppWidgetManager.getInstance(context)
+        val appWidgetIds =
+            appWidgetManager.getAppWidgetIds(ComponentName(context, GidgetWidget::class.java))
+        onUpdate(context, appWidgetManager, appWidgetIds)
+    }
+
+    @RequiresApi(Build.VERSION_CODES.Q)
+    private fun onWidgetRefresh(context: Context) {
+        val userMap: MutableMap<String, String> = Utils.getUserDetails(context)
+        if (userMap.isNotEmpty())
+            addToWidget(context, userMap)
+    }
+
+    private fun addToWidget(context: Context, userMap: MutableMap<String, String>) {
+        val views = RemoteViews(context.packageName, R.layout.gidget_widget)
+        val appWidgetManager = AppWidgetManager.getInstance(context)
+        val appWidgetIds =
+            appWidgetManager.getAppWidgetIds(ComponentName(context, GidgetWidget::class.java))
+
+        views.setViewVisibility(R.id.appwidgetProgressBar, View.VISIBLE)
+        appWidgetManager.updateAppWidget(appWidgetIds, views)
+
+        views.setViewVisibility(R.id.appwidgetProgressBar, View.GONE)
+
+        if (userMap["isUser"]!!.toBoolean()) {
+            mService.widgetUserEvents(
+                userMap["username"]!!,
+                "token ${Security.getToken()}"
+            )
+                .enqueue(object : Callback<MutableList<WidgetRepoModel>> {
+                    @RequiresApi(Build.VERSION_CODES.Q)
+                    override fun onResponse(
+                        call: Call<MutableList<WidgetRepoModel>>,
+                        response: Response<MutableList<WidgetRepoModel>>
+                    ) {
+                        if (response.body() != null) {
+                            val dataSource: ArrayList<AddToWidget> = arrayListOf()
+                            for (res in response.body()!!) {
+                                val addToWidget = AddToWidget()
+                                val eventsList: List<String> = utils.getEventData(res)
+
+                                addToWidget.username = res.actor.login
+                                addToWidget.name = res.repo.name
+                                addToWidget.avatarUrl = res.actor.avatar_url
+                                addToWidget.icon = eventsList[1].toInt()
+                                addToWidget.message = eventsList[0]
+                                addToWidget.date = utils.getDate(res)
+
+                                dataSource.add(addToWidget)
+                            }
+
+                            utils.saveArrayList(
+                                arrayList = dataSource,
+                                context = context,
+                                username = userMap["username"]!!,
+                                name = userMap["name"]!!,
+                                isUser = userMap["isUser"]!!.toBoolean()
+                            )
+                            widgetActionUpdate(context)
+                            Toast.makeText(context, "Gidget refreshed", Toast.LENGTH_LONG).show()
+                            appWidgetManager.updateAppWidget(appWidgetIds, views)
+                        }
+                    }
+
+                    override fun onFailure(
+                        call: Call<MutableList<WidgetRepoModel>>,
+                        t: Throwable
+                    ) {
+
+                        Toast.makeText(context, "Gidget refresh unsuccessful", Toast.LENGTH_LONG)
+                            .show()
+                        println("ERROR - ${t.message}")
+                        appWidgetManager.updateAppWidget(appWidgetIds, views)
+                    }
+                })
+        } else {
+            mService.widgetRepoEvents(
+                userMap["username"]!!,
+                userMap["name"]!!,
+                "token ${Security.getToken()}"
+            )
+                .enqueue(object : Callback<MutableList<WidgetRepoModel>> {
+                    @RequiresApi(Build.VERSION_CODES.Q)
+                    override fun onResponse(
+                        call: Call<MutableList<WidgetRepoModel>>,
+                        response: Response<MutableList<WidgetRepoModel>>
+                    ) {
+                        if (response.body() != null) {
+                            val dataSource: ArrayList<AddToWidget> = arrayListOf()
+                            for (res in response.body()!!) {
+                                val addToWidget = AddToWidget()
+                                val eventsList: List<String> = utils.getEventData(res)
+
+                                addToWidget.username = res.actor.login
+                                addToWidget.name = res.repo.name
+                                addToWidget.avatarUrl = res.actor.avatar_url
+                                addToWidget.icon = eventsList[1].toInt()
+                                addToWidget.message = eventsList[0]
+                                addToWidget.date = utils.getDate(res)
+
+                                dataSource.add(addToWidget)
+                            }
+
+                            utils.saveArrayList(
+                                arrayList = dataSource,
+                                context = context,
+                                username = userMap["username"]!!,
+                                name = userMap["name"]!!,
+                                isUser = userMap["isUser"]!!.toBoolean()
+                            )
+
+                            widgetActionUpdate(context)
+                            Toast.makeText(context, "Gidget refreshed", Toast.LENGTH_LONG).show()
+                            appWidgetManager.updateAppWidget(appWidgetIds, views)
+                        }
+                    }
+
+                    override fun onFailure(
+                        call: Call<MutableList<WidgetRepoModel>>,
+                        t: Throwable
+                    ) {
+                        Toast.makeText(context, "Gidget refresh unsuccessful", Toast.LENGTH_LONG)
+                            .show()
+                        println("ERROR - ${t.message}")
+                        appWidgetManager.updateAppWidget(appWidgetIds, views)
+                    }
+                })
+        }
+    }
 }
 
 @RequiresApi(Build.VERSION_CODES.Q)
@@ -90,14 +232,17 @@ internal fun updateAppWidget(
     val views = RemoteViews(context.packageName, R.layout.gidget_widget)
 
     // Button Intent
-    val buttonIntent = Intent(context, MainActivity::class.java).addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP)
+    val buttonIntent =
+        Intent(context, MainActivity::class.java).addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP)
     val buttonPendingIntent = PendingIntent.getActivity(context, 0, buttonIntent, 0)
     views.setOnClickPendingIntent(R.id.appWidgetLogo, buttonPendingIntent)
     views.setOnClickPendingIntent(R.id.appwidgetTitle, buttonPendingIntent)
 
-    val searchIntent = Intent(context, SearchActivity::class.java).addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP)
-    val searchPendingIntent: PendingIntent = PendingIntent.getActivity(context, 0, searchIntent, 0)
-    views.setOnClickPendingIntent(R.id.appwidgetRefreshButton, searchPendingIntent)
+    val refreshIntent = Intent(context, GidgetWidget::class.java)
+    refreshIntent.action = Utils.getOnRefreshButtonClicked()
+    val refreshPendingIntent =
+        PendingIntent.getBroadcast(context, 0, refreshIntent, PendingIntent.FLAG_UPDATE_CURRENT)
+    views.setOnClickPendingIntent(R.id.appwidgetRefreshButton, refreshPendingIntent)
 
     // Main Widget
     val clickIntent = Intent(context, GidgetWidget::class.java)
@@ -111,14 +256,7 @@ internal fun updateAppWidget(
         // Widget Service Intent
         val serviceIntent = Intent(context, WidgetRepoRemoteService::class.java)
         views.setRemoteAdapter(R.id.appwidgetListView, serviceIntent)
-
-        val tempIntent = Intent(context, MyBroadcastReceiver::class.java)
-        val bundle = Bundle()
-        bundle.putParcelableArrayList("dataSourceBundle", dataSource)
-        tempIntent.putExtra("dataSource", bundle)
-        context.sendBroadcast(tempIntent)
         appWidgetManager.notifyAppWidgetViewDataChanged(appWidgetId, R.id.appwidgetListView)
     }
-
     appWidgetManager.updateAppWidget(appWidgetId, views)
 }

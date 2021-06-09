@@ -5,12 +5,14 @@ import android.os.Bundle
 import android.view.View
 import android.widget.ImageView
 import android.widget.ProgressBar
+import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.rishav.gidget.Adapters.FeedPageAdapter
 import com.rishav.gidget.Common.Common
+import com.rishav.gidget.Common.Security
 import com.rishav.gidget.Interface.RetroFitService
 import com.rishav.gidget.Models.FeedPage.FeedPageModel
 import com.rishav.gidget.R
@@ -40,12 +42,13 @@ class FeedActivity : AppCompatActivity() {
         val profilePhoto: ImageView = findViewById(R.id.feedPageProfilePhoto)
         val progressBar: ProgressBar = findViewById(R.id.feedpageProgressBar)
         val searchButton: CardView = findViewById(R.id.feedPageSearchButton)
+        val emptyTextView: TextView = findViewById(R.id.feedPageEmptyTextView)
         recyclerView.setHasFixedSize(true)
 
         layoutManager = LinearLayoutManager(this)
         recyclerView.layoutManager = layoutManager
 
-        getFeedList(recyclerView, progressBar, results!!)
+        getFeedList(recyclerView, progressBar, emptyTextView, results!!)
         getProfilePhoto(profilePhoto, results)
         navigateToSearchPage(searchButton)
     }
@@ -53,15 +56,20 @@ class FeedActivity : AppCompatActivity() {
     private fun getFeedList(
         recyclerView: RecyclerView,
         progressBar: ProgressBar,
+        emptyTextView: TextView,
         results: SignUp
     ) {
         progressBar.visibility = View.VISIBLE
-        mService.getActivityList(results.username, "token ${System.getenv("token")}")
+        mService.getActivityList(
+            results.username,
+            "token ${Security.getToken()}"
+        )
             .enqueue(object : Callback<MutableList<FeedPageModel>> {
                 override fun onResponse(
                     call: Call<MutableList<FeedPageModel>>,
                     response: Response<MutableList<FeedPageModel>>
                 ) {
+                    emptyTextView.visibility = View.GONE
                     adapter = FeedPageAdapter(
                         this@FeedActivity,
                         response.body() as MutableList<FeedPageModel>
@@ -76,6 +84,7 @@ class FeedActivity : AppCompatActivity() {
                 override fun onFailure(call: Call<MutableList<FeedPageModel>>, t: Throwable) {
                     println("Error occurred - $t")
                     progressBar.visibility = View.GONE
+                    emptyTextView.visibility = View.VISIBLE
                 }
             })
     }
