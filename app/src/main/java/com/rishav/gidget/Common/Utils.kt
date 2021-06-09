@@ -241,7 +241,7 @@ class Utils {
         }
     }
 
-    private fun saveArrayList(
+    fun saveArrayList(
         arrayList: ArrayList<AddToWidget>,
         context: Context,
         username: String,
@@ -259,7 +259,7 @@ class Utils {
         editor.apply()
     }
 
-    private fun getEventData(currentItem: WidgetRepoModel): List<String> {
+    fun getEventData(currentItem: WidgetRepoModel): List<String> {
         return when (currentItem.type) {
             "CommitCommentEvent" -> listOf(
                 "User commented on a commit",
@@ -330,7 +330,7 @@ class Utils {
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
-    private fun getDate(currentItem: WidgetRepoModel): String {
+    fun getDate(currentItem: WidgetRepoModel): String {
         val dateTimePattern = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss'Z'")
         val createDate = LocalDateTime.parse(currentItem.created_at, dateTimePattern)
         val currentDate = LocalDateTime.now(ZoneId.of("Etc/UTC"))
@@ -339,6 +339,7 @@ class Utils {
             differenceTime.seconds < 60 -> "${differenceTime.seconds} secs ago"
             differenceTime.toMinutes().toInt() == 1 -> "${differenceTime.toMinutes()} min ago"
             differenceTime.toMinutes() < 60 -> "${differenceTime.toMinutes()} mins ago"
+            differenceTime.toHours().toInt() == 1 -> "${differenceTime.toHours()} hr ago"
             differenceTime.toHours() < 24 -> "${differenceTime.toHours()} hrs ago"
             differenceTime.toDays().toInt() == 1 -> "${differenceTime.toDays()} day ago"
             else -> "${differenceTime.toDays()} days ago"

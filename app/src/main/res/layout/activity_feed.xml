@@ -90,7 +90,7 @@
         android:fontFamily="@font/montserrat"
         android:text="@string/activity"
         android:textColor="@color/white"
-        android:textSize="24sp" />
+        android:textSize="@dimen/_20sdp" />
 
 
     <androidx.recyclerview.widget.RecyclerView
@@ -100,6 +100,18 @@
         android:layout_below="@+id/feedPageActvityTV"
         android:scrollbars="vertical"
         tools:listitem="@layout/feed_page_recycler_item" />
+
+    <TextView
+        android:id="@+id/feedPageEmptyTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:fontFamily="@font/montserrat"
+        android:text="@string/empty_feedpage_text"
+        android:textAlignment="center"
+        android:visibility="gone"
+        android:textColor="@color/white"
+        android:textSize="@dimen/_18sdp" />
 
     <ProgressBar
         android:id="@+id/feedpageProgressBar"

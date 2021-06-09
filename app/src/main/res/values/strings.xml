@@ -36,4 +36,5 @@
     <string name="adding_to_widget_loading">Adding to Widget…</string>
     <string name="cancel">Cancel</string>
     <string name="last_updated">Last updated - …</string>
+    <string name="empty_feedpage_text">No GitHub activity found</string>
 </resources>

@@ -8,19 +8,27 @@ import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Build
+import android.view.View
 import android.widget.RemoteViews
 import android.widget.Toast
 import androidx.annotation.RequiresApi
 import com.rishav.gidget.Adapters.WidgetRepoRemoteService
 import com.rishav.gidget.Common.AppWidgetAlarm
 import com.rishav.gidget.Common.Common
+import com.rishav.gidget.Common.Security
 import com.rishav.gidget.Common.Utils
+import com.rishav.gidget.Models.Widget.WidgetRepoModel
 import com.rishav.gidget.R
 import com.rishav.gidget.Realm.AddToWidget
 import com.rishav.gidget.UI.MainActivity
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 
 class GidgetWidget : AppWidgetProvider() {
     private var dataSource: ArrayList<AddToWidget> = arrayListOf()
+    private val utils = Utils()
+    private val mService = Common.retroFitService
 
     @RequiresApi(Build.VERSION_CODES.Q)
     override fun onUpdate(
@@ -92,16 +100,124 @@ class GidgetWidget : AppWidgetProvider() {
     @RequiresApi(Build.VERSION_CODES.Q)
     private fun onWidgetRefresh(context: Context) {
         val userMap: MutableMap<String, String> = Utils.getUserDetails(context)
-        if (userMap.isNotEmpty()) {
-            Utils().addToWidget(
-                mService = Common.retroFitService,
-                isUser = userMap["isUser"]!!.toBoolean(),
-                isWidget = true,
-                username = userMap["username"]!!,
-                name = userMap["name"]!!,
-                context = context
+        if (userMap.isNotEmpty())
+            addToWidget(context, userMap)
+    }
+
+    private fun addToWidget(context: Context, userMap: MutableMap<String, String>) {
+        val views = RemoteViews(context.packageName, R.layout.gidget_widget)
+        val appWidgetManager = AppWidgetManager.getInstance(context)
+        val appWidgetIds =
+            appWidgetManager.getAppWidgetIds(ComponentName(context, GidgetWidget::class.java))
+
+        views.setViewVisibility(R.id.appwidgetProgressBar, View.VISIBLE)
+        appWidgetManager.updateAppWidget(appWidgetIds, views)
+
+        views.setViewVisibility(R.id.appwidgetProgressBar, View.GONE)
+
+        if (userMap["isUser"]!!.toBoolean()) {
+            mService.widgetUserEvents(
+                userMap["username"]!!,
+                "token ${Security.getToken()}"
             )
-            widgetActionUpdate(context)
+                .enqueue(object : Callback<MutableList<WidgetRepoModel>> {
+                    @RequiresApi(Build.VERSION_CODES.Q)
+                    override fun onResponse(
+                        call: Call<MutableList<WidgetRepoModel>>,
+                        response: Response<MutableList<WidgetRepoModel>>
+                    ) {
+                        if (response.body() != null) {
+                            val dataSource: ArrayList<AddToWidget> = arrayListOf()
+                            for (res in response.body()!!) {
+                                val addToWidget = AddToWidget()
+                                val eventsList: List<String> = utils.getEventData(res)
+
+                                addToWidget.username = res.actor.login
+                                addToWidget.name = res.repo.name
+                                addToWidget.avatarUrl = res.actor.avatar_url
+                                addToWidget.icon = eventsList[1].toInt()
+                                addToWidget.message = eventsList[0]
+                                addToWidget.date = utils.getDate(res)
+
+                                dataSource.add(addToWidget)
+                            }
+
+                            utils.saveArrayList(
+                                arrayList = dataSource,
+                                context = context,
+                                username = userMap["username"]!!,
+                                name = userMap["name"]!!,
+                                isUser = userMap["isUser"]!!.toBoolean()
+                            )
+                            widgetActionUpdate(context)
+                            Toast.makeText(context, "Gidget refreshed", Toast.LENGTH_LONG).show()
+                            appWidgetManager.updateAppWidget(appWidgetIds, views)
+                        }
+                    }
+
+                    override fun onFailure(
+                        call: Call<MutableList<WidgetRepoModel>>,
+                        t: Throwable
+                    ) {
+
+                        Toast.makeText(context, "Gidget refresh unsuccessful", Toast.LENGTH_LONG)
+                            .show()
+                        println("ERROR - ${t.message}")
+                        appWidgetManager.updateAppWidget(appWidgetIds, views)
+                    }
+                })
+        } else {
+            mService.widgetRepoEvents(
+                userMap["username"]!!,
+                userMap["name"]!!,
+                "token ${Security.getToken()}"
+            )
+                .enqueue(object : Callback<MutableList<WidgetRepoModel>> {
+                    @RequiresApi(Build.VERSION_CODES.Q)
+                    override fun onResponse(
+                        call: Call<MutableList<WidgetRepoModel>>,
+                        response: Response<MutableList<WidgetRepoModel>>
+                    ) {
+                        if (response.body() != null) {
+                            val dataSource: ArrayList<AddToWidget> = arrayListOf()
+                            for (res in response.body()!!) {
+                                val addToWidget = AddToWidget()
+                                val eventsList: List<String> = utils.getEventData(res)
+
+                                addToWidget.username = res.actor.login
+                                addToWidget.name = res.repo.name
+                                addToWidget.avatarUrl = res.actor.avatar_url
+                                addToWidget.icon = eventsList[1].toInt()
+                                addToWidget.message = eventsList[0]
+                                addToWidget.date = utils.getDate(res)
+
+                                dataSource.add(addToWidget)
+                            }
+
+                            utils.saveArrayList(
+                                arrayList = dataSource,
+                                context = context,
+                                username = userMap["username"]!!,
+                                name = userMap["name"]!!,
+                                isUser = userMap["isUser"]!!.toBoolean()
+                            )
+
+                            widgetActionUpdate(context)
+                            Toast.makeText(context, "Gidget refreshed", Toast.LENGTH_LONG).show()
+                            appWidgetManager.updateAppWidget(appWidgetIds, views)
+                        }
+                    }
+
+                    override fun onFailure(
+                        call: Call<MutableList<WidgetRepoModel>>,
+                        t: Throwable
+                    ) {
+                        Toast.makeText(context, "Gidget refresh unsuccessful", Toast.LENGTH_LONG)
+                            .show()
+                        println("ERROR - ${t.message}")
+                        appWidgetManager.updateAppWidget(appWidgetIds, views)
+                    }
+                })
         }
     }
 }
