@@ -322,8 +322,8 @@ class Utils {
                 R.drawable.ic_baseline_monetization_on_24.toString()
             )
             "WatchEvent" -> listOf(
-                "User was watching",
-                R.drawable.ic_baseline_remove_red_eye_24.toString()
+                "User starred this repo",
+                R.drawable.github_star.toString()
             )
             else -> listOf("Unidentified event", R.drawable.github_logo.toString())
         }

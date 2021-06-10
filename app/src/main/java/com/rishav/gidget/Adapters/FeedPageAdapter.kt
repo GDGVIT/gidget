@@ -162,8 +162,8 @@ class FeedPageAdapter(
                 holder.message.text = "User started sponsoring"
             }
             "WatchEvent" -> {
-                holder.eventPhoto.setImageResource(R.drawable.ic_baseline_remove_red_eye_24)
-                holder.message.text = "User was watching"
+                holder.eventPhoto.setImageResource(R.drawable.github_star)
+                holder.message.text = "User starred this repository"
             }
             else -> {
                 holder.eventPhoto.setImageResource(R.drawable.github_logo)
