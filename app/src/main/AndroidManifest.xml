@@ -12,7 +12,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.Gidget">
-        <receiver android:name=".Widget.GidgetWidget">
+        <receiver android:name=".widget.GidgetWidget">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
                 <action android:name="onWidgetItemClicked" />
@@ -25,18 +25,18 @@
                 android:resource="@xml/gidget_widget_info" />
         </receiver>
 
-        <activity android:name=".UI.SearchActivity" />
-        <activity android:name=".UI.ProfileActivity" />
-        <activity android:name=".UI.FeedActivity" />
-        <activity android:name=".UI.MainActivity">
+        <activity android:name=".ui.SearchActivity" />
+        <activity android:name=".ui.ProfileActivity" />
+        <activity android:name=".ui.FeedActivity" />
+        <activity android:name=".ui.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
+            </intent-filter>z
         </activity>
 
         <service
-            android:name=".Adapters.WidgetRepoRemoteService"
+            android:name=".adapters.WidgetRepoRemoteService"
             android:permission="android.permission.BIND_REMOTEVIEWS" />
     </application>
 
