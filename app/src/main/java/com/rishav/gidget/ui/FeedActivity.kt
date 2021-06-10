@@ -10,12 +10,12 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.rishav.gidget.R
 import com.rishav.gidget.adapters.FeedPageAdapter
 import com.rishav.gidget.common.Common
 import com.rishav.gidget.common.Security
 import com.rishav.gidget.interfaces.RetroFitService
 import com.rishav.gidget.models.feedPage.FeedPageModel
-import com.rishav.gidget.R
 import com.rishav.gidget.realm.SignUp
 import com.squareup.picasso.Picasso
 import io.realm.Realm

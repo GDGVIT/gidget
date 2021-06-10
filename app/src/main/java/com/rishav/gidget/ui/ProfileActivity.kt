@@ -13,12 +13,12 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.cardview.widget.CardView
 import com.google.firebase.auth.FirebaseAuth
+import com.rishav.gidget.R
 import com.rishav.gidget.common.Common
 import com.rishav.gidget.common.Security
 import com.rishav.gidget.common.Utils
 import com.rishav.gidget.interfaces.RetroFitService
 import com.rishav.gidget.models.profilePage.ProfilePageModel
-import com.rishav.gidget.R
 import com.squareup.picasso.Picasso
 import io.realm.Realm
 import retrofit2.Call

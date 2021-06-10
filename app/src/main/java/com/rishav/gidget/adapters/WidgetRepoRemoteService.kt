@@ -7,9 +7,9 @@ import android.os.Build
 import android.widget.RemoteViews
 import android.widget.RemoteViewsService
 import androidx.annotation.RequiresApi
+import com.rishav.gidget.R
 import com.rishav.gidget.common.RoundedTransformation
 import com.rishav.gidget.common.Utils
-import com.rishav.gidget.R
 import com.rishav.gidget.realm.AddToWidget
 import com.squareup.picasso.Picasso
 

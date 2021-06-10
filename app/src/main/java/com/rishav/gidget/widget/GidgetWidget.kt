@@ -12,13 +12,13 @@ import android.view.View
 import android.widget.RemoteViews
 import android.widget.Toast
 import androidx.annotation.RequiresApi
+import com.rishav.gidget.R
 import com.rishav.gidget.adapters.WidgetRepoRemoteService
 import com.rishav.gidget.common.AppWidgetAlarm
 import com.rishav.gidget.common.Common
 import com.rishav.gidget.common.Security
 import com.rishav.gidget.common.Utils
 import com.rishav.gidget.models.widget.WidgetRepoModel
-import com.rishav.gidget.R
 import com.rishav.gidget.realm.AddToWidget
 import com.rishav.gidget.ui.MainActivity
 import retrofit2.Call

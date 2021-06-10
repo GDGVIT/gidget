@@ -15,13 +15,13 @@ import android.widget.RelativeLayout
 import android.widget.TextView
 import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
+import com.rishav.gidget.R
 import com.rishav.gidget.common.Common
 import com.rishav.gidget.common.Security
 import com.rishav.gidget.common.Utils
 import com.rishav.gidget.interfaces.RetroFitService
 import com.rishav.gidget.models.profilePage.ProfilePageModel
 import com.rishav.gidget.models.searchPage.Items
-import com.rishav.gidget.R
 import com.squareup.picasso.Picasso
 import retrofit2.Call
 import retrofit2.Callback

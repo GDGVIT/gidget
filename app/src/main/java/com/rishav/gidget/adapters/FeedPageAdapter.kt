@@ -15,8 +15,8 @@ import android.widget.TextView
 import androidx.annotation.RequiresApi
 import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.RecyclerView
-import com.rishav.gidget.models.feedPage.FeedPageModel
 import com.rishav.gidget.R
+import com.rishav.gidget.models.feedPage.FeedPageModel
 import com.rishav.gidget.ui.ProfileActivity
 import com.squareup.picasso.Picasso
 import java.time.Duration

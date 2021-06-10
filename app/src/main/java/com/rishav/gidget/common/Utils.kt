@@ -23,9 +23,9 @@ import androidx.annotation.RequiresApi
 import androidx.preference.PreferenceManager
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
+import com.rishav.gidget.R
 import com.rishav.gidget.interfaces.RetroFitService
 import com.rishav.gidget.models.widget.WidgetRepoModel
-import com.rishav.gidget.R
 import com.rishav.gidget.realm.AddToWidget
 import com.rishav.gidget.widget.GidgetWidget
 import com.squareup.picasso.Transformation

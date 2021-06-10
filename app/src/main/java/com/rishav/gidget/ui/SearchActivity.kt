@@ -14,6 +14,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.rishav.gidget.R
 import com.rishav.gidget.adapters.SearchPageRepoAdapter
 import com.rishav.gidget.adapters.SearchPageUserAdapter
 import com.rishav.gidget.common.Common
@@ -23,7 +24,6 @@ import com.rishav.gidget.models.searchPage.Items
 import com.rishav.gidget.models.searchPage.ItemsRepo
 import com.rishav.gidget.models.searchPage.SearchPageRepoModel
 import com.rishav.gidget.models.searchPage.SearchPageUserModel
-import com.rishav.gidget.R
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
