@@ -13,6 +13,7 @@ import android.widget.RemoteViews
 import android.widget.Toast
 import androidx.annotation.RequiresApi
 import com.rishav.gidget.R
+import com.rishav.gidget.activities.MainActivity
 import com.rishav.gidget.adapters.WidgetRepoRemoteService
 import com.rishav.gidget.common.AppWidgetAlarm
 import com.rishav.gidget.common.Common
@@ -20,7 +21,6 @@ import com.rishav.gidget.common.Security
 import com.rishav.gidget.common.Utils
 import com.rishav.gidget.models.widget.WidgetRepoModel
 import com.rishav.gidget.realm.AddToWidget
-import com.rishav.gidget.ui.MainActivity
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -36,14 +36,8 @@ class GidgetWidget : AppWidgetProvider() {
         appWidgetManager: AppWidgetManager,
         appWidgetIds: IntArray
     ) {
-        for (appWidgetId in appWidgetIds) {
-            updateAppWidget(
-                context,
-                appWidgetManager,
-                appWidgetId,
-                dataSource
-            )
-        }
+        for (appWidgetId in appWidgetIds)
+            updateAppWidget(context, appWidgetManager, appWidgetId, dataSource, utils)
         super.onUpdate(context, appWidgetManager, appWidgetIds)
     }
 
@@ -65,14 +59,14 @@ class GidgetWidget : AppWidgetProvider() {
 
     override fun onDisabled(context: Context) {
         val appwidgetAlarm = AppWidgetAlarm(context.applicationContext)
-        appwidgetAlarm.stopAlarm()
+        appwidgetAlarm.stopGidgetRefresh()
         dataSource.clear()
         Utils.deleteArrayList(context)
     }
 
     override fun onDeleted(context: Context?, appWidgetIds: IntArray?) {
         val appwidgetAlarm = AppWidgetAlarm(context!!.applicationContext)
-        appwidgetAlarm.stopAlarm()
+        appwidgetAlarm.stopGidgetRefresh()
         dataSource.clear()
         Utils.deleteArrayList(context)
     }
@@ -90,6 +84,7 @@ class GidgetWidget : AppWidgetProvider() {
 
     @RequiresApi(Build.VERSION_CODES.Q)
     private fun widgetActionUpdate(context: Context) {
+        println("update")
         dataSource = Utils.getArrayList(context)
         val appWidgetManager = AppWidgetManager.getInstance(context)
         val appWidgetIds =
@@ -227,7 +222,8 @@ internal fun updateAppWidget(
     context: Context,
     appWidgetManager: AppWidgetManager,
     appWidgetId: Int,
-    dataSource: ArrayList<AddToWidget>
+    dataSource: ArrayList<AddToWidget>,
+    utils: Utils
 ) {
     val views = RemoteViews(context.packageName, R.layout.gidget_widget)
 
@@ -248,6 +244,9 @@ internal fun updateAppWidget(
     val clickIntent = Intent(context, GidgetWidget::class.java)
     val clickPendingIntent = PendingIntent.getBroadcast(context, 0, clickIntent, 0)
     views.setPendingIntentTemplate(R.id.appwidgetListView, clickPendingIntent)
+
+    // Date Widget
+    views.setTextViewText(R.id.appwidgetDate, utils.getTime())
 
     if (dataSource.isNullOrEmpty()) {
         views.setEmptyView(R.id.appwidgetListView, R.id.appwidgetEmptyViewText)

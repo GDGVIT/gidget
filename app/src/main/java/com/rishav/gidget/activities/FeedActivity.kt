@@ -1,4 +1,4 @@
-package com.rishav.gidget.ui
+package com.rishav.gidget.activities
 
 import android.content.Intent
 import android.os.Bundle

@@ -93,7 +93,6 @@ class SearchPageUserAdapter(
         Utils().addToWidget(
             mService,
             isUser = true,
-            isWidget = false,
             username = currentItem.login,
             name = "",
             context = context

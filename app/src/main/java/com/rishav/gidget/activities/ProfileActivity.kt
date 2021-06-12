@@ -1,8 +1,9 @@
-package com.rishav.gidget.ui
+package com.rishav.gidget.activities
 
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
+import android.os.Build
 import android.os.Bundle
 import android.view.View
 import android.widget.ImageView
@@ -10,6 +11,7 @@ import android.widget.ProgressBar
 import android.widget.RelativeLayout
 import android.widget.TextView
 import android.widget.Toast
+import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.cardview.widget.CardView
 import com.google.firebase.auth.FirebaseAuth
@@ -29,6 +31,7 @@ class ProfileActivity : AppCompatActivity() {
     lateinit var mService: RetroFitService
     lateinit var mAuth: FirebaseAuth
 
+    @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_profile)
@@ -114,7 +117,8 @@ class ProfileActivity : AppCompatActivity() {
                         logoutButton.setOnClickListener {
                             mAuth.signOut()
                             Realm.removeDefaultConfiguration()
-                            Toast.makeText(applicationContext, "Logged out", Toast.LENGTH_LONG).show()
+                            Toast.makeText(applicationContext, "Logged out", Toast.LENGTH_LONG)
+                                .show()
                             startActivity(Intent(applicationContext, MainActivity::class.java))
                             finishAffinity()
                         }
@@ -123,7 +127,6 @@ class ProfileActivity : AppCompatActivity() {
                         logoutButton.setOnClickListener {
                             Utils().addToWidget(
                                 mService, true,
-                                isWidget = false,
                                 username = username,
                                 name = "",
                                 context = context

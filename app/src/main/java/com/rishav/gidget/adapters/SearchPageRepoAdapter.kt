@@ -72,7 +72,6 @@ class SearchPageRepoAdapter(
         Utils().addToWidget(
             mService = mService,
             isUser = false,
-            isWidget = false,
             username = currentItem.owner.login,
             name = currentItem.name,
             context = context

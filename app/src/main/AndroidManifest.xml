@@ -25,14 +25,14 @@
                 android:resource="@xml/gidget_widget_info" />
         </receiver>
 
-        <activity android:name=".ui.SearchActivity" />
-        <activity android:name=".ui.ProfileActivity" />
-        <activity android:name=".ui.FeedActivity" />
-        <activity android:name=".ui.MainActivity">
+        <activity android:name=".activities.SearchActivity" />
+        <activity android:name=".activities.ProfileActivity" />
+        <activity android:name=".activities.FeedActivity" />
+        <activity android:name=".activities.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>z
+            </intent-filter>
         </activity>
 
         <service

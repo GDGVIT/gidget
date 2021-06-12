@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/gradient_bg"
-    tools:context=".ui.FeedActivity">
+    tools:context=".activities.FeedActivity">
 
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/feedPageAppBar"

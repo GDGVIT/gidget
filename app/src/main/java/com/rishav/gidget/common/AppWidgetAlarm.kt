@@ -11,7 +11,7 @@ class AppWidgetAlarm(private val context: Context) {
     private val alarmID = 0
     private val intervalMillis: Long = 1200000
 
-    fun startAlarm() {
+    fun startGidgetRefresh() {
         val calendar: Calendar = Calendar.getInstance()
         calendar.add(Calendar.MILLISECOND, intervalMillis.toInt())
 
@@ -24,7 +24,7 @@ class AppWidgetAlarm(private val context: Context) {
         }
     }
 
-    fun stopAlarm() {
+    fun stopGidgetRefresh() {
         val alarmIntent = Intent(Utils.getUpdateWidgetAction())
         val pendingIntent = PendingIntent.getBroadcast(context, alarmID, alarmIntent, PendingIntent.FLAG_CANCEL_CURRENT)
         val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
