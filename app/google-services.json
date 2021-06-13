@@ -7,12 +7,20 @@
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:1024450676479:android:5335da997987da4098aeca",
+        "mobilesdk_app_id": "1:1024450676479:android:4472e44f217b859c98aeca",
         "android_client_info": {
-          "package_name": "com.rishav.gidget"
+          "package_name": "com.dscvit.gidget"
         }
       },
       "oauth_client": [
+        {
+          "client_id": "1024450676479-rc76udht67fd310gifem1jvbuklp83cc.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.dscvit.gidget",
+            "certificate_hash": "2b4791605537ed33fe485f958f97612ffe7ce4c8"
+          }
+        },
         {
           "client_id": "1024450676479-eoiab7um2hp0idmau9ogkeungaepdifh.apps.googleusercontent.com",
           "client_type": 3

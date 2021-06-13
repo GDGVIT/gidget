@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.rishav.gidget">
+    xmlns:tools="http://schemas.android.com/tools"
+    package="com.dscvit.gidget">
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
@@ -11,8 +12,9 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/Theme.Gidget">
-        <receiver android:name=".widget.GidgetWidget">
+        android:theme="@style/Theme.Gidget"
+        tools:ignore="AllowBackup">
+        <receiver android:name="com.dscvit.gidget.widget.GidgetWidget">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
                 <action android:name="onWidgetItemClicked" />
@@ -25,10 +27,10 @@
                 android:resource="@xml/gidget_widget_info" />
         </receiver>
 
-        <activity android:name=".activities.SearchActivity" />
-        <activity android:name=".activities.ProfileActivity" />
-        <activity android:name=".activities.FeedActivity" />
-        <activity android:name=".activities.MainActivity">
+        <activity android:name="com.dscvit.gidget.activities.SearchActivity" />
+        <activity android:name="com.dscvit.gidget.activities.ProfileActivity" />
+        <activity android:name="com.dscvit.gidget.activities.FeedActivity" />
+        <activity android:name="com.dscvit.gidget.activities.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
@@ -36,7 +38,7 @@
         </activity>
 
         <service
-            android:name=".adapters.WidgetRepoRemoteService"
+            android:name="com.dscvit.gidget.adapters.WidgetRepoRemoteService"
             android:permission="android.permission.BIND_REMOTEVIEWS" />
     </application>
 
