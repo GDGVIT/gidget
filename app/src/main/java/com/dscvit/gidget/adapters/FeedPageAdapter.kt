@@ -27,7 +27,6 @@ class FeedPageAdapter(
     private val feedPageDataList: MutableList<FeedPageModel>
 ) :
     RecyclerView.Adapter<FeedPageAdapter.FeedPageUserActivityViewHolder>() {
-
     override fun onCreateViewHolder(
         parent: ViewGroup,
         viewType: Int
@@ -78,7 +77,7 @@ class FeedPageAdapter(
 
         // Open Repository
         holder.feedPageRecyclerViewItem.setOnClickListener {
-            val uri: Uri = Uri.parse("https://github.com/${currentItem.repo.name}")
+            val uri: Uri = Uri.parse(getHtmlUrl(currentItem))
             context.startActivity(
                 Intent(
                     Intent.ACTION_VIEW,
@@ -181,6 +180,28 @@ class FeedPageAdapter(
             else -> "${differenceTime.toDays()} days ago"
         }
         holder.dateText.text = finalResult
+    }
+
+    private fun getHtmlUrl(currentItem: FeedPageModel): String {
+        return when (currentItem.type) {
+            "CommitCommentEvent" -> "https://github.com/${currentItem.repo.name}"
+            "CreateEvent" -> "https://github.com/${currentItem.repo.name}"
+            "ForkEvent" -> currentItem.payload!!.forkee!!.html_url!!
+            "DeleteEvent" -> "https://github.com/${currentItem.repo.name}"
+            "GollumEvent" -> "https://github.com/${currentItem.repo.name}"
+            "IssueCommentEvent" -> currentItem.payload!!.issue!!.html_url!!
+            "IssuesEvent" -> currentItem.payload!!.issue!!.html_url!!
+            "MemberEvent" -> "https://github.com/${currentItem.repo.name}"
+            "PublicEvent" -> "https://github.com/${currentItem.repo.name}"
+            "PullRequestEvent" -> currentItem.payload!!.pull_request!!.html_url!!
+            "PullRequestReviewEvent" -> currentItem.payload!!.review!!.html_url!!
+            "PullRequestReviewCommentEvent" -> currentItem.payload!!.comment!!.html_url!!
+            "PushEvent" -> "https://github.com/${currentItem.repo.name}/commit/${currentItem.payload!!.commits!![0].sha!!}"
+            "ReleaseEvent" -> "https://github.com/${currentItem.repo.name}"
+            "SponsorshipEvent" -> "https://github.com/${currentItem.repo.name}"
+            "WatchEvent" -> "https://github.com/${currentItem.repo.name}"
+            else -> "https://github.com/${currentItem.repo.name}"
+        }
     }
 
     class FeedPageUserActivityViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {

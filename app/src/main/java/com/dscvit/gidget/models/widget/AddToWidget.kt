@@ -9,7 +9,8 @@ class AddToWidget(
     var message: String? = null,
     var date: String? = null,
     var avatarUrl: String? = null,
-    var icon: Int? = null
+    var icon: Int? = null,
+    var htmlUrl: String? = null,
 ) : Parcelable {
     constructor(parcel: Parcel) : this(
         parcel.readString(),
@@ -17,7 +18,8 @@ class AddToWidget(
         parcel.readString(),
         parcel.readString(),
         parcel.readString(),
-        parcel.readValue(Int::class.java.classLoader) as? Int
+        parcel.readValue(Int::class.java.classLoader) as? Int,
+        parcel.readString()
     )
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
@@ -27,6 +29,7 @@ class AddToWidget(
         parcel.writeString(date)
         parcel.writeString(avatarUrl)
         parcel.writeValue(icon)
+        parcel.writeString(htmlUrl)
     }
 
     override fun describeContents(): Int {

@@ -54,7 +54,7 @@ class GidgetWidget : AppWidgetProvider() {
     override fun onEnabled(context: Context) {}
 
     override fun onDisabled(context: Context) {
-        val appwidgetAlarm = AppWidgetAlarm(context.applicationContext)
+        val appwidgetAlarm = AppWidgetAlarm(context!!.applicationContext)
         appwidgetAlarm.stopGidgetRefresh()
         dataSource.clear()
         Utils.deleteArrayList(context)
@@ -70,7 +70,7 @@ class GidgetWidget : AppWidgetProvider() {
     private fun onItemClicked(intent: Intent, context: Context) {
         if (intent.extras!!.containsKey("dataSource") || intent.hasExtra("dataSource")) {
             val clickedItem: AddToWidget = intent.getParcelableExtra("dataSource")!!
-            val uri: Uri = Uri.parse("https://github.com/${clickedItem.name}")
+            val uri: Uri = Uri.parse(clickedItem.htmlUrl)
             val clickIntent =
                 Intent(Intent.ACTION_VIEW, uri).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
             Toast.makeText(context, clickedItem.name, Toast.LENGTH_LONG).show()
@@ -104,6 +104,7 @@ class GidgetWidget : AppWidgetProvider() {
         appWidgetManager.updateAppWidget(appWidgetIds, views)
 
         views.setViewVisibility(R.id.appwidgetProgressBar, View.GONE)
+        views.setTextViewText(R.id.appwidgetDate, utils.getTime())
 
         if (userMap["isUser"]!!.toBoolean()) {
             mService.widgetUserEvents(
@@ -127,6 +128,7 @@ class GidgetWidget : AppWidgetProvider() {
                                 addToWidget.icon = eventsList[1].toInt()
                                 addToWidget.message = eventsList[0]
                                 addToWidget.date = utils.getDate(res)
+                                addToWidget.htmlUrl = utils.getHtmlUrl(res)
 
                                 dataSource.add(addToWidget)
                             }
@@ -174,6 +176,7 @@ class GidgetWidget : AppWidgetProvider() {
                                 addToWidget.icon = eventsList[1].toInt()
                                 addToWidget.message = eventsList[0]
                                 addToWidget.date = utils.getDate(res)
+                                addToWidget.htmlUrl = utils.getHtmlUrl(res)
 
                                 dataSource.add(addToWidget)
                             }

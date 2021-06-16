@@ -98,6 +98,7 @@ class Utils {
                                     addToWidget.icon = eventsList[1].toInt()
                                     addToWidget.message = eventsList[0]
                                     addToWidget.date = getDate(res)
+                                    addToWidget.htmlUrl = getHtmlUrl(res)
 
                                     dataSource.add(addToWidget)
                                 }
@@ -156,6 +157,7 @@ class Utils {
                                     addToWidget.icon = eventsList[1].toInt()
                                     addToWidget.message = eventsList[0]
                                     addToWidget.date = getDate(res)
+                                    addToWidget.htmlUrl = getHtmlUrl(res)
 
                                     dataSource.add(addToWidget)
                                 }
@@ -307,6 +309,28 @@ class Utils {
         val localTime: LocalTime = LocalTime.now()
         val dateTimeFormatter: DateTimeFormatter = DateTimeFormatter.ofPattern("hh:mm a")
         return localTime.format(dateTimeFormatter)
+    }
+
+    fun getHtmlUrl(currentItem: WidgetRepoModel): String {
+        return when (currentItem.type) {
+            "CommitCommentEvent" -> "https://github.com/${currentItem.repo.name}"
+            "CreateEvent" -> "https://github.com/${currentItem.repo.name}"
+            "ForkEvent" -> currentItem.payload!!.forkee!!.html_url!!
+            "DeleteEvent" -> "https://github.com/${currentItem.repo.name}"
+            "GollumEvent" -> "https://github.com/${currentItem.repo.name}"
+            "IssueCommentEvent" -> currentItem.payload!!.issue!!.html_url!!
+            "IssuesEvent" -> currentItem.payload!!.issue!!.html_url!!
+            "MemberEvent" -> "https://github.com/${currentItem.repo.name}"
+            "PublicEvent" -> "https://github.com/${currentItem.repo.name}"
+            "PullRequestEvent" -> currentItem.payload!!.pull_request!!.html_url!!
+            "PullRequestReviewEvent" -> currentItem.payload!!.review!!.html_url!!
+            "PullRequestReviewCommentEvent" -> currentItem.payload!!.comment!!.html_url!!
+            "PushEvent" -> "https://github.com/${currentItem.repo.name}/commit/${currentItem.payload!!.commits!![0].sha!!}"
+            "ReleaseEvent" -> "https://github.com/${currentItem.repo.name}"
+            "SponsorshipEvent" -> "https://github.com/${currentItem.repo.name}"
+            "WatchEvent" -> "https://github.com/${currentItem.repo.name}"
+            else -> "https://github.com/${currentItem.repo.name}"
+        }
     }
 
     private fun alertDialog(context: Context): AlertDialog {

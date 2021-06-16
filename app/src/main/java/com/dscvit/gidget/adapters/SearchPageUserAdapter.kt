@@ -99,7 +99,7 @@ class SearchPageUserAdapter(
     }
 
     private fun navigateToExternal(username: String) {
-        Toast.makeText(context, "Opening in external site", Toast.LENGTH_LONG).show()
+        Toast.makeText(context, username, Toast.LENGTH_LONG).show()
         val uri: Uri = Uri.parse("https://github.com/$username")
         val clickIntent = Intent(Intent.ACTION_VIEW, uri).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
         context.startActivity(clickIntent)
