@@ -40,7 +40,7 @@ class MainActivity : AppCompatActivity() {
         val loginButton: Button = findViewById(R.id.buLogin)
         loginButton.setOnClickListener {
             progressBar.visibility = View.VISIBLE
-            loginButton.visibility = View.GONE
+            loginButton.visibility = View.INVISIBLE
 
             val provider = OAuthProvider.newBuilder("github.com")
             provider.scopes = object : ArrayList<String?>() {
@@ -93,7 +93,7 @@ class MainActivity : AppCompatActivity() {
                 finish()
             }
             .addOnFailureListener {
-                progressBar.visibility = View.GONE
+                progressBar.visibility = View.INVISIBLE
                 loginButton.visibility = View.VISIBLE
                 Toast.makeText(this, "Login error", Toast.LENGTH_SHORT).show()
                 println(it)
@@ -108,7 +108,7 @@ class MainActivity : AppCompatActivity() {
             finish()
         }
             .addOnFailureListener {
-                progressBar.visibility = View.GONE
+                progressBar.visibility = View.INVISIBLE
                 loginButton.visibility = View.VISIBLE
                 Toast.makeText(this, "Pending login error", Toast.LENGTH_SHORT).show()
                 println(it)

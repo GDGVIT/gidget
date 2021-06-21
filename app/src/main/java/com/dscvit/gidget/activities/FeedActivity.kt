@@ -22,6 +22,7 @@ import io.realm.Realm
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 
 class FeedActivity : AppCompatActivity() {
     lateinit var mService: RetroFitService
@@ -43,6 +44,7 @@ class FeedActivity : AppCompatActivity() {
         val progressBar: ProgressBar = findViewById(R.id.feedpageProgressBar)
         val searchButton: CardView = findViewById(R.id.feedPageSearchButton)
         val emptyTextView: TextView = findViewById(R.id.feedPageEmptyTextView)
+        val pullRefresh: SwipeRefreshLayout = findViewById(R.id.feedPagePullRefresh)
         recyclerView.setHasFixedSize(true)
 
         layoutManager = LinearLayoutManager(this)
@@ -51,6 +53,11 @@ class FeedActivity : AppCompatActivity() {
         getFeedList(recyclerView, progressBar, emptyTextView, results!!)
         getProfilePhoto(profilePhoto, results)
         navigateToSearchPage(searchButton)
+
+        pullRefresh.setOnRefreshListener {
+            getFeedList(recyclerView, progressBar, emptyTextView, results)
+            pullRefresh.isRefreshing = false;
+        }
     }
 
     private fun getFeedList(

@@ -4,8 +4,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/widget_bg"
-    android:paddingHorizontal="@dimen/_15sdp"
-    android:paddingVertical="@dimen/_10sdp"
+    android:paddingHorizontal="@dimen/_8sdp"
+    android:paddingTop="@dimen/_10sdp"
     android:theme="@style/ThemeOverlay.Gidget.AppWidgetContainer">
 
     <RelativeLayout

@@ -39,30 +39,6 @@ class Utils {
         fun getOnWidgetItemClickedAction(): String = "onWidgetItemClicked"
         fun getUpdateWidgetAction(): String = "updateWidgetWithDatasource"
         fun getOnRefreshButtonClicked(): String = "onRefreshButtonClicked"
-
-        fun getArrayList(context: Context): ArrayList<AddToWidget> {
-            val prefs: SharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
-            val gson = Gson()
-            val json: String = prefs.getString("dataSource", null).toString()
-            val type: Type = object : TypeToken<ArrayList<AddToWidget?>?>() {}.type
-            return gson.fromJson(json, type)
-        }
-
-        fun deleteArrayList(context: Context) {
-            val prefs: SharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
-            prefs.edit().clear().apply()
-        }
-
-        fun getUserDetails(context: Context): MutableMap<String, String> {
-            val userMap: MutableMap<String, String> = mutableMapOf()
-            val prefs: SharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
-            if (prefs.all.isNotEmpty()) {
-                userMap["username"] = prefs.getString("username", null).toString()
-                userMap["name"] = prefs.getString("name", null).toString()
-                userMap["isUser"] = prefs.getString("isUser", null).toString()
-            }
-            return userMap
-        }
     }
 
     fun addToWidget(
@@ -219,6 +195,30 @@ class Utils {
         editor.apply()
     }
 
+    fun getArrayList(context: Context): ArrayList<AddToWidget> {
+        val prefs: SharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
+        val gson = Gson()
+        val json: String = prefs.getString("dataSource", null).toString()
+        val type: Type = object : TypeToken<ArrayList<AddToWidget?>?>() {}.type
+        return gson.fromJson(json, type)
+    }
+
+    fun deleteArrayList(context: Context) {
+        val prefs: SharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
+        prefs.edit().clear().apply()
+    }
+
+    fun getUserDetails(context: Context): MutableMap<String, String> {
+        val userMap: MutableMap<String, String> = mutableMapOf()
+        val prefs: SharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
+        if (prefs.all.isNotEmpty()) {
+            userMap["username"] = prefs.getString("username", null).toString()
+            userMap["name"] = prefs.getString("name", null).toString()
+            userMap["isUser"] = prefs.getString("isUser", null).toString()
+        }
+        return userMap
+    }
+
     fun getEventData(currentItem: WidgetRepoModel): List<String> {
         return when (currentItem.type) {
             "CommitCommentEvent" -> listOf(
@@ -331,6 +331,11 @@ class Utils {
             "WatchEvent" -> "https://github.com/${currentItem.repo.name}"
             else -> "https://github.com/${currentItem.repo.name}"
         }
+    }
+
+    fun isEmpty(context: Context): Boolean {
+        val prefs: SharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
+        return if (prefs.all.isEmpty()) true else false
     }
 
     private fun alertDialog(context: Context): AlertDialog {

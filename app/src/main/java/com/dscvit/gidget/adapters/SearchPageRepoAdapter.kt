@@ -53,7 +53,7 @@ class SearchPageRepoAdapter(
             if (position > lastPosition) R.anim.up_from_bottom else R.anim.down_from_top
         )
         holderRepo.itemView.startAnimation(animation)
-        lastPosition = position
+        //lastPosition = position
 
         // Add to widget
         holderRepo.addToWidgetButton.setOnClickListener {

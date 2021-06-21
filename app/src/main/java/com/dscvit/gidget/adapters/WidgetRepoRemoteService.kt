@@ -22,12 +22,13 @@ class WidgetRepoRemoteViewsFactory(
 ) :
     RemoteViewsService.RemoteViewsFactory {
     private var dataSource: ArrayList<AddToWidget> = arrayListOf()
+    private val utils = Utils()
 
     override fun onCreate() {}
 
     override fun onDataSetChanged() {
         try {
-            dataSource = Utils.getArrayList(context)
+            dataSource = utils.getArrayList(context)
         } catch (error: Exception) {
             println(error)
         }

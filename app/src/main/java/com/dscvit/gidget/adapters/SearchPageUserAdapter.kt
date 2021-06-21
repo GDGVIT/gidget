@@ -74,7 +74,7 @@ class SearchPageUserAdapter(
             if (position > lastPosition) R.anim.up_from_bottom else R.anim.down_from_top
         )
         holderUser.itemView.startAnimation(animation)
-        lastPosition = position
+        //lastPosition = position
 
         // Add to widget
         holderUser.addToWidgetButton.setOnClickListener {

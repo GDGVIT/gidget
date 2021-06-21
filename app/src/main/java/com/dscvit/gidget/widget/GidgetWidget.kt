@@ -7,6 +7,7 @@ import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
+import android.os.PowerManager
 import android.view.View
 import android.widget.RemoteViews
 import android.widget.Toast
@@ -34,7 +35,7 @@ class GidgetWidget : AppWidgetProvider() {
         appWidgetIds: IntArray
     ) {
         for (appWidgetId in appWidgetIds)
-            updateAppWidget(context, appWidgetManager, appWidgetId, dataSource, utils)
+            updateAppWidget(context, appWidgetManager, appWidgetId, utils)
         super.onUpdate(context, appWidgetManager, appWidgetIds)
     }
 
@@ -51,20 +52,24 @@ class GidgetWidget : AppWidgetProvider() {
         super.onReceive(context, intent)
     }
 
-    override fun onEnabled(context: Context) {}
+    override fun onEnabled(context: Context) {
+        val appwidgetAlarm = AppWidgetAlarm(context.applicationContext)
+        if (!utils.isEmpty(context))
+            appwidgetAlarm.startGidgetRefresh()
+    }
 
     override fun onDisabled(context: Context) {
-        val appwidgetAlarm = AppWidgetAlarm(context!!.applicationContext)
+        val appwidgetAlarm = AppWidgetAlarm(context.applicationContext)
         appwidgetAlarm.stopGidgetRefresh()
         dataSource.clear()
-        Utils.deleteArrayList(context)
+        utils.deleteArrayList(context)
     }
 
     override fun onDeleted(context: Context?, appWidgetIds: IntArray?) {
         val appwidgetAlarm = AppWidgetAlarm(context!!.applicationContext)
         appwidgetAlarm.stopGidgetRefresh()
         dataSource.clear()
-        Utils.deleteArrayList(context)
+        utils.deleteArrayList(context)
     }
 
     private fun onItemClicked(intent: Intent, context: Context) {
@@ -79,16 +84,16 @@ class GidgetWidget : AppWidgetProvider() {
     }
 
     private fun widgetActionUpdate(context: Context) {
-        dataSource = Utils.getArrayList(context)
+        dataSource = utils.getArrayList(context)
         val appWidgetManager = AppWidgetManager.getInstance(context)
-        val appWidgetIds =
-            appWidgetManager.getAppWidgetIds(ComponentName(context, GidgetWidget::class.java))
-        onUpdate(context, appWidgetManager, appWidgetIds)
+        val appWidgetIds = appWidgetManager.getAppWidgetIds(ComponentName(context, GidgetWidget::class.java))
+        updateAppWidget(context, appWidgetManager, appWidgetIds.first(), utils)
     }
 
     private fun onWidgetRefresh(context: Context) {
-        val userMap: MutableMap<String, String> = Utils.getUserDetails(context)
-        if (userMap.isNotEmpty())
+        val userMap: MutableMap<String, String> = utils.getUserDetails(context)
+        val screenAwake = context.getSystemService(Context.POWER_SERVICE) as PowerManager
+        if (userMap.isNotEmpty() && screenAwake.isInteractive && !screenAwake.isDeviceIdleMode)
             addToWidget(context, userMap)
         else
             Toast.makeText(context, "Cannot refresh empty widget", Toast.LENGTH_LONG).show()
@@ -97,8 +102,7 @@ class GidgetWidget : AppWidgetProvider() {
     private fun addToWidget(context: Context, userMap: MutableMap<String, String>) {
         val views = RemoteViews(context.packageName, R.layout.gidget_widget)
         val appWidgetManager = AppWidgetManager.getInstance(context)
-        val appWidgetIds =
-            appWidgetManager.getAppWidgetIds(ComponentName(context, GidgetWidget::class.java))
+        val appWidgetIds = appWidgetManager.getAppWidgetIds(ComponentName(context, GidgetWidget::class.java))
 
         views.setViewVisibility(R.id.appwidgetProgressBar, View.VISIBLE)
         appWidgetManager.updateAppWidget(appWidgetIds, views)
@@ -116,8 +120,8 @@ class GidgetWidget : AppWidgetProvider() {
                         call: Call<MutableList<WidgetRepoModel>>,
                         response: Response<MutableList<WidgetRepoModel>>
                     ) {
+                        val dataSource: ArrayList<AddToWidget> = arrayListOf()
                         if (response.body() != null) {
-                            val dataSource: ArrayList<AddToWidget> = arrayListOf()
                             for (res in response.body()!!) {
                                 val addToWidget = AddToWidget()
                                 val eventsList: List<String> = utils.getEventData(res)
@@ -164,8 +168,8 @@ class GidgetWidget : AppWidgetProvider() {
                         call: Call<MutableList<WidgetRepoModel>>,
                         response: Response<MutableList<WidgetRepoModel>>
                     ) {
+                        val dataSource: ArrayList<AddToWidget> = arrayListOf()
                         if (response.body() != null) {
-                            val dataSource: ArrayList<AddToWidget> = arrayListOf()
                             for (res in response.body()!!) {
                                 val addToWidget = AddToWidget()
                                 val eventsList: List<String> = utils.getEventData(res)
@@ -188,7 +192,6 @@ class GidgetWidget : AppWidgetProvider() {
                                 name = userMap["name"]!!,
                                 isUser = userMap["isUser"]!!.toBoolean()
                             )
-
                             widgetActionUpdate(context)
                             appWidgetManager.updateAppWidget(appWidgetIds, views)
                         }
@@ -210,7 +213,6 @@ internal fun updateAppWidget(
     context: Context,
     appWidgetManager: AppWidgetManager,
     appWidgetId: Int,
-    dataSource: ArrayList<AddToWidget>,
     utils: Utils
 ) {
     val views = RemoteViews(context.packageName, R.layout.gidget_widget)
@@ -233,13 +235,12 @@ internal fun updateAppWidget(
     val clickPendingIntent = PendingIntent.getBroadcast(context, 0, clickIntent, 0)
     views.setPendingIntentTemplate(R.id.appwidgetListView, clickPendingIntent)
 
-    // Date Widget
-    views.setTextViewText(R.id.appwidgetDate, utils.getTime())
-
-    if (dataSource.isNullOrEmpty()) {
+    if (utils.isEmpty(context)) {
         views.setEmptyView(R.id.appwidgetListView, R.id.appwidgetEmptyViewText)
         views.setOnClickPendingIntent(R.id.appwidgetEmptyViewText, buttonPendingIntent)
     } else {
+        // Date Widget
+        views.setTextViewText(R.id.appwidgetDate, utils.getTime())
         // Widget Service Intent
         val serviceIntent = Intent(context, WidgetRepoRemoteService::class.java)
         views.setRemoteAdapter(R.id.appwidgetListView, serviceIntent)
