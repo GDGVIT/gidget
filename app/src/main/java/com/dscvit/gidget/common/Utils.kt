@@ -39,6 +39,7 @@ class Utils {
         fun getOnWidgetItemClickedAction(): String = "onWidgetItemClicked"
         fun getUpdateWidgetAction(): String = "updateWidgetWithDatasource"
         fun getOnRefreshButtonClicked(): String = "onRefreshButtonClicked"
+        fun getDeleteWidgetAction(): String = "deleteWidgetWithDatasource"
     }
 
     fun addToWidget(
@@ -203,7 +204,7 @@ class Utils {
         return gson.fromJson(json, type)
     }
 
-    fun deleteArrayList(context: Context) {
+    fun deleteAllData(context: Context) {
         val prefs: SharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
         prefs.edit().clear().apply()
     }

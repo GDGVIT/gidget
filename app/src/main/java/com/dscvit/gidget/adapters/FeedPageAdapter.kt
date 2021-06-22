@@ -73,7 +73,7 @@ class FeedPageAdapter(
             if (position > lastPosition) R.anim.up_from_bottom else R.anim.down_from_top
         )
         holder.itemView.startAnimation(animation)
-        //lastPosition = position
+        // lastPosition = position
 
         // Open Repository
         holder.feedPageRecyclerViewItem.setOnClickListener {

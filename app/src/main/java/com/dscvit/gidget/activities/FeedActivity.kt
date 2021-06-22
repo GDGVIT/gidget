@@ -10,6 +10,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.dscvit.gidget.R
 import com.dscvit.gidget.adapters.FeedPageAdapter
 import com.dscvit.gidget.common.Common
@@ -22,7 +23,6 @@ import io.realm.Realm
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 
 class FeedActivity : AppCompatActivity() {
     lateinit var mService: RetroFitService
@@ -56,7 +56,7 @@ class FeedActivity : AppCompatActivity() {
 
         pullRefresh.setOnRefreshListener {
             getFeedList(recyclerView, progressBar, emptyTextView, results)
-            pullRefresh.isRefreshing = false;
+            pullRefresh.isRefreshing = false
         }
     }
 

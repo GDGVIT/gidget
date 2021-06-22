@@ -12,6 +12,11 @@ import retrofit2.http.Path
 import retrofit2.http.Query
 
 interface RetroFitService {
+    @GET("user")
+    fun getAuthenticatedUser(
+        @Header("Authorization") token: String
+    ): Call<ProfilePageModel>
+
     @GET("users/{user}/received_events")
     fun getActivityList(
         @Path("user") user: String,

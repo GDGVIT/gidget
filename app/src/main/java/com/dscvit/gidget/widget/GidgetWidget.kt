@@ -49,6 +49,9 @@ class GidgetWidget : AppWidgetProvider() {
         if (intent != null && context != null && intent.action == Utils.getOnRefreshButtonClicked())
             onWidgetRefresh(context)
 
+        if (intent != null && context != null && intent.action == Utils.getDeleteWidgetAction())
+            deleteWidgetData(context)
+
         super.onReceive(context, intent)
     }
 
@@ -58,19 +61,9 @@ class GidgetWidget : AppWidgetProvider() {
             appwidgetAlarm.startGidgetRefresh()
     }
 
-    override fun onDisabled(context: Context) {
-        val appwidgetAlarm = AppWidgetAlarm(context.applicationContext)
-        appwidgetAlarm.stopGidgetRefresh()
-        dataSource.clear()
-        utils.deleteArrayList(context)
-    }
+    override fun onDisabled(context: Context) {}
 
-    override fun onDeleted(context: Context?, appWidgetIds: IntArray?) {
-        val appwidgetAlarm = AppWidgetAlarm(context!!.applicationContext)
-        appwidgetAlarm.stopGidgetRefresh()
-        dataSource.clear()
-        utils.deleteArrayList(context)
-    }
+    override fun onDeleted(context: Context?, appWidgetIds: IntArray?) {}
 
     private fun onItemClicked(intent: Intent, context: Context) {
         if (intent.extras!!.containsKey("dataSource") || intent.hasExtra("dataSource")) {
@@ -84,7 +77,6 @@ class GidgetWidget : AppWidgetProvider() {
     }
 
     private fun widgetActionUpdate(context: Context) {
-        dataSource = utils.getArrayList(context)
         val appWidgetManager = AppWidgetManager.getInstance(context)
         val appWidgetIds = appWidgetManager.getAppWidgetIds(ComponentName(context, GidgetWidget::class.java))
         updateAppWidget(context, appWidgetManager, appWidgetIds.first(), utils)
@@ -206,6 +198,16 @@ class GidgetWidget : AppWidgetProvider() {
                     }
                 })
         }
+    }
+
+    private fun deleteWidgetData(context: Context) {
+        val appwidgetAlarm = AppWidgetAlarm(context.applicationContext)
+        appwidgetAlarm.stopGidgetRefresh()
+        utils.deleteAllData(context)
+        val appWidgetManager = AppWidgetManager.getInstance(context)
+        val appWidgetIds = appWidgetManager.getAppWidgetIds(ComponentName(context, GidgetWidget::class.java))
+        appWidgetManager.notifyAppWidgetViewDataChanged(appWidgetIds, R.id.appwidgetListView)
+        widgetActionUpdate(context)
     }
 }
 

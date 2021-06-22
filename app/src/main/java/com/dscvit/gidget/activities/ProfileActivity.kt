@@ -18,7 +18,7 @@ import com.dscvit.gidget.common.Security
 import com.dscvit.gidget.common.Utils
 import com.dscvit.gidget.interfaces.RetroFitService
 import com.dscvit.gidget.models.profilePage.ProfilePageModel
-import com.google.firebase.auth.FirebaseAuth
+import com.dscvit.gidget.widget.GidgetWidget
 import com.squareup.picasso.Picasso
 import io.realm.Realm
 import retrofit2.Call
@@ -27,7 +27,6 @@ import retrofit2.Response
 
 class ProfileActivity : AppCompatActivity() {
     lateinit var mService: RetroFitService
-    lateinit var mAuth: FirebaseAuth
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -38,7 +37,6 @@ class ProfileActivity : AppCompatActivity() {
         val owner: Boolean = bundle.getBoolean("owner")
 
         mService = Common.retroFitService
-        mAuth = FirebaseAuth.getInstance()
 
         val profilePhotoIV: ImageView = findViewById(R.id.profilePagePhoto)
         val nameTV: TextView = findViewById(R.id.profilePageName)
@@ -112,10 +110,12 @@ class ProfileActivity : AppCompatActivity() {
                     if (owner) {
                         logoutButtonText.text = "Logout"
                         logoutButton.setOnClickListener {
-                            mAuth.signOut()
                             Realm.removeDefaultConfiguration()
-                            Toast.makeText(applicationContext, "Logged out", Toast.LENGTH_LONG)
-                                .show()
+                            val widgetIntent = Intent(context, GidgetWidget::class.java)
+                            widgetIntent.action = Utils.getDeleteWidgetAction()
+                            context.sendBroadcast(widgetIntent)
+
+                            Toast.makeText(applicationContext, "Logged out", Toast.LENGTH_LONG).show()
                             startActivity(Intent(applicationContext, MainActivity::class.java))
                             finishAffinity()
                         }
