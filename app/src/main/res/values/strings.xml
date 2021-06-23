@@ -24,7 +24,7 @@
     <string name="appwidget_text">EXAMPLE</string>
     <string name="add_widget">Add widget</string>
     <string name="appwidget_commit_message">commit message</string>
-    <string name="empty_widget">Add an user or repo to this widget</string>
+    <string name="empty_widget">Add a user or repo to this widget</string>
     <string name="picture">picture</string>
     <string name="logout">Logout</string>
     <string name="city">City</string>

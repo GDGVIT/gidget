@@ -1,23 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.rishav.gidget">
+    xmlns:tools="http://schemas.android.com/tools"
+    package="com.dscvit.gidget">
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
 
     <application
-        android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/Theme.Gidget">
-        <receiver android:name=".Widget.GidgetWidget">
+        android:theme="@style/Theme.Gidget"
+        tools:ignore="AllowBackup">
+        <receiver android:name="com.dscvit.gidget.widget.GidgetWidget">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
                 <action android:name="onWidgetItemClicked" />
                 <action android:name="updateWidgetWithDatasource" />
                 <action android:name="onRefreshButtonClicked" />
+                <action android:name="deleteWidgetWithDatasource" />
             </intent-filter>
 
             <meta-data
@@ -25,18 +27,28 @@
                 android:resource="@xml/gidget_widget_info" />
         </receiver>
 
-        <activity android:name=".UI.SearchActivity" />
-        <activity android:name=".UI.ProfileActivity" />
-        <activity android:name=".UI.FeedActivity" />
-        <activity android:name=".UI.MainActivity">
+        <activity android:name="com.dscvit.gidget.activities.SearchActivity" />
+        <activity android:name="com.dscvit.gidget.activities.ProfileActivity" />
+        <activity android:name="com.dscvit.gidget.activities.FeedActivity" />
+        <activity android:name="com.dscvit.gidget.activities.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:host="callback"
+                    android:scheme="futurestudio" />
+            </intent-filter>
         </activity>
 
         <service
-            android:name=".Adapters.WidgetRepoRemoteService"
+            android:name="com.dscvit.gidget.adapters.WidgetRepoRemoteService"
             android:permission="android.permission.BIND_REMOTEVIEWS" />
     </application>
 

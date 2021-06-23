@@ -4,8 +4,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/widget_bg"
-    android:paddingHorizontal="@dimen/_15sdp"
-    android:paddingVertical="@dimen/_10sdp"
+    android:paddingHorizontal="@dimen/_8sdp"
+    android:paddingTop="@dimen/_10sdp"
     android:theme="@style/ThemeOverlay.Gidget.AppWidgetContainer">
 
     <RelativeLayout
@@ -30,7 +30,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
-            android:layout_toStartOf="@+id/appwidgetRefreshButton"
+            android:layout_toStartOf="@+id/appwidgetDate"
             android:layout_toEndOf="@+id/appWidgetLogo"
             android:clickable="true"
             android:contentDescription="@string/appwidget_text"
@@ -40,6 +40,17 @@
             android:textColor="@color/white"
             android:textSize="@dimen/_10sdp"
             android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/appwidgetDate"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginHorizontal="@dimen/_5sdp"
+            android:layout_toStartOf="@+id/appwidgetRefreshButton"
+            android:fontFamily="@font/montserrat"
+            android:textColor="@color/white"
+            android:textSize="@dimen/_8sdp" />
 
         <ImageButton
             android:id="@+id/appwidgetRefreshButton"

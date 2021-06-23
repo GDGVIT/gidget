@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/gradient_bg"
-    tools:context=".UI.FeedActivity">
+    tools:context=".activities.FeedActivity">
 
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/feedPageAppBar"
@@ -86,20 +86,26 @@
         android:layout_below="@+id/feedPageAppBar"
         android:layout_centerVertical="true"
         android:layout_marginHorizontal="30dp"
-        android:layout_marginVertical="@dimen/_20sdp"
+        android:layout_marginTop="@dimen/_20sdp"
+        android:layout_marginBottom="@dimen/_5sdp"
         android:fontFamily="@font/montserrat"
         android:text="@string/activity"
         android:textColor="@color/white"
         android:textSize="@dimen/_20sdp" />
 
-
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/feedPageRecyclerView"
-        android:layout_width="wrap_content"
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+        android:id="@+id/feedPagePullRefresh"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/feedPageActvityTV"
-        android:scrollbars="vertical"
-        tools:listitem="@layout/feed_page_recycler_item" />
+        android:layout_below="@+id/feedPageActvityTV">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/feedPageRecyclerView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:scrollbars="vertical"
+            tools:listitem="@layout/feed_page_recycler_item" />
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
     <TextView
         android:id="@+id/feedPageEmptyTextView"
@@ -109,19 +115,19 @@
         android:fontFamily="@font/montserrat"
         android:text="@string/empty_feedpage_text"
         android:textAlignment="center"
-        android:visibility="gone"
         android:textColor="@color/white"
-        android:textSize="@dimen/_18sdp" />
+        android:textSize="@dimen/_18sdp"
+        android:visibility="gone" />
 
     <ProgressBar
         android:id="@+id/feedpageProgressBar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
         android:indeterminate="true"
         android:indeterminateTint="@color/white"
         android:minWidth="@dimen/_50sdp"
         android:minHeight="@dimen/_50sdp"
         android:visibility="visible"
-        android:layout_centerInParent="true"
         tools:targetApi="lollipop" />
 </RelativeLayout>
