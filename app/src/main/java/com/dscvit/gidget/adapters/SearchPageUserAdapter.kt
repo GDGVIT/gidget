@@ -68,13 +68,12 @@ class SearchPageUserAdapter(
             })
 
         // Custom Animation
-        var lastPosition: Int = -1
+        val lastPosition: Int = -1
         val animation: Animation = AnimationUtils.loadAnimation(
             context,
             if (position > lastPosition) R.anim.up_from_bottom else R.anim.down_from_top
         )
         holderUser.itemView.startAnimation(animation)
-        // lastPosition = position
 
         // Add to widget
         holderUser.addToWidgetButton.setOnClickListener {

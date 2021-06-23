@@ -336,7 +336,7 @@ class Utils {
 
     fun isEmpty(context: Context): Boolean {
         val prefs: SharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
-        return if (prefs.all.isEmpty()) true else false
+        return prefs.all.isEmpty()
     }
 
     private fun alertDialog(context: Context): AlertDialog {

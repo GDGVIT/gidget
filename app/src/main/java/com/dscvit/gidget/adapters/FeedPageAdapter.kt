@@ -67,13 +67,12 @@ class FeedPageAdapter(
         setDate(holder, currentItem)
 
         // Custom Animation
-        var lastPosition: Int = -1
+        val lastPosition: Int = -1
         val animation: Animation = AnimationUtils.loadAnimation(
             context,
             if (position > lastPosition) R.anim.up_from_bottom else R.anim.down_from_top
         )
         holder.itemView.startAnimation(animation)
-        // lastPosition = position
 
         // Open Repository
         holder.feedPageRecyclerViewItem.setOnClickListener {

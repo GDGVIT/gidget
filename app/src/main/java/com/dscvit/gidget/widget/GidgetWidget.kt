@@ -7,7 +7,6 @@ import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
-import android.os.PowerManager
 import android.view.View
 import android.widget.RemoteViews
 import android.widget.Toast
@@ -16,6 +15,7 @@ import com.dscvit.gidget.activities.MainActivity
 import com.dscvit.gidget.adapters.WidgetRepoRemoteService
 import com.dscvit.gidget.common.AppWidgetAlarm
 import com.dscvit.gidget.common.Common
+import com.dscvit.gidget.common.PhoneState
 import com.dscvit.gidget.common.Security
 import com.dscvit.gidget.common.Utils
 import com.dscvit.gidget.models.widget.AddToWidget
@@ -25,9 +25,9 @@ import retrofit2.Callback
 import retrofit2.Response
 
 class GidgetWidget : AppWidgetProvider() {
-    private var dataSource: ArrayList<AddToWidget> = arrayListOf()
     private val utils = Utils()
     private val mService = Common.retroFitService
+    private val phoneState = PhoneState()
 
     override fun onUpdate(
         context: Context,
@@ -63,7 +63,7 @@ class GidgetWidget : AppWidgetProvider() {
 
     override fun onDisabled(context: Context) {}
 
-    override fun onDeleted(context: Context?, appWidgetIds: IntArray?) {}
+    override fun onDeleted(context: Context?, appWidgetIds: IntArray?) = deleteWidgetData(context!!)
 
     private fun onItemClicked(intent: Intent, context: Context) {
         if (intent.extras!!.containsKey("dataSource") || intent.hasExtra("dataSource")) {
@@ -78,14 +78,14 @@ class GidgetWidget : AppWidgetProvider() {
 
     private fun widgetActionUpdate(context: Context) {
         val appWidgetManager = AppWidgetManager.getInstance(context)
-        val appWidgetIds = appWidgetManager.getAppWidgetIds(ComponentName(context, GidgetWidget::class.java))
+        val appWidgetIds =
+            appWidgetManager.getAppWidgetIds(ComponentName(context, GidgetWidget::class.java))
         updateAppWidget(context, appWidgetManager, appWidgetIds.first(), utils)
     }
 
     private fun onWidgetRefresh(context: Context) {
         val userMap: MutableMap<String, String> = utils.getUserDetails(context)
-        val screenAwake = context.getSystemService(Context.POWER_SERVICE) as PowerManager
-        if (userMap.isNotEmpty() && screenAwake.isInteractive && !screenAwake.isDeviceIdleMode)
+        if (userMap.isNotEmpty() && phoneState.isPhoneActive(context) && phoneState.isInternetConnected(context))
             addToWidget(context, userMap)
         else
             Toast.makeText(context, "Cannot refresh empty widget", Toast.LENGTH_LONG).show()
@@ -94,7 +94,8 @@ class GidgetWidget : AppWidgetProvider() {
     private fun addToWidget(context: Context, userMap: MutableMap<String, String>) {
         val views = RemoteViews(context.packageName, R.layout.gidget_widget)
         val appWidgetManager = AppWidgetManager.getInstance(context)
-        val appWidgetIds = appWidgetManager.getAppWidgetIds(ComponentName(context, GidgetWidget::class.java))
+        val appWidgetIds =
+            appWidgetManager.getAppWidgetIds(ComponentName(context, GidgetWidget::class.java))
 
         views.setViewVisibility(R.id.appwidgetProgressBar, View.VISIBLE)
         appWidgetManager.updateAppWidget(appWidgetIds, views)
@@ -205,7 +206,8 @@ class GidgetWidget : AppWidgetProvider() {
         appwidgetAlarm.stopGidgetRefresh()
         utils.deleteAllData(context)
         val appWidgetManager = AppWidgetManager.getInstance(context)
-        val appWidgetIds = appWidgetManager.getAppWidgetIds(ComponentName(context, GidgetWidget::class.java))
+        val appWidgetIds =
+            appWidgetManager.getAppWidgetIds(ComponentName(context, GidgetWidget::class.java))
         appWidgetManager.notifyAppWidgetViewDataChanged(appWidgetIds, R.id.appwidgetListView)
         widgetActionUpdate(context)
     }

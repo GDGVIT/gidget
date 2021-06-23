@@ -44,7 +44,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:fontFamily="@font/montserrat"
-            android:text="@string/name"
             android:textColor="@color/blue"
             android:textSize="@dimen/_18sdp"
             android:textStyle="bold" />
@@ -54,7 +53,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:fontFamily="@font/montserrat"
-            android:text="@string/username"
             android:textColor="@color/white"
             android:textSize="@dimen/_12sdp" />
 
@@ -64,7 +62,6 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/_4sdp"
             android:fontFamily="@font/montserrat"
-            android:text="@string/country"
             android:textColor="@color/lightGrey"
             android:textSize="@dimen/_10sdp" />
     </LinearLayout>

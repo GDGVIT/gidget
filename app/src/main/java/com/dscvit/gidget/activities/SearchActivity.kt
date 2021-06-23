@@ -61,6 +61,15 @@ class SearchActivity : AppCompatActivity() {
             repoButtonText.setTextColor(Color.WHITE)
             orgButtonText.setTextColor(Color.parseColor("#61B1FF"))
             recyclerView.removeAllViewsInLayout()
+            recyclerView.visibility = View.INVISIBLE
+            if (searchText.text.toString().isNotEmpty()) getSearchData(
+                this,
+                searchText.text.toString(),
+                searchType,
+                recyclerView,
+                emptySearchTextView,
+                progressBar
+            )
         }
         repoButton.setOnClickListener {
             searchType = "repositories"
@@ -68,8 +77,19 @@ class SearchActivity : AppCompatActivity() {
             orgButtonText.setTextColor(Color.WHITE)
             repoButtonText.setTextColor(Color.parseColor("#61B1FF"))
             recyclerView.removeAllViewsInLayout()
+            recyclerView.visibility = View.INVISIBLE
+            if (searchText.text.toString().isNotEmpty())
+                getSearchData(
+                    this,
+                    searchText.text.toString(),
+                    searchType,
+                    recyclerView,
+                    emptySearchTextView,
+                    progressBar
+                )
         }
         searchButton.setOnClickListener {
+            recyclerView.visibility = View.INVISIBLE
             if (searchText.text.isNullOrEmpty() || searchText.text.isBlank())
                 Toast.makeText(this, "Empty search field", Toast.LENGTH_LONG).show()
             else
@@ -84,6 +104,7 @@ class SearchActivity : AppCompatActivity() {
         }
         searchText.setOnEditorActionListener { _, actionId, _ ->
             if (actionId == EditorInfo.IME_ACTION_SEARCH) {
+                recyclerView.visibility = View.INVISIBLE
                 getSearchData(
                     this,
                     searchText.text.toString(),
@@ -127,6 +148,7 @@ class SearchActivity : AppCompatActivity() {
                             )
                             userAdapter.notifyDataSetChanged()
                             recyclerView.adapter = userAdapter
+                            recyclerView.visibility = View.VISIBLE
                         }
                     }
 
@@ -158,6 +180,7 @@ class SearchActivity : AppCompatActivity() {
                         )
                         repoAdapter.notifyDataSetChanged()
                         recyclerView.adapter = repoAdapter
+                        recyclerView.visibility = View.VISIBLE
                     }
                 }
 
