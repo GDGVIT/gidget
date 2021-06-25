@@ -27,6 +27,7 @@ import com.squareup.picasso.Transformation
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import java.lang.Exception
 import java.lang.reflect.Type
 import java.time.Duration
 import java.time.LocalDateTime
@@ -75,13 +76,14 @@ class Utils {
                                     addToWidget.icon = eventsList[1].toInt()
                                     addToWidget.message = eventsList[0]
                                     addToWidget.date = getDate(res)
+                                    addToWidget.dateISO = res.created_at
                                     addToWidget.htmlUrl = getHtmlUrl(res)
 
                                     dataSource.add(addToWidget)
                                 }
 
                                 saveArrayList(
-                                    arrayList = dataSource,
+                                    dataSource = dataSource,
                                     context = context,
                                     username = username,
                                     name = name,
@@ -134,13 +136,14 @@ class Utils {
                                     addToWidget.icon = eventsList[1].toInt()
                                     addToWidget.message = eventsList[0]
                                     addToWidget.date = getDate(res)
+                                    addToWidget.dateISO = res.created_at
                                     addToWidget.htmlUrl = getHtmlUrl(res)
 
                                     dataSource.add(addToWidget)
                                 }
 
                                 saveArrayList(
-                                    arrayList = dataSource,
+                                    dataSource = dataSource,
                                     context = context,
                                     username = username,
                                     name = name,
@@ -179,21 +182,49 @@ class Utils {
     }
 
     fun saveArrayList(
-        arrayList: ArrayList<AddToWidget>,
+        dataSource: ArrayList<AddToWidget>,
         context: Context,
         username: String,
         name: String,
         isUser: Boolean
     ) {
-        val prefs: SharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
-        val editor: SharedPreferences.Editor = prefs.edit()
-        val gson = Gson()
-        val json: String = gson.toJson(arrayList)
-        editor.putString("dataSource", json)
-        editor.putString("username", username)
-        editor.putString("name", name)
-        editor.putString("isUser", isUser.toString())
-        editor.apply()
+        try {
+            val prefs: SharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
+            val editor: SharedPreferences.Editor = prefs.edit()
+            val gson = Gson()
+            if (prefs.contains("dataSource")) {
+                val userDetailsMap: MutableMap<String, MutableMap<String, String>>? =
+                    getUserDetails(context)
+                if (!userDetailsMap.isNullOrEmpty()) {
+                    val userDataSource: ArrayList<AddToWidget> = getArrayList(context)
+                    userDetailsMap[username] = mutableMapOf(
+                        "name" to name,
+                        "isUser" to isUser.toString()
+                    )
+                    userDataSource.addAll(dataSource)
+                    userDataSource.sortWith(SortByDate())
+                    if (userDataSource.size > 50) userDataSource.subList(51, userDataSource.size)
+                        .clear()
+                    editor.putString("dataSource", gson.toJson(userDataSource))
+                    editor.putString("userDetails", gson.toJson(userDetailsMap))
+                    editor.apply()
+
+                }
+            } else {
+                val userDetails: MutableMap<String, MutableMap<String, String>> = mutableMapOf(
+                    username to mutableMapOf(
+                        "name" to name,
+                        "isUser" to isUser.toString()
+                    )
+                )
+                editor.putString("dataSource", gson.toJson(dataSource))
+                editor.putString("userDetails", gson.toJson(userDetails))
+                editor.apply()
+            }
+        } catch (e: Exception) {
+            Toast.makeText(context, "Unable to save details", Toast.LENGTH_LONG).show()
+            println(e.message)
+        }
     }
 
     fun getArrayList(context: Context): ArrayList<AddToWidget> {
@@ -209,15 +240,26 @@ class Utils {
         prefs.edit().clear().apply()
     }
 
-    fun getUserDetails(context: Context): MutableMap<String, String> {
-        val userMap: MutableMap<String, String> = mutableMapOf()
+    fun deleteArrayList(context: Context) {
         val prefs: SharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
-        if (prefs.all.isNotEmpty()) {
-            userMap["username"] = prefs.getString("username", null).toString()
-            userMap["name"] = prefs.getString("name", null).toString()
-            userMap["isUser"] = prefs.getString("isUser", null).toString()
+        if (prefs.contains("dataSource")) {
+            val editor: SharedPreferences.Editor = prefs.edit()
+            editor.remove("dataSource")
+            editor.remove("userDetails")
+            editor.apply()
         }
-        return userMap
+    }
+
+    fun getUserDetails(context: Context): MutableMap<String, MutableMap<String, String>>? {
+        val prefs: SharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
+        return if (prefs.contains("userDetails")) {
+            val gson = Gson()
+            val jsonUserDetails: String = prefs.getString("userDetails", null).toString()
+            val jsonUserDetailsType: Type =
+                object : TypeToken<MutableMap<String?, MutableMap<String?, String?>>?>() {}.type
+            gson.fromJson(jsonUserDetails, jsonUserDetailsType)
+        } else
+            null
     }
 
     fun getEventData(currentItem: WidgetRepoModel): List<String> {
@@ -351,6 +393,23 @@ class Utils {
             Toast.makeText(context, "User Cancelled", Toast.LENGTH_LONG).show()
         }
         return alertDialog
+    }
+}
+
+class SortByDate : Comparator<AddToWidget> {
+    override fun compare(first: AddToWidget?, second: AddToWidget?): Int {
+        val firstDate = first!!.dateISO!!
+        val secondDate = second!!.dateISO!!
+
+        val dateTimePattern = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss'Z'")
+        val createFirstDate = LocalDateTime.parse(firstDate, dateTimePattern)
+        val createSecondDate = LocalDateTime.parse(secondDate, dateTimePattern)
+        val result = createFirstDate.compareTo(createSecondDate)
+        return when {
+            result < 0 -> 1
+            result > 0 -> -1
+            else -> 0
+        }
     }
 }
 
