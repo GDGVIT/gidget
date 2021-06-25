@@ -13,13 +13,10 @@ import com.dscvit.gidget.common.Common
 import com.dscvit.gidget.common.Security
 import com.dscvit.gidget.models.authModel.AccessToken
 import com.dscvit.gidget.models.profilePage.ProfilePageModel
-import com.dscvit.gidget.realm.SignUp
-import io.realm.Realm
-import io.realm.RealmConfiguration
+import com.dscvit.gidget.common.SignUp
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
-import java.io.File
 
 class MainActivity : AppCompatActivity() {
     private lateinit var progressBar: ProgressBar
@@ -27,18 +24,15 @@ class MainActivity : AppCompatActivity() {
     private val clientID: String = Security.getClientId()
     private val clientSecret: String = Security.getClientSecret()
     private val redirectUrl: String = "gidget://auth"
+    private val signUp = SignUp()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        Realm.init(applicationContext)
-        val config: RealmConfiguration? = Realm.getDefaultConfiguration()
-        if (config != null) {
-            if (File(config.path).exists()) {
-                startActivity(Intent(this, FeedActivity::class.java))
-                finish()
-            } else
-                loginButtonOnTap()
+
+        if (signUp.isUserSignedUp(this)) {
+            startActivity(Intent(this, FeedActivity::class.java))
+            finish()
         } else
             loginButtonOnTap()
     }
@@ -80,55 +74,21 @@ class MainActivity : AppCompatActivity() {
                                             response: Response<ProfilePageModel>
                                         ) {
                                             val user = response.body()
-                                            Realm.init(applicationContext)
-                                            Realm.setDefaultConfiguration(
-                                                RealmConfiguration.Builder().build()
-                                            )
-                                            val realm: Realm = Realm.getDefaultInstance()
-                                            if (realm.isEmpty && user != null) {
-                                                val signUp = SignUp()
-                                                signUp.name = user.name!!
-                                                signUp.photoUrl = user.avatar_url!!
-                                                signUp.username = user.login!!
-                                                realm.beginTransaction()
-                                                realm.copyToRealm(signUp)
-                                                realm.commitTransaction()
-                                            } else {
-                                                val results =
-                                                    realm.where(SignUp::class.java).findAll()
-                                                        .first()
-                                                if (user != null && results!!.username != user.login) {
-                                                    val signUp = SignUp()
-                                                    signUp.name = user.name!!
-                                                    signUp.photoUrl = user.avatar_url!!
-                                                    signUp.username = user.login!!
-                                                    realm.beginTransaction()
-                                                    realm.copyToRealm(signUp)
-                                                    realm.commitTransaction()
-                                                }
+                                            if (user != null) {
+                                                if (signUp.signUpUser(this@MainActivity, user.login!!, user.name!!, user.avatar_url!!)) {
+                                                    Toast.makeText(this@MainActivity, "Logged in", Toast.LENGTH_LONG).show()
+                                                    startActivity(Intent(this@MainActivity, FeedActivity::class.java))
+                                                    finish()
+                                                } else
+                                                    Toast.makeText(this@MainActivity, "We ran into some error!", Toast.LENGTH_LONG).show()
                                             }
-                                            Toast.makeText(
-                                                this@MainActivity,
-                                                "Logged in",
-                                                Toast.LENGTH_LONG
-                                            )
-                                                .show()
-                                            startActivity(
-                                                Intent(
-                                                    this@MainActivity,
-                                                    FeedActivity::class.java
-                                                )
-                                            )
-                                            finish()
                                         }
 
                                         override fun onFailure(
                                             call: Call<ProfilePageModel>,
                                             t: Throwable
                                         ) {
-//                                            progressBar.visibility = View.INVISIBLE
-//                                            loginButton.visibility = View.VISIBLE
-                                            Toast.makeText(this@MainActivity, "Login error", Toast.LENGTH_SHORT).show()
+                                            Toast.makeText(this@MainActivity, "Could not fetch user", Toast.LENGTH_SHORT).show()
                                             println(t.message)
                                         }
                                     })
@@ -136,13 +96,11 @@ class MainActivity : AppCompatActivity() {
                         }
 
                         override fun onFailure(call: Call<AccessToken>, t: Throwable) {
-//                            progressBar.visibility = View.INVISIBLE
-//                            loginButton.visibility = View.VISIBLE
-                            Toast.makeText(this@MainActivity, "Login error", Toast.LENGTH_SHORT).show()
+                            Toast.makeText(this@MainActivity, "Access token error", Toast.LENGTH_SHORT).show()
                             println(t.message)
                         }
                     })
-            } else if (uri.getQueryParameter("error") != null) println("Null Code")
+            } else if (uri.getQueryParameter("error") != null) Toast.makeText(this@MainActivity, "We ran into some error!", Toast.LENGTH_LONG).show()
         }
         super.onResume()
     }

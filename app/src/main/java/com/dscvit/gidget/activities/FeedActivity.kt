@@ -17,27 +17,24 @@ import com.dscvit.gidget.common.Common
 import com.dscvit.gidget.common.Security
 import com.dscvit.gidget.interfaces.RetroFitService
 import com.dscvit.gidget.models.feedPage.FeedPageModel
-import com.dscvit.gidget.realm.SignUp
+import com.dscvit.gidget.common.SignUp
 import com.squareup.picasso.Picasso
-import io.realm.Realm
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
 class FeedActivity : AppCompatActivity() {
-    lateinit var mService: RetroFitService
-    lateinit var layoutManager: LinearLayoutManager
+    private lateinit var mService: RetroFitService
+    private lateinit var layoutManager: LinearLayoutManager
     lateinit var adapter: FeedPageAdapter
+    private val signUp = SignUp()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_feed)
 
-        Realm.init(applicationContext)
-        val realm: Realm = Realm.getDefaultInstance()
-        val results = realm.where(SignUp::class.java).findAll().first()
-
         mService = Common.retroFitService
+        val signedUpUserMap = signUp.getSignedUpUserDetails(this)
 
         val recyclerView: RecyclerView = findViewById(R.id.feedPageRecyclerView)
         val profilePhoto: ImageView = findViewById(R.id.feedPageProfilePhoto)
@@ -50,12 +47,12 @@ class FeedActivity : AppCompatActivity() {
         layoutManager = LinearLayoutManager(this)
         recyclerView.layoutManager = layoutManager
 
-        getFeedList(recyclerView, progressBar, emptyTextView, results!!)
-        getProfilePhoto(profilePhoto, results)
+        getFeedList(recyclerView, progressBar, emptyTextView, signedUpUserMap)
+        getProfilePhoto(profilePhoto, signedUpUserMap)
         navigateToSearchPage(searchButton)
 
         pullRefresh.setOnRefreshListener {
-            getFeedList(recyclerView, progressBar, emptyTextView, results)
+            getFeedList(recyclerView, progressBar, emptyTextView, signedUpUserMap)
             pullRefresh.isRefreshing = false
         }
     }
@@ -64,11 +61,11 @@ class FeedActivity : AppCompatActivity() {
         recyclerView: RecyclerView,
         progressBar: ProgressBar,
         emptyTextView: TextView,
-        results: SignUp
+        signedUpUserMap: MutableMap<String, String>
     ) {
         progressBar.visibility = View.VISIBLE
         mService.getActivityList(
-            results.username,
+            signedUpUserMap["username"]!!,
             "token ${Security.getToken()}"
         )
             .enqueue(object : Callback<MutableList<FeedPageModel>> {
@@ -96,12 +93,12 @@ class FeedActivity : AppCompatActivity() {
             })
     }
 
-    private fun getProfilePhoto(profilePhoto: ImageView, results: SignUp) {
-        val photoUrl = results.photoUrl
+    private fun getProfilePhoto(profilePhoto: ImageView, signedUpUserMap: MutableMap<String, String>) {
+        val photoUrl = signedUpUserMap["photoUrl"]
         Picasso.get().load(photoUrl).into(profilePhoto)
         profilePhoto.setOnClickListener {
             val intent = Intent(this, ProfileActivity::class.java)
-            intent.putExtra("username", results.username)
+            intent.putExtra("username", signedUpUserMap["username"])
             intent.putExtra("owner", true)
             startActivity(intent)
         }

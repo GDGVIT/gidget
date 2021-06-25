@@ -20,7 +20,6 @@ import com.dscvit.gidget.interfaces.RetroFitService
 import com.dscvit.gidget.models.profilePage.ProfilePageModel
 import com.dscvit.gidget.widget.GidgetWidget
 import com.squareup.picasso.Picasso
-import io.realm.Realm
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -110,7 +109,6 @@ class ProfileActivity : AppCompatActivity() {
                     if (owner) {
                         logoutButtonText.text = "Logout"
                         logoutButton.setOnClickListener {
-                            Realm.removeDefaultConfiguration()
                             val widgetIntent = Intent(context, GidgetWidget::class.java)
                             widgetIntent.action = Utils.getDeleteWidgetAction()
                             context.sendBroadcast(widgetIntent)
