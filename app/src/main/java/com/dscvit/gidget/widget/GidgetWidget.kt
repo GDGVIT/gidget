@@ -57,8 +57,10 @@ class GidgetWidget : AppWidgetProvider() {
 
     override fun onEnabled(context: Context) {
         val appwidgetAlarm = AppWidgetAlarm(context.applicationContext)
-        if (!utils.isEmpty(context))
+        if (!utils.isEmpty(context)) {
+            onWidgetRefresh(context)
             appwidgetAlarm.startGidgetRefresh()
+        }
     }
 
     override fun onDisabled(context: Context) {}

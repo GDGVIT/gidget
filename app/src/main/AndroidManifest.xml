@@ -43,8 +43,8 @@
                 <category android:name="android.intent.category.BROWSABLE" />
 
                 <data
-                    android:host="callback"
-                    android:scheme="futurestudio" />
+                    android:host="auth"
+                    android:scheme="gidget" />
             </intent-filter>
         </activity>
 

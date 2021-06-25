@@ -26,7 +26,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var loginButton: Button
     private val clientID: String = Security.getClientId()
     private val clientSecret: String = Security.getClientSecret()
-    private val redirectUrl: String = "futurestudio://callback"
+    private val redirectUrl: String = "gidget://auth"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
