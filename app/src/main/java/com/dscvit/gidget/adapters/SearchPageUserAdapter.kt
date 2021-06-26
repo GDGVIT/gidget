@@ -93,6 +93,7 @@ class SearchPageUserAdapter(
             isUser = true,
             username = currentItem.login,
             name = "",
+            repoOwnerAvatarUrl = "",
             context = context
         )
     }

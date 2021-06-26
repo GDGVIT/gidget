@@ -121,9 +121,11 @@ class ProfileActivity : AppCompatActivity() {
                         logoutButtonText.text = "Add to widget"
                         logoutButton.setOnClickListener {
                             Utils().addToWidget(
-                                mService, true,
+                                mService,
+                                true,
                                 username = username,
                                 name = "",
+                                repoOwnerAvatarUrl = "",
                                 context = context
                             )
                         }

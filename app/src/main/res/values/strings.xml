@@ -39,4 +39,6 @@
     <string name="empty_feedpage_text">No GitHub activity found</string>
     <string name="delete_user_widget_alertdialog_title">Remove a user/repo</string>
     <string name="add">Add </string>
+    <string name="remove">Remove</string>
+    <string name="delete_gidget_items_empty_text">No users/repos added to Gidget</string>
 </resources>

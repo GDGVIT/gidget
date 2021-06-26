@@ -72,6 +72,7 @@ class SearchPageRepoAdapter(
             isUser = false,
             username = currentItem.owner.login,
             name = currentItem.name,
+            repoOwnerAvatarUrl = currentItem.owner.avatar_url,
             context = context
         )
     }

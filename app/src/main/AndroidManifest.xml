@@ -15,7 +15,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Gidget"
         tools:ignore="AllowBackup">
-        <activity android:name=".activities.DeleteUserFromGidgetActivity"></activity>
+        <activity android:name=".activities.DeleteUserFromGidgetActivity" />
 
         <receiver android:name=".widget.GidgetWidget">
             <intent-filter>
@@ -24,6 +24,7 @@
                 <action android:name="updateWidgetWithDatasource" />
                 <action android:name="onRefreshButtonClicked" />
                 <action android:name="deleteWidgetWithDatasource" />
+                <action android:name="clearWidgetItems" />
             </intent-filter>
 
             <meta-data

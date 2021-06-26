@@ -26,7 +26,7 @@ import retrofit2.Response
 class FeedActivity : AppCompatActivity() {
     private lateinit var mService: RetroFitService
     private lateinit var layoutManager: LinearLayoutManager
-    lateinit var adapter: FeedPageAdapter
+    private lateinit var adapter: FeedPageAdapter
     private val signUp = SignUp()
 
     override fun onCreate(savedInstanceState: Bundle?) {

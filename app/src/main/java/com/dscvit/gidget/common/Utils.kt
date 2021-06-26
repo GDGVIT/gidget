@@ -40,8 +40,8 @@ class Utils {
         fun getOnWidgetItemClickedAction(): String = "onWidgetItemClicked"
         fun getUpdateWidgetAction(): String = "updateWidgetWithDatasource"
         fun getOnRefreshButtonClicked(): String = "onRefreshButtonClicked"
-        fun getOnDeleteButtonClicked(): String = "onDeleteButtonClicked"
         fun getDeleteWidgetAction(): String = "deleteWidgetWithDatasource"
+        fun getClearWidgetItems(): String = "clearWidgetItems"
     }
 
     fun addToWidget(
@@ -49,6 +49,7 @@ class Utils {
         isUser: Boolean,
         username: String,
         name: String,
+        repoOwnerAvatarUrl: String,
         context: Context,
     ) {
         val ids: IntArray = AppWidgetManager.getInstance(context)
@@ -88,6 +89,7 @@ class Utils {
                                     context = context,
                                     username = username,
                                     name = name,
+                                    photoUrl = dataSource.first().avatarUrl!!,
                                     isUser = isUser
                                 )
                                 val widgetIntent = Intent(context, GidgetWidget::class.java)
@@ -148,6 +150,7 @@ class Utils {
                                     context = context,
                                     username = username,
                                     name = name,
+                                    photoUrl = repoOwnerAvatarUrl,
                                     isUser = isUser
                                 )
                                 val widgetIntent = Intent(context, GidgetWidget::class.java)
@@ -187,6 +190,7 @@ class Utils {
         context: Context,
         username: String,
         name: String,
+        photoUrl: String,
         isUser: Boolean
     ) {
         try {
@@ -197,9 +201,12 @@ class Utils {
                 val userDetailsMap: MutableMap<String, MutableMap<String, String>>? =
                     getUserDetails(context)
                 if (!userDetailsMap.isNullOrEmpty()) {
+                    if (userDetailsMap.containsKey(username))
+                        return
                     val userDataSource: ArrayList<AddToWidget> = getArrayList(context)
                     userDetailsMap[username] = mutableMapOf(
                         "name" to name,
+                        "photoUrl" to photoUrl,
                         "isUser" to isUser.toString()
                     )
                     userDataSource.addAll(dataSource)
@@ -215,6 +222,7 @@ class Utils {
                 val userDetails: MutableMap<String, MutableMap<String, String>> = mutableMapOf(
                     username to mutableMapOf(
                         "name" to name,
+                        "photoUrl" to photoUrl,
                         "isUser" to isUser.toString()
                     )
                 )
@@ -379,7 +387,7 @@ class Utils {
 
     fun isEmpty(context: Context): Boolean {
         val prefs: SharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
-        return prefs.all.isEmpty()
+        return !prefs.contains("userDetails")
     }
 
     private fun alertDialog(context: Context): AlertDialog {

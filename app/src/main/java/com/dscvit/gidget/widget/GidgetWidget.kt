@@ -1,21 +1,17 @@
 package com.dscvit.gidget.widget
 
-import android.annotation.SuppressLint
 import android.app.PendingIntent
 import android.appwidget.AppWidgetManager
 import android.appwidget.AppWidgetProvider
 import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
-import android.graphics.PixelFormat
 import android.net.Uri
-import android.view.Gravity
-import android.view.LayoutInflater
 import android.view.View
-import android.view.WindowManager
 import android.widget.RemoteViews
 import android.widget.Toast
 import com.dscvit.gidget.R
+import com.dscvit.gidget.activities.DeleteUserFromGidgetActivity
 import com.dscvit.gidget.activities.MainActivity
 import com.dscvit.gidget.adapters.WidgetRepoRemoteService
 import com.dscvit.gidget.common.AppWidgetAlarm
@@ -52,10 +48,10 @@ class GidgetWidget : AppWidgetProvider() {
                 onItemClicked(intent = intent, context = context)
             if (intent.action == Utils.getOnRefreshButtonClicked())
                 onWidgetRefresh(context)
-            if (intent.action == Utils.getOnDeleteButtonClicked())
-                onWidgetUserDelete(context)
             if (intent.action == Utils.getDeleteWidgetAction())
                 deleteWidgetData(context)
+            if (intent.action == Utils.getClearWidgetItems())
+                clearWidgetItems(context)
             super.onReceive(context, intent)
         }
     }
@@ -70,7 +66,7 @@ class GidgetWidget : AppWidgetProvider() {
 
     override fun onDisabled(context: Context) {}
 
-    override fun onDeleted(context: Context?, appWidgetIds: IntArray?) = deleteWidgetData(context!!)
+    override fun onDeleted(context: Context?, appWidgetIds: IntArray?) {}
 
     private fun onItemClicked(intent: Intent, context: Context) {
         if (intent.extras!!.containsKey("dataSource") || intent.hasExtra("dataSource")) {
@@ -87,8 +83,10 @@ class GidgetWidget : AppWidgetProvider() {
         val appWidgetManager = AppWidgetManager.getInstance(context)
         val appWidgetIds =
             appWidgetManager.getAppWidgetIds(ComponentName(context, GidgetWidget::class.java))
-        if (appWidgetIds.isNotEmpty())
+        if (appWidgetIds.isNotEmpty()) {
+            appWidgetManager.notifyAppWidgetViewDataChanged(appWidgetIds, R.id.appwidgetListView)
             updateAppWidget(context, appWidgetManager, appWidgetIds.first(), utils)
+        }
     }
 
     private fun onWidgetRefresh(context: Context) {
@@ -154,6 +152,7 @@ class GidgetWidget : AppWidgetProvider() {
                                         context = context,
                                         username = it.key,
                                         name = it.value["name"]!!,
+                                        photoUrl = it.value["photoUrl"]!!,
                                         isUser = it.value["isUser"]!!.toBoolean()
                                     )
                                     if (it.key == userMap.keys.last()) {
@@ -206,6 +205,7 @@ class GidgetWidget : AppWidgetProvider() {
                                         context = context,
                                         username = it.key,
                                         name = it.value["name"]!!,
+                                        photoUrl = it.value["photoUrl"]!!,
                                         isUser = it.value["isUser"]!!.toBoolean()
                                     )
                                     if (it.key == userMap.keys.last()) {
@@ -232,14 +232,21 @@ class GidgetWidget : AppWidgetProvider() {
         }
     }
 
-    private fun onWidgetUserDelete(context: Context) {
-
-    }
-
     private fun deleteWidgetData(context: Context) {
         val appwidgetAlarm = AppWidgetAlarm(context.applicationContext)
         appwidgetAlarm.stopGidgetRefresh()
         utils.deleteAllData(context)
+        val appWidgetManager = AppWidgetManager.getInstance(context)
+        val appWidgetIds =
+            appWidgetManager.getAppWidgetIds(ComponentName(context, GidgetWidget::class.java))
+        appWidgetManager.notifyAppWidgetViewDataChanged(appWidgetIds, R.id.appwidgetListView)
+        widgetActionUpdate(context)
+    }
+
+    private fun clearWidgetItems(context: Context) {
+        val appwidgetAlarm = AppWidgetAlarm(context.applicationContext)
+        appwidgetAlarm.stopGidgetRefresh()
+        utils.deleteArrayList(context)
         val appWidgetManager = AppWidgetManager.getInstance(context)
         val appWidgetIds =
             appWidgetManager.getAppWidgetIds(ComponentName(context, GidgetWidget::class.java))
@@ -263,16 +270,15 @@ internal fun updateAppWidget(
     views.setOnClickPendingIntent(R.id.appWidgetLogo, buttonPendingIntent)
     views.setOnClickPendingIntent(R.id.appwidgetTitle, buttonPendingIntent)
 
-    val refreshIntent = Intent(context, GidgetWidget::class.java)
+    val refreshIntent = Intent(context, GidgetWidget::class.java).addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP)
     refreshIntent.action = Utils.getOnRefreshButtonClicked()
     val refreshPendingIntent =
         PendingIntent.getBroadcast(context, 0, refreshIntent, PendingIntent.FLAG_UPDATE_CURRENT)
     views.setOnClickPendingIntent(R.id.appwidgetRefreshButton, refreshPendingIntent)
 
-    val deleteIntent = Intent(context, GidgetWidget::class.java)
-    deleteIntent.action = Utils.getOnDeleteButtonClicked()
+    val deleteIntent = Intent(context, DeleteUserFromGidgetActivity::class.java).addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP)
     val deletePendingIntent =
-        PendingIntent.getBroadcast(context, 0, deleteIntent, PendingIntent.FLAG_UPDATE_CURRENT)
+        PendingIntent.getActivity(context, 0, deleteIntent, 0)
     views.setOnClickPendingIntent(R.id.appwidgetDeleteButton, deletePendingIntent)
 
     // Main Widget
