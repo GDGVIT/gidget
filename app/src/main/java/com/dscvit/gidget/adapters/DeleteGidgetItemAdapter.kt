@@ -1,6 +1,5 @@
 package com.dscvit.gidget.adapters
 
-import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
@@ -21,7 +20,6 @@ import com.dscvit.gidget.models.widget.AddToWidget
 import com.dscvit.gidget.widget.GidgetWidget
 import com.google.gson.Gson
 import com.squareup.picasso.Picasso
-
 
 class DeleteGidgetItemAdapter(
     private val context: Context,

@@ -39,7 +39,7 @@ data class Payload(
     @SerializedName("review") val review: Review? = null,
     @SerializedName("comment") val comment: Comment? = null,
 
-    )
+)
 
 // Payload subclasses
 

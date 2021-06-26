@@ -216,7 +216,6 @@ class Utils {
                     editor.putString("dataSource", gson.toJson(userDataSource))
                     editor.putString("userDetails", gson.toJson(userDetailsMap))
                     editor.apply()
-
                 }
             } else {
                 val userDetails: MutableMap<String, MutableMap<String, String>> = mutableMapOf(

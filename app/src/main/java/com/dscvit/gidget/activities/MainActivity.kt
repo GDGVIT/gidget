@@ -11,9 +11,9 @@ import androidx.appcompat.app.AppCompatActivity
 import com.dscvit.gidget.R
 import com.dscvit.gidget.common.Common
 import com.dscvit.gidget.common.Security
+import com.dscvit.gidget.common.SignUp
 import com.dscvit.gidget.models.authModel.AccessToken
 import com.dscvit.gidget.models.profilePage.ProfilePageModel
-import com.dscvit.gidget.common.SignUp
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
