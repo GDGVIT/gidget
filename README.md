@@ -2,8 +2,8 @@
 <a href="https://dscvit.com">
 	<img src="https://user-images.githubusercontent.com/30529572/92081025-fabe6f00-edb1-11ea-9169-4a8a61a5dd45.png" alt="DSC VIT"/>
 </a>
-	<h2 align="center"> < Gidget > </h2>
-	<h4 align="center"> < Check out your GitHub activity from homescreen > <h4>
+	<h2 align="center">  Gidget  </h2>
+	<h4 align="center">  Android app to track GitHub activity of any user or repository directly from your homescreen  <h4>
 </p>
 
 ---
@@ -15,44 +15,37 @@
 
 
 ## Features
-- [ ]  < Keep track of latest activity on your repos from homescreen >
-- [ ]  < View and edit your GitHub profile >
+- [ ]  < Keep track of latest activity of multiple users and repositories >
+- [ ]  < View and your own GitHub profile >
+- [ ]  < Auto refresh widget to fetch latest activites >
 
 <br>
 
 ## Dependencies
- - < dependency >
- - < dependency >
+ - Android SDK
+ - Android Studio
 
 
 ## Running
 
+- Clone the project in Android Studio
+- Simply run the project using pre added app configuration
 
-< directions to install > 
-```bash
-< insert code >
-```
-
-< directions to execute >
-
-```bash
-< insert code >
-```
 
 ## Contributors
 
 <table>
 	<tr align="center">
 		<td>
-		John Doe
+		Rishav Naskar
 		<p align="center">
-			<img src = "https://dscvit.com/images/dsc-logo-square.svg" width="150" height="150" alt="Your Name Here (Insert Your Image Link In Src">
+			<img src = "https://avatars.githubusercontent.com/u/59786899?v=4" width="150" height="150" alt="Rishav Naskar">
 		</p>
 			<p align="center">
-				<a href = "https://github.com/person1">
+				<a href = "https://github.com/rishavnaskar">
 					<img src = "http://www.iconninja.com/files/241/825/211/round-collaboration-social-github-code-circle-network-icon.svg" width="36" height = "36" alt="GitHub"/>
 				</a>
-				<a href = "https://www.linkedin.com/in/person1">
+				<a href = "https://www.linkedin.com/in/rishav-naskar-9621101a6/">
 					<img src = "http://www.iconninja.com/files/863/607/751/network-linkedin-social-connection-circular-circle-media-icon.svg" width="36" height="36" alt="LinkedIn"/>
 				</a>
 			</p>
