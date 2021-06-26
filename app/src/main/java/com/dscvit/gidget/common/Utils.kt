@@ -40,6 +40,7 @@ class Utils {
         fun getOnWidgetItemClickedAction(): String = "onWidgetItemClicked"
         fun getUpdateWidgetAction(): String = "updateWidgetWithDatasource"
         fun getOnRefreshButtonClicked(): String = "onRefreshButtonClicked"
+        fun getOnDeleteButtonClicked(): String = "onDeleteButtonClicked"
         fun getDeleteWidgetAction(): String = "deleteWidgetWithDatasource"
     }
 

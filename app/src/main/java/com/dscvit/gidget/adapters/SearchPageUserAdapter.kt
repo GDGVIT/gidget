@@ -8,14 +8,12 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
-import android.widget.ImageButton
-import android.widget.ImageView
-import android.widget.RelativeLayout
-import android.widget.TextView
-import android.widget.Toast
+import android.widget.*
+import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.RecyclerView
 import com.dscvit.gidget.R
 import com.dscvit.gidget.common.Common
+import com.dscvit.gidget.common.RoundedTransformation
 import com.dscvit.gidget.common.Security
 import com.dscvit.gidget.common.Utils
 import com.dscvit.gidget.interfaces.RetroFitService
@@ -43,7 +41,9 @@ class SearchPageUserAdapter(
         val username = "@${currentItem.login}"
 
         // Profile Photo
-        Picasso.get().load(currentItem.avatar_url).into(holderUser.profilePhoto)
+        Picasso.get().load(currentItem.avatar_url).error(R.drawable.github_logo).transform(
+            RoundedTransformation(300, 0)
+        ).into(holderUser.profilePhoto)
         holderUser.username.text = username
 
         // getProfileDetails
@@ -109,7 +109,7 @@ class SearchPageUserAdapter(
         val name: TextView = itemView.findViewById(R.id.searchPageRecyclerItemNameText)
         val username: TextView = itemView.findViewById(R.id.searchPageRecyclerItemUsernameText)
         val location: TextView = itemView.findViewById(R.id.searchPageRecyclerItemLocationText)
-        val addToWidgetButton: ImageButton = itemView.findViewById(R.id.searchPageAddToHomeButton)
-        val currentView: RelativeLayout = itemView.findViewById(R.id.searchPageRecyclerViewRL)
+        val addToWidgetButton: Button = itemView.findViewById(R.id.searchPageAddToHomeButton)
+        val currentView: CardView = itemView.findViewById(R.id.searchPageCardView)
     }
 }

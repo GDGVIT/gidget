@@ -56,12 +56,12 @@
             android:id="@+id/appwidgetDeleteButton"
             android:layout_width="@dimen/_15sdp"
             android:layout_height="@dimen/_15sdp"
+            android:layout_marginEnd="@dimen/_5sdp"
             android:layout_toStartOf="@+id/appwidgetRefreshButton"
             android:background="@android:color/transparent"
             android:contentDescription="@string/picture"
             android:scaleType="fitCenter"
-            android:layout_marginEnd="@dimen/_5sdp"
-            android:src="@drawable/ic_baseline_delete_24"/>
+            android:src="@drawable/ic_baseline_delete_24" />
 
         <ImageButton
             android:id="@+id/appwidgetRefreshButton"

@@ -1,17 +1,20 @@
 package com.dscvit.gidget.widget
 
+import android.annotation.SuppressLint
 import android.app.PendingIntent
 import android.appwidget.AppWidgetManager
 import android.appwidget.AppWidgetProvider
 import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
-import android.content.SharedPreferences
+import android.graphics.PixelFormat
 import android.net.Uri
+import android.view.Gravity
+import android.view.LayoutInflater
 import android.view.View
+import android.view.WindowManager
 import android.widget.RemoteViews
 import android.widget.Toast
-import androidx.preference.PreferenceManager
 import com.dscvit.gidget.R
 import com.dscvit.gidget.activities.MainActivity
 import com.dscvit.gidget.adapters.WidgetRepoRemoteService
@@ -42,19 +45,19 @@ class GidgetWidget : AppWidgetProvider() {
     }
 
     override fun onReceive(context: Context?, intent: Intent?) {
-        if (intent != null && context != null && intent.action == Utils.getUpdateWidgetAction())
-            widgetActionUpdate(context)
-
-        if (intent != null && context != null && intent.extras != null && intent.action == Utils.getOnWidgetItemClickedAction())
-            onItemClicked(intent = intent, context = context)
-
-        if (intent != null && context != null && intent.action == Utils.getOnRefreshButtonClicked())
-            onWidgetRefresh(context)
-
-        if (intent != null && context != null && intent.action == Utils.getDeleteWidgetAction())
-            deleteWidgetData(context)
-
-        super.onReceive(context, intent)
+        if (intent != null && context != null) {
+            if (intent.action == Utils.getUpdateWidgetAction())
+                widgetActionUpdate(context)
+            if (intent.extras != null && intent.action == Utils.getOnWidgetItemClickedAction())
+                onItemClicked(intent = intent, context = context)
+            if (intent.action == Utils.getOnRefreshButtonClicked())
+                onWidgetRefresh(context)
+            if (intent.action == Utils.getOnDeleteButtonClicked())
+                onWidgetUserDelete(context)
+            if (intent.action == Utils.getDeleteWidgetAction())
+                deleteWidgetData(context)
+            super.onReceive(context, intent)
+        }
     }
 
     override fun onEnabled(context: Context) {
@@ -90,7 +93,9 @@ class GidgetWidget : AppWidgetProvider() {
 
     private fun onWidgetRefresh(context: Context) {
         val userMap: MutableMap<String, MutableMap<String, String>>? = utils.getUserDetails(context)
-        if (!userMap.isNullOrEmpty() && phoneState.isPhoneActive(context) && phoneState.isInternetConnected(context)
+        if (!userMap.isNullOrEmpty() && phoneState.isPhoneActive(context) && phoneState.isInternetConnected(
+                context
+            )
         )
             addToWidget(context, userMap)
         else
@@ -227,6 +232,10 @@ class GidgetWidget : AppWidgetProvider() {
         }
     }
 
+    private fun onWidgetUserDelete(context: Context) {
+
+    }
+
     private fun deleteWidgetData(context: Context) {
         val appwidgetAlarm = AppWidgetAlarm(context.applicationContext)
         appwidgetAlarm.stopGidgetRefresh()
@@ -259,6 +268,12 @@ internal fun updateAppWidget(
     val refreshPendingIntent =
         PendingIntent.getBroadcast(context, 0, refreshIntent, PendingIntent.FLAG_UPDATE_CURRENT)
     views.setOnClickPendingIntent(R.id.appwidgetRefreshButton, refreshPendingIntent)
+
+    val deleteIntent = Intent(context, GidgetWidget::class.java)
+    deleteIntent.action = Utils.getOnDeleteButtonClicked()
+    val deletePendingIntent =
+        PendingIntent.getBroadcast(context, 0, deleteIntent, PendingIntent.FLAG_UPDATE_CURRENT)
+    views.setOnClickPendingIntent(R.id.appwidgetDeleteButton, deletePendingIntent)
 
     // Main Widget
     val clickIntent = Intent(context, GidgetWidget::class.java)
