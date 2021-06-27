@@ -5,6 +5,7 @@ import android.graphics.Color
 import android.os.Bundle
 import android.view.View
 import android.view.inputmethod.EditorInfo
+import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import android.widget.ImageButton
 import android.widget.ProgressBar
@@ -127,6 +128,7 @@ class SearchActivity : AppCompatActivity() {
         emptySearchTextView: TextView,
         progressBar: ProgressBar,
     ) {
+        hideKeyBoard()
         emptySearchTextView.visibility = View.GONE
         progressBar.visibility = View.VISIBLE
         if (searchType == "users") {
@@ -194,6 +196,13 @@ class SearchActivity : AppCompatActivity() {
                     println("Error - ${t.message}")
                 }
             })
+        }
+    }
+
+    private fun hideKeyBoard() {
+        this.currentFocus?.let { view ->
+            val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
+            imm?.hideSoftInputFromWindow(view.windowToken, 0)
         }
     }
 }

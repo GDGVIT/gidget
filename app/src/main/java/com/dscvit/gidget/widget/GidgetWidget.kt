@@ -6,21 +6,20 @@ import android.appwidget.AppWidgetProvider
 import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
 import android.net.Uri
 import android.view.View
 import android.widget.RemoteViews
 import android.widget.Toast
+import androidx.preference.PreferenceManager
 import com.dscvit.gidget.R
 import com.dscvit.gidget.activities.DeleteUserFromGidgetActivity
 import com.dscvit.gidget.activities.MainActivity
 import com.dscvit.gidget.adapters.WidgetRepoRemoteService
-import com.dscvit.gidget.common.AppWidgetAlarm
-import com.dscvit.gidget.common.Common
-import com.dscvit.gidget.common.PhoneState
-import com.dscvit.gidget.common.Security
-import com.dscvit.gidget.common.Utils
+import com.dscvit.gidget.common.*
 import com.dscvit.gidget.models.widget.AddToWidget
 import com.dscvit.gidget.models.widget.WidgetRepoModel
+import com.google.gson.Gson
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -81,29 +80,34 @@ class GidgetWidget : AppWidgetProvider() {
 
     private fun widgetActionUpdate(context: Context) {
         val appWidgetManager = AppWidgetManager.getInstance(context)
-        val appWidgetIds = appWidgetManager.getAppWidgetIds(ComponentName(context, GidgetWidget::class.java))
+        val appWidgetIds =
+            appWidgetManager.getAppWidgetIds(ComponentName(context, GidgetWidget::class.java))
 //        val views = RemoteViews(context.packageName, R.layout.gidget_widget)
 //        views.setTextViewText(R.id.appwidgetDate, utils.getTime())
 //        views.setViewVisibility(R.id.appwidgetDate, View.VISIBLE)
         if (appWidgetIds.isNotEmpty()) {
             appWidgetManager.notifyAppWidgetViewDataChanged(appWidgetIds, R.id.appwidgetListView)
             //appWidgetManager.updateAppWidget(appWidgetIds.first(), views)
-            updateAppWidget(context, appWidgetManager, appWidgetIds.first(), utils)
+            updateAppWidget(context, appWidgetManager, appWidgetIds.first(), utils, utils.getTime())
         }
     }
 
     private fun onWidgetRefresh(context: Context) {
         val userMap: MutableMap<String, MutableMap<String, String>>? = utils.getUserDetails(context)
-        if (!userMap.isNullOrEmpty() && phoneState.isPhoneActive(context) && phoneState.isInternetConnected(context))
+        if (!userMap.isNullOrEmpty() && phoneState.isPhoneActive(context) && phoneState.isInternetConnected(
+                context
+            )
+        )
             addToWidget(context, userMap)
-         else
+        else
             Toast.makeText(context, "Cannot refresh empty widget", Toast.LENGTH_LONG).show()
     }
 
     private fun addToWidget(
         context: Context,
         userMap: MutableMap<String, MutableMap<String, String>>,
-        i: Int = 0
+        i: Int = 0,
+        dataSource: ArrayList<AddToWidget> = arrayListOf()
     ) {
         val views = RemoteViews(context.packageName, R.layout.gidget_widget)
         val appWidgetManager = AppWidgetManager.getInstance(context)
@@ -121,16 +125,17 @@ class GidgetWidget : AppWidgetProvider() {
             val map: MutableMap<String, String> = userMap[key]!!
             val name: String = map["name"]!!
             val isUser: Boolean = map["isUser"].toBoolean()
-            val photoUrl: String = map["photoUrl"]!!
 
             if (isUser) {
-                mService.widgetUserEvents(key.substring(0, key.indexOf(",")), "token ${Security.getToken()}")
+                mService.widgetUserEvents(
+                    key.substring(0, key.indexOf(",")),
+                    "token ${Security.getToken()}"
+                )
                     .enqueue(object : Callback<MutableList<WidgetRepoModel>> {
                         override fun onResponse(
                             call: Call<MutableList<WidgetRepoModel>>,
                             response: Response<MutableList<WidgetRepoModel>>
                         ) {
-                            val dataSource: ArrayList<AddToWidget> = arrayListOf()
                             if (response.body() != null) {
                                 for (res in response.body()!!) {
                                     val addToWidget = AddToWidget()
@@ -148,20 +153,10 @@ class GidgetWidget : AppWidgetProvider() {
                                     dataSource.add(addToWidget)
                                 }
 
-                                utils.saveArrayList(
-                                    dataSource = dataSource,
-                                    context = context,
-                                    username = key,
-                                    name = name,
-                                    photoUrl = photoUrl,
-                                    isUser = isUser
-                                )
                                 if (userMap.keys.elementAtOrNull(i + 1) != null)
-                                    addToWidget(context, userMap, i + 1)
-                                else if (key == userMap.keys.last()) {
-                                    appWidgetManager.updateAppWidget(appWidgetIds, views)
-                                    widgetActionUpdate(context)
-                                }
+                                    addToWidget(context, userMap, i + 1, dataSource)
+                                else if (key == userMap.keys.last())
+                                    refreshWidgetUpdateSharedPref(context, dataSource, appWidgetManager, appWidgetIds, views)
                             } else throw Exception("Unable to get data")
                         }
 
@@ -175,13 +170,16 @@ class GidgetWidget : AppWidgetProvider() {
                         }
                     })
             } else {
-                mService.widgetRepoEvents(key.substring(0, key.indexOf(",")), name, "token ${Security.getToken()}")
+                mService.widgetRepoEvents(
+                    key.substring(0, key.indexOf(",")),
+                    name,
+                    "token ${Security.getToken()}"
+                )
                     .enqueue(object : Callback<MutableList<WidgetRepoModel>> {
                         override fun onResponse(
                             call: Call<MutableList<WidgetRepoModel>>,
                             response: Response<MutableList<WidgetRepoModel>>
                         ) {
-                            val dataSource: ArrayList<AddToWidget> = arrayListOf()
                             if (response.body() != null) {
                                 for (res in response.body()!!) {
                                     val addToWidget = AddToWidget()
@@ -199,20 +197,10 @@ class GidgetWidget : AppWidgetProvider() {
                                     dataSource.add(addToWidget)
                                 }
 
-                                utils.saveArrayList(
-                                    dataSource = dataSource,
-                                    context = context,
-                                    username = key,
-                                    name = name,
-                                    photoUrl = photoUrl,
-                                    isUser = isUser
-                                )
                                 if (userMap.keys.elementAtOrNull(i + 1) != null)
-                                    addToWidget(context, userMap, i + 1)
-                                else if (key == userMap.keys.last()) {
-                                    appWidgetManager.updateAppWidget(appWidgetIds, views)
-                                    widgetActionUpdate(context)
-                                }
+                                    addToWidget(context, userMap, i + 1, dataSource)
+                                else if (key == userMap.keys.last())
+                                    refreshWidgetUpdateSharedPref(context, dataSource, appWidgetManager, appWidgetIds, views)
                             } else throw Exception("Unable to get data")
                         }
 
@@ -231,6 +219,24 @@ class GidgetWidget : AppWidgetProvider() {
             Toast.makeText(context, "Error refreshing Gidget", Toast.LENGTH_LONG).show()
             appWidgetManager.updateAppWidget(appWidgetIds, views)
         }
+    }
+
+    private fun refreshWidgetUpdateSharedPref(
+        context: Context,
+        dataSource: ArrayList<AddToWidget>,
+        appWidgetManager: AppWidgetManager,
+        appWidgetIds: IntArray,
+        views: RemoteViews
+    ) {
+        val prefs: SharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
+        val editor: SharedPreferences.Editor = prefs.edit()
+        val gson = Gson()
+        dataSource.sortWith(SortByDate())
+        if (dataSource.size > 50) dataSource.subList(51, dataSource.size).clear()
+        editor.putString("dataSource", gson.toJson(dataSource))
+        editor.apply()
+        appWidgetManager.updateAppWidget(appWidgetIds, views)
+        widgetActionUpdate(context)
     }
 
     private fun deleteWidgetData(context: Context) {
@@ -255,7 +261,8 @@ internal fun updateAppWidget(
     context: Context,
     appWidgetManager: AppWidgetManager,
     appWidgetId: Int,
-    utils: Utils
+    utils: Utils,
+    date: String = ""
 ) {
     val views = RemoteViews(context.packageName, R.layout.gidget_widget)
 
@@ -273,7 +280,10 @@ internal fun updateAppWidget(
         PendingIntent.getBroadcast(context, 0, refreshIntent, PendingIntent.FLAG_UPDATE_CURRENT)
     views.setOnClickPendingIntent(R.id.appwidgetRefreshButton, refreshPendingIntent)
 
-    val deleteIntent = Intent(context, DeleteUserFromGidgetActivity::class.java).addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP)
+    val deleteIntent = Intent(
+        context,
+        DeleteUserFromGidgetActivity::class.java
+    ).addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP)
     val deletePendingIntent =
         PendingIntent.getActivity(context, 0, deleteIntent, 0)
     views.setOnClickPendingIntent(R.id.appwidgetDeleteButton, deletePendingIntent)
@@ -289,7 +299,7 @@ internal fun updateAppWidget(
         views.setViewVisibility(R.id.appwidgetProgressBar, View.GONE)
     } else {
         // Date Widget
-        //views.setTextViewText(R.id.appwidgetDate, utils.getTime())
+        views.setTextViewText(R.id.appwidgetDate, date)
         // Widget Service Intent
         val serviceIntent = Intent(context, WidgetRepoRemoteService::class.java)
         views.setRemoteAdapter(R.id.appwidgetListView, serviceIntent)
