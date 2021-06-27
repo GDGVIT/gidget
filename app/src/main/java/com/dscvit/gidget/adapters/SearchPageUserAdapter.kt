@@ -94,7 +94,7 @@ class SearchPageUserAdapter(
         Utils().addToWidget(
             mService,
             isUser = true,
-            username = currentItem.login,
+            username = "${currentItem.login},true",
             name = "",
             repoOwnerAvatarUrl = "",
             context = context

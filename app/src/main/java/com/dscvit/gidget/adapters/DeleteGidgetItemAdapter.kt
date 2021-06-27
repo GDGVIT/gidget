@@ -48,8 +48,8 @@ class DeleteGidgetItemAdapter(
             val photoUrl: String = currentMap["photoUrl"]!!
             val isUser: Boolean = currentMap["isUser"]!!.toBoolean()
 
-            holder.name.text = if (isUser) username else name
-            holder.username.text = if (isUser) "" else name
+            holder.name.text = if (name.isEmpty()) username.substring(0, username.indexOf(",")) else name
+            holder.username.text = username.substring(0, username.indexOf(","))
             holder.isUser.text = if (isUser) "User/Org" else "Repo"
 
             Picasso.get().load(photoUrl).error(R.drawable.github_logo).transform(
@@ -101,7 +101,7 @@ internal fun updateGidget(
     try {
         val utils = Utils()
         var dataSource: ArrayList<AddToWidget> = utils.getArrayList(context)
-        dataSource = dataSource.filter { it.username != username && it.name != name } as ArrayList<AddToWidget>
+        dataSource = dataSource.filter { !it.name!!.contains(name) } as ArrayList<AddToWidget>
 
         if (userMap.isNullOrEmpty()) {
             utils.deleteArrayList(context)
@@ -123,7 +123,7 @@ internal fun updateGidget(
             widgetIntent.action = Utils.getOnRefreshButtonClicked()
             context.sendBroadcast(widgetIntent)
         }
-        Toast.makeText(context, "Items removed from Gidget", Toast.LENGTH_LONG).show()
+        Toast.makeText(context, "Items removed from Gidget", Toast.LENGTH_SHORT).show()
     } catch (e: Exception) {
         println(e.message)
     }

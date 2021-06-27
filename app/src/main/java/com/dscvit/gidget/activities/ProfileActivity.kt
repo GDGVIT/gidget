@@ -123,8 +123,8 @@ class ProfileActivity : AppCompatActivity() {
                             Utils().addToWidget(
                                 mService,
                                 true,
-                                username = username,
-                                name = "",
+                                username = "$username,true",
+                                name = (if (response.body()!!.name.isNullOrEmpty()) "" else response.body()!!.name)!!,
                                 repoOwnerAvatarUrl = "",
                                 context = context
                             )

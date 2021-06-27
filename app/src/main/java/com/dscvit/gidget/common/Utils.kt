@@ -51,13 +51,14 @@ class Utils {
         repoOwnerAvatarUrl: String,
         context: Context,
     ) {
-        val ids: IntArray = AppWidgetManager.getInstance(context)
+        val appWidgetManager: AppWidgetManager = AppWidgetManager.getInstance(context)
+        val appwidgetIDs: IntArray = appWidgetManager
             .getAppWidgetIds(ComponentName(context, GidgetWidget::class.java))
         val alertDialog: AlertDialog = alertDialog(context)
-        if (ids.isNotEmpty()) {
+        if (appwidgetIDs.isNotEmpty()) {
             if (isUser)
                 mService.widgetUserEvents(
-                    username,
+                    username.substring(0, username.indexOf(",")),
                     "token ${Security.getToken()}"
                 )
                     .enqueue(object : Callback<MutableList<WidgetRepoModel>> {
@@ -99,7 +100,8 @@ class Utils {
 
                                 if (alertDialog.isShowing)
                                     alertDialog.dismiss()
-                                Toast.makeText(context, "Added to Gidget", Toast.LENGTH_LONG).show()
+                                Toast.makeText(context, "Added to Gidget", Toast.LENGTH_SHORT)
+                                    .show()
                             }
                         }
 
@@ -117,7 +119,7 @@ class Utils {
                     })
             else
                 mService.widgetRepoEvents(
-                    username,
+                    username.substring(0, username.indexOf(",")),
                     name,
                     "token ${Security.getToken()}"
                 )
@@ -160,7 +162,7 @@ class Utils {
 
                                 if (alertDialog.isShowing)
                                     alertDialog.dismiss()
-                                Toast.makeText(context, "Added to Gidget", Toast.LENGTH_LONG)
+                                Toast.makeText(context, "Added to Gidget", Toast.LENGTH_SHORT)
                                     .show()
                             }
                         }
@@ -200,9 +202,14 @@ class Utils {
                 val userDetailsMap: MutableMap<String, MutableMap<String, String>>? =
                     getUserDetails(context)
                 if (!userDetailsMap.isNullOrEmpty()) {
-                    if (userDetailsMap.containsKey(username))
-                        return
-                    val userDataSource: ArrayList<AddToWidget> = getArrayList(context)
+                    var userDataSource: ArrayList<AddToWidget> = getArrayList(context)
+
+                    if (userDetailsMap.containsKey(username)) {
+                        userDetailsMap.remove(username)
+                        userDataSource =
+                            userDataSource.filter { it.username!! == username } as ArrayList<AddToWidget>
+                    }
+
                     userDetailsMap[username] = mutableMapOf(
                         "name" to name,
                         "photoUrl" to photoUrl,

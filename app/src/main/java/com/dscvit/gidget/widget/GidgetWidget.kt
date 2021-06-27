@@ -82,18 +82,21 @@ class GidgetWidget : AppWidgetProvider() {
     private fun widgetActionUpdate(context: Context) {
         val appWidgetManager = AppWidgetManager.getInstance(context)
         val appWidgetIds = appWidgetManager.getAppWidgetIds(ComponentName(context, GidgetWidget::class.java))
+//        val views = RemoteViews(context.packageName, R.layout.gidget_widget)
+//        views.setTextViewText(R.id.appwidgetDate, utils.getTime())
+//        views.setViewVisibility(R.id.appwidgetDate, View.VISIBLE)
         if (appWidgetIds.isNotEmpty()) {
             appWidgetManager.notifyAppWidgetViewDataChanged(appWidgetIds, R.id.appwidgetListView)
+            //appWidgetManager.updateAppWidget(appWidgetIds.first(), views)
             updateAppWidget(context, appWidgetManager, appWidgetIds.first(), utils)
         }
     }
 
     private fun onWidgetRefresh(context: Context) {
         val userMap: MutableMap<String, MutableMap<String, String>>? = utils.getUserDetails(context)
-        if (!userMap.isNullOrEmpty() && phoneState.isPhoneActive(context) && phoneState.isInternetConnected(context)) {
-            utils.deleteArrayList(context)
+        if (!userMap.isNullOrEmpty() && phoneState.isPhoneActive(context) && phoneState.isInternetConnected(context))
             addToWidget(context, userMap)
-        } else
+         else
             Toast.makeText(context, "Cannot refresh empty widget", Toast.LENGTH_LONG).show()
     }
 
@@ -114,14 +117,14 @@ class GidgetWidget : AppWidgetProvider() {
         views.setTextViewText(R.id.appwidgetDate, utils.getTime())
 
         try {
-            val username: String = userMap.keys.elementAt(i)
-            val map: MutableMap<String, String> = userMap[username]!!
+            val key: String = userMap.keys.elementAt(i)
+            val map: MutableMap<String, String> = userMap[key]!!
             val name: String = map["name"]!!
             val isUser: Boolean = map["isUser"].toBoolean()
             val photoUrl: String = map["photoUrl"]!!
 
             if (isUser) {
-                mService.widgetUserEvents(username, "token ${Security.getToken()}")
+                mService.widgetUserEvents(key.substring(0, key.indexOf(",")), "token ${Security.getToken()}")
                     .enqueue(object : Callback<MutableList<WidgetRepoModel>> {
                         override fun onResponse(
                             call: Call<MutableList<WidgetRepoModel>>,
@@ -148,18 +151,18 @@ class GidgetWidget : AppWidgetProvider() {
                                 utils.saveArrayList(
                                     dataSource = dataSource,
                                     context = context,
-                                    username = username,
+                                    username = key,
                                     name = name,
                                     photoUrl = photoUrl,
                                     isUser = isUser
                                 )
                                 if (userMap.keys.elementAtOrNull(i + 1) != null)
                                     addToWidget(context, userMap, i + 1)
-                                else if (username == userMap.keys.last()) {
+                                else if (key == userMap.keys.last()) {
                                     appWidgetManager.updateAppWidget(appWidgetIds, views)
                                     widgetActionUpdate(context)
                                 }
-                            }
+                            } else throw Exception("Unable to get data")
                         }
 
                         override fun onFailure(
@@ -172,7 +175,7 @@ class GidgetWidget : AppWidgetProvider() {
                         }
                     })
             } else {
-                mService.widgetRepoEvents(username, name, "token ${Security.getToken()}")
+                mService.widgetRepoEvents(key.substring(0, key.indexOf(",")), name, "token ${Security.getToken()}")
                     .enqueue(object : Callback<MutableList<WidgetRepoModel>> {
                         override fun onResponse(
                             call: Call<MutableList<WidgetRepoModel>>,
@@ -199,18 +202,18 @@ class GidgetWidget : AppWidgetProvider() {
                                 utils.saveArrayList(
                                     dataSource = dataSource,
                                     context = context,
-                                    username = username,
+                                    username = key,
                                     name = name,
                                     photoUrl = photoUrl,
                                     isUser = isUser
                                 )
                                 if (userMap.keys.elementAtOrNull(i + 1) != null)
                                     addToWidget(context, userMap, i + 1)
-                                else if (username == userMap.keys.last()) {
+                                else if (key == userMap.keys.last()) {
                                     appWidgetManager.updateAppWidget(appWidgetIds, views)
                                     widgetActionUpdate(context)
                                 }
-                            }
+                            } else throw Exception("Unable to get data")
                         }
 
                         override fun onFailure(
@@ -270,10 +273,7 @@ internal fun updateAppWidget(
         PendingIntent.getBroadcast(context, 0, refreshIntent, PendingIntent.FLAG_UPDATE_CURRENT)
     views.setOnClickPendingIntent(R.id.appwidgetRefreshButton, refreshPendingIntent)
 
-    val deleteIntent = Intent(
-        context,
-        DeleteUserFromGidgetActivity::class.java
-    ).addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP)
+    val deleteIntent = Intent(context, DeleteUserFromGidgetActivity::class.java).addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP)
     val deletePendingIntent =
         PendingIntent.getActivity(context, 0, deleteIntent, 0)
     views.setOnClickPendingIntent(R.id.appwidgetDeleteButton, deletePendingIntent)
@@ -289,7 +289,7 @@ internal fun updateAppWidget(
         views.setViewVisibility(R.id.appwidgetProgressBar, View.GONE)
     } else {
         // Date Widget
-        views.setTextViewText(R.id.appwidgetDate, utils.getTime())
+        //views.setTextViewText(R.id.appwidgetDate, utils.getTime())
         // Widget Service Intent
         val serviceIntent = Intent(context, WidgetRepoRemoteService::class.java)
         views.setRemoteAdapter(R.id.appwidgetListView, serviceIntent)

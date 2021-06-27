@@ -73,7 +73,7 @@ class SearchPageRepoAdapter(
         Utils().addToWidget(
             mService = mService,
             isUser = false,
-            username = currentItem.owner.login,
+            username = "${currentItem.owner.login},false",
             name = currentItem.name,
             repoOwnerAvatarUrl = currentItem.owner.avatar_url,
             context = context
