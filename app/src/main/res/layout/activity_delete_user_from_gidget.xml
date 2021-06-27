@@ -66,11 +66,23 @@
         </androidx.appcompat.widget.Toolbar>
     </com.google.android.material.appbar.AppBarLayout>
 
+    <TextView
+        android:id="@+id/deleteUserFromGidgetTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/deleteUserFromGidgetAppBar"
+        android:text="@string/delete_user_widget_title"
+        android:textColor="@color/white"
+        android:textSize="@dimen/_14sdp"
+        android:layout_marginHorizontal="@dimen/_20sdp"
+        android:fontFamily="@font/montserrat"
+        android:layout_marginVertical="@dimen/_8sdp"/>
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/deleteUserFromGidgetRecyclerView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/deleteUserFromGidgetAppBar"
+        android:layout_below="@+id/deleteUserFromGidgetTitle"
         android:layout_marginTop="@dimen/_10sdp"
         android:scrollbars="vertical"
         tools:listitem="@layout/delete_user_widget_recycleritem" />

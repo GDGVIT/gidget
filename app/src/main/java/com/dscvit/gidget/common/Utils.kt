@@ -13,7 +13,6 @@ import android.graphics.Paint
 import android.graphics.RectF
 import android.graphics.Shader
 import android.view.LayoutInflater
-import android.widget.Button
 import android.widget.Toast
 import androidx.preference.PreferenceManager
 import com.dscvit.gidget.R
@@ -394,13 +393,7 @@ class Utils {
             LayoutInflater.from(context).inflate(R.layout.loading_alertdialog, null)
         val alertDialogBuilder =
             AlertDialog.Builder(context).setView(alertDialogView).setCancelable(false)
-        val alertDialog = alertDialogBuilder.show()
-
-        alertDialogView.findViewById<Button>(R.id.alertCancel).setOnClickListener {
-            alertDialog.dismiss()
-            Toast.makeText(context, "User Cancelled", Toast.LENGTH_LONG).show()
-        }
-        return alertDialog
+        return alertDialogBuilder.show()
     }
 }
 

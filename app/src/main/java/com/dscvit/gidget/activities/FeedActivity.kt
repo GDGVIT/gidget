@@ -52,6 +52,7 @@ class FeedActivity : AppCompatActivity() {
         navigateToSearchPage(searchButton)
 
         pullRefresh.setOnRefreshListener {
+            recyclerView.visibility = View.GONE
             getFeedList(recyclerView, progressBar, emptyTextView, signedUpUserMap)
             pullRefresh.isRefreshing = false
         }
@@ -74,6 +75,7 @@ class FeedActivity : AppCompatActivity() {
                     response: Response<MutableList<FeedPageModel>>
                 ) {
                     emptyTextView.visibility = View.GONE
+                    recyclerView.visibility = View.VISIBLE
                     adapter = FeedPageAdapter(
                         this@FeedActivity,
                         response.body() as MutableList<FeedPageModel>
