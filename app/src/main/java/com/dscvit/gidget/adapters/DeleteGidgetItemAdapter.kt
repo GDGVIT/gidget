@@ -67,11 +67,12 @@ class DeleteGidgetItemAdapter(
             holder.addToWidgetButton.setOnClickListener {
                 try {
                     userMap.remove(username)
-                    updateGidget(username, name, context, userMap)
+                    updateGidget(name, context, userMap)
                     notifyItemRemoved(position)
+                    notifyDataSetChanged()
                 } catch (e: Exception) {
                     println(e.message)
-                    Toast.makeText(context, "Failed to remove items", Toast.LENGTH_LONG).show()
+                    Toast.makeText(context, "Failed to remove items", Toast.LENGTH_SHORT).show()
                 }
             }
         }
@@ -93,7 +94,6 @@ class DeleteGidgetItemAdapter(
 }
 
 internal fun updateGidget(
-    username: String,
     name: String,
     context: Context,
     userMap: MutableMap<String, MutableMap<String, String>>

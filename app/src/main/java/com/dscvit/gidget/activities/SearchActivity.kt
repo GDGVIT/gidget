@@ -41,7 +41,7 @@ class SearchActivity : AppCompatActivity() {
         mService = Common.retroFitService
 
         val backButton: ImageButton = findViewById(R.id.searchPageBackButton)
-        val emptySearchTextView: TextView = findViewById(R.id.searchPageNoItemsSearchedText)
+        val emptySearchTextView: TextView = findViewById(R.id.searchPageNoItemsEmptyTextView)
         val searchText: EditText = findViewById(R.id.searchPageSearchText)
         val searchButton: ImageButton = findViewById(R.id.searchPageSearchButton)
         val orgButton: CardView = findViewById(R.id.searchPageOrganizationButton)
@@ -141,8 +141,15 @@ class SearchActivity : AppCompatActivity() {
                         call: Call<SearchPageUserModel>,
                         response: Response<SearchPageUserModel>
                     ) {
-                        if (response.body() != null) {
+                        if (response.body()!!.total_count <= 0) {
+                            val emptyResults = "No results found!"
                             progressBar.visibility = View.GONE
+                            emptySearchTextView.text = emptyResults
+                            emptySearchTextView.visibility = View.VISIBLE
+                        } else if (response.body() != null) {
+                            progressBar.visibility = View.GONE
+                            emptySearchTextView.visibility = View.GONE
+
                             userAdapter = SearchPageUserAdapter(
                                 this@SearchActivity,
                                 response.body()!!.items as MutableList<Items>,
@@ -155,7 +162,9 @@ class SearchActivity : AppCompatActivity() {
                     }
 
                     override fun onFailure(call: Call<SearchPageUserModel>, t: Throwable) {
+                        val notFoundResults = "No items searched…"
                         progressBar.visibility = View.GONE
+                        emptySearchTextView.text = notFoundResults
                         emptySearchTextView.visibility = View.VISIBLE
                         Toast.makeText(
                             context,
@@ -174,8 +183,15 @@ class SearchActivity : AppCompatActivity() {
                     call: Call<SearchPageRepoModel>,
                     response: Response<SearchPageRepoModel>
                 ) {
-                    if (response.body() != null) {
+                    if (response.body()!!.total_count <= 0) {
+                        val emptyResults = "No results found!"
                         progressBar.visibility = View.GONE
+                        emptySearchTextView.text = emptyResults
+                        emptySearchTextView.visibility = View.VISIBLE
+                    } else if (response.body() != null) {
+                        progressBar.visibility = View.GONE
+                        emptySearchTextView.visibility = View.GONE
+
                         repoAdapter = SearchPageRepoAdapter(
                             this@SearchActivity,
                             response.body()!!.items as MutableList<ItemsRepo>
@@ -187,7 +203,10 @@ class SearchActivity : AppCompatActivity() {
                 }
 
                 override fun onFailure(call: Call<SearchPageRepoModel>, t: Throwable) {
+                    val notFoundResults = "No items searched…"
                     progressBar.visibility = View.GONE
+                    emptySearchTextView.text = notFoundResults
+                    emptySearchTextView.visibility = View.VISIBLE
                     Toast.makeText(
                         context,
                         "Something went wrong! Please try again later",

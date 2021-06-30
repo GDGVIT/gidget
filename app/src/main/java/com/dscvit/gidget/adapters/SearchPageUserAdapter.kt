@@ -11,10 +11,10 @@ import android.view.animation.AnimationUtils
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
-import android.widget.Toast
 import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.RecyclerView
 import com.dscvit.gidget.R
+import com.dscvit.gidget.activities.ProfileActivity
 import com.dscvit.gidget.common.Common
 import com.dscvit.gidget.common.RoundedTransformation
 import com.dscvit.gidget.common.Security
@@ -79,12 +79,11 @@ class SearchPageUserAdapter(
         holderUser.itemView.startAnimation(animation)
 
         // Add to widget
-        holderUser.addToWidgetButton.setOnClickListener {
-            addToWidget(currentItem)
-        }
+        holderUser.addToWidgetButton.setOnClickListener { addToWidget(currentItem) }
 
         // onClick
         holderUser.currentView.setOnClickListener { navigateToExternal(currentItem.login) }
+        holderUser.profilePhoto.setOnClickListener { openProfilePage(currentItem) }
     }
 
     override fun getItemCount(): Int = searchPageDataList.size
@@ -96,16 +95,22 @@ class SearchPageUserAdapter(
             isUser = true,
             username = "${currentItem.login},true",
             name = "",
-            repoOwnerAvatarUrl = "",
+            ownerAvatarUrl = currentItem.avatar_url,
             context = context
         )
     }
 
     private fun navigateToExternal(username: String) {
-        Toast.makeText(context, username, Toast.LENGTH_LONG).show()
         val uri: Uri = Uri.parse("https://github.com/$username")
         val clickIntent = Intent(Intent.ACTION_VIEW, uri).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
         context.startActivity(clickIntent)
+    }
+
+    private fun openProfilePage(currentItem: Items) {
+        val intent = Intent(context, ProfileActivity::class.java)
+        intent.putExtra("username", currentItem.login)
+        intent.putExtra("owner", false)
+        context.startActivity(intent)
     }
 
     class SearchPageUserViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {

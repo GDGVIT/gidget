@@ -6,9 +6,6 @@
     android:layout_height="wrap_content"
     android:layout_marginHorizontal="@dimen/_20sdp"
     android:layout_marginVertical="@dimen/_6sdp"
-    android:background="?android:attr/selectableItemBackground"
-    android:clickable="true"
-    android:focusable="true"
     android:paddingVertical="@dimen/_6sdp"
     tools:background="@android:color/transparent">
 
@@ -60,6 +57,7 @@
                     android:layout_height="wrap_content"
                     android:layout_alignParentEnd="true"
                     android:layout_centerVertical="true"
+                    tools:foreground="?android:attr/selectableItemBackground"
                     app:cardCornerRadius="@dimen/_6sdp">
 
                     <androidx.appcompat.widget.AppCompatButton

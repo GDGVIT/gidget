@@ -11,10 +11,10 @@ import android.view.animation.AnimationUtils
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
-import android.widget.Toast
 import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.RecyclerView
 import com.dscvit.gidget.R
+import com.dscvit.gidget.activities.ProfileActivity
 import com.dscvit.gidget.common.Common
 import com.dscvit.gidget.common.RoundedTransformation
 import com.dscvit.gidget.common.Utils
@@ -64,6 +64,7 @@ class SearchPageRepoAdapter(
 
         // onClick
         holderRepo.currentView.setOnClickListener { navigateToExternal(currentItem.owner.login) }
+        holderRepo.profilePhoto.setOnClickListener { openProfilePage(currentItem) }
     }
 
     override fun getItemCount(): Int = searchPageDataList.size
@@ -75,16 +76,22 @@ class SearchPageRepoAdapter(
             isUser = false,
             username = "${currentItem.owner.login},false",
             name = currentItem.name,
-            repoOwnerAvatarUrl = currentItem.owner.avatar_url,
+            ownerAvatarUrl = currentItem.owner.avatar_url,
             context = context
         )
     }
 
     private fun navigateToExternal(username: String) {
-        Toast.makeText(context, "Opening in external site", Toast.LENGTH_LONG).show()
         val uri: Uri = Uri.parse("https://github.com/$username")
         val clickIntent = Intent(Intent.ACTION_VIEW, uri).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
         context.startActivity(clickIntent)
+    }
+
+    private fun openProfilePage(currentItem: ItemsRepo) {
+        val intent = Intent(context, ProfileActivity::class.java)
+        intent.putExtra("username", currentItem.owner.login)
+        intent.putExtra("owner", false)
+        context.startActivity(intent)
     }
 
     class SearchPageRepoViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {

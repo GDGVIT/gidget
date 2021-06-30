@@ -41,4 +41,5 @@
     <string name="add">Add </string>
     <string name="remove">Remove</string>
     <string name="delete_gidget_items_empty_text">No users/repos added to Gidget</string>
+    <string name="public_repositories">Public Repositories</string>
 </resources>

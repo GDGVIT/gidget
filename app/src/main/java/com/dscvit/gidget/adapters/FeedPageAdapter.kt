@@ -173,9 +173,12 @@ class FeedPageAdapter(
         val currentDate = LocalDateTime.now(ZoneId.of("Etc/UTC"))
         val differenceTime = Duration.between(currentDate, createDate).abs()
         val finalResult: String = when {
-            differenceTime.toMinutes() < 60 -> "${differenceTime.toMinutes()} minutes ago"
-            differenceTime.toHours() < 24 -> "${differenceTime.toHours()} hours ago"
-            differenceTime.toDays() <= 1 -> "${differenceTime.toDays()} day ago"
+            differenceTime.seconds < 60 -> "${differenceTime.seconds} secs ago"
+            differenceTime.toMinutes().toInt() == 1 -> "${differenceTime.toMinutes()} min ago"
+            differenceTime.toMinutes() < 60 -> "${differenceTime.toMinutes()} mins ago"
+            differenceTime.toHours().toInt() == 1 -> "${differenceTime.toHours()} hr ago"
+            differenceTime.toHours() < 24 -> "${differenceTime.toHours()} hrs ago"
+            differenceTime.toDays().toInt() == 1 -> "${differenceTime.toDays()} day ago"
             else -> "${differenceTime.toDays()} days ago"
         }
         holder.dateText.text = finalResult

@@ -74,17 +74,22 @@ class FeedActivity : AppCompatActivity() {
                     call: Call<MutableList<FeedPageModel>>,
                     response: Response<MutableList<FeedPageModel>>
                 ) {
-                    emptyTextView.visibility = View.GONE
-                    recyclerView.visibility = View.VISIBLE
-                    adapter = FeedPageAdapter(
-                        this@FeedActivity,
-                        response.body() as MutableList<FeedPageModel>
-                    )
+                    if (response.body()!!.isEmpty()) {
+                        progressBar.visibility = View.GONE
+                        emptyTextView.visibility = View.VISIBLE
+                    } else {
+                        emptyTextView.visibility = View.GONE
+                        recyclerView.visibility = View.VISIBLE
+                        adapter = FeedPageAdapter(
+                            this@FeedActivity,
+                            response.body() as MutableList<FeedPageModel>
+                        )
 
-                    adapter.notifyDataSetChanged()
-                    recyclerView.adapter = adapter
+                        adapter.notifyDataSetChanged()
+                        recyclerView.adapter = adapter
 
-                    progressBar.visibility = View.GONE
+                        progressBar.visibility = View.GONE
+                    }
                 }
 
                 override fun onFailure(call: Call<MutableList<FeedPageModel>>, t: Throwable) {
@@ -95,7 +100,10 @@ class FeedActivity : AppCompatActivity() {
             })
     }
 
-    private fun getProfilePhoto(profilePhoto: ImageView, signedUpUserMap: MutableMap<String, String>) {
+    private fun getProfilePhoto(
+        profilePhoto: ImageView,
+        signedUpUserMap: MutableMap<String, String>
+    ) {
         val photoUrl = signedUpUserMap["photoUrl"]
         Picasso.get().load(photoUrl).into(profilePhoto)
         profilePhoto.setOnClickListener {

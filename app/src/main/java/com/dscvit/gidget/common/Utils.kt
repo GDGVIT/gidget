@@ -26,13 +26,13 @@ import com.squareup.picasso.Transformation
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
-import java.lang.Exception
 import java.lang.reflect.Type
 import java.time.Duration
 import java.time.LocalDateTime
 import java.time.LocalTime
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
+import kotlin.Exception
 
 class Utils {
     companion object {
@@ -41,6 +41,7 @@ class Utils {
         fun getOnRefreshButtonClicked(): String = "onRefreshButtonClicked"
         fun getDeleteWidgetAction(): String = "deleteWidgetWithDatasource"
         fun getClearWidgetItems(): String = "clearWidgetItems"
+        fun automaticUpdateWidget(): String = "android.appwidget.action.APPWIDGET_UPDATE"
     }
 
     fun addToWidget(
@@ -48,7 +49,7 @@ class Utils {
         isUser: Boolean,
         username: String,
         name: String,
-        repoOwnerAvatarUrl: String,
+        ownerAvatarUrl: String,
         context: Context,
     ) {
         val appWidgetManager: AppWidgetManager = AppWidgetManager.getInstance(context)
@@ -89,7 +90,7 @@ class Utils {
                                     context = context,
                                     username = username,
                                     name = name,
-                                    photoUrl = dataSource.first().avatarUrl!!,
+                                    photoUrl = ownerAvatarUrl,
                                     isUser = isUser
                                 )
                                 val widgetIntent = Intent(context, GidgetWidget::class.java)
@@ -151,7 +152,7 @@ class Utils {
                                     context = context,
                                     username = username,
                                     name = name,
-                                    photoUrl = repoOwnerAvatarUrl,
+                                    photoUrl = ownerAvatarUrl,
                                     isUser = isUser
                                 )
                                 val widgetIntent = Intent(context, GidgetWidget::class.java)
