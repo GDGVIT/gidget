@@ -38,7 +38,7 @@ data class Payload(
     @SerializedName("pull_request") val pull_request: PullRequest? = null,
     @SerializedName("review") val review: Review? = null,
     @SerializedName("comment") val comment: Comment? = null,
-
+    @SerializedName("release") val release: Release? = null,
 )
 
 // Payload subclasses
@@ -64,5 +64,9 @@ data class Review(
 )
 
 data class Comment(
+    @SerializedName("html_url") val html_url: String? = null
+)
+
+data class Release(
     @SerializedName("html_url") val html_url: String? = null
 )

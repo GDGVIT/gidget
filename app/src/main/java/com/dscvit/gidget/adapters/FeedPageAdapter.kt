@@ -199,7 +199,7 @@ class FeedPageAdapter(
             "PullRequestReviewEvent" -> currentItem.payload!!.review!!.html_url!!
             "PullRequestReviewCommentEvent" -> currentItem.payload!!.comment!!.html_url!!
             "PushEvent" -> "https://github.com/${currentItem.repo.name}/commit/${currentItem.payload!!.commits!![0].sha!!}"
-            "ReleaseEvent" -> "https://github.com/${currentItem.repo.name}"
+            "ReleaseEvent" -> currentItem.payload!!.release!!.html_url!!
             "SponsorshipEvent" -> "https://github.com/${currentItem.repo.name}"
             "WatchEvent" -> "https://github.com/${currentItem.repo.name}"
             else -> "https://github.com/${currentItem.repo.name}"
