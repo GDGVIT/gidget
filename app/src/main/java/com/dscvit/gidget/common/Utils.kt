@@ -12,7 +12,6 @@ import android.graphics.Canvas
 import android.graphics.Paint
 import android.graphics.RectF
 import android.graphics.Shader
-import android.os.Build
 import android.view.LayoutInflater
 import android.widget.Toast
 import androidx.preference.PreferenceManager
