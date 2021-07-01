@@ -29,7 +29,12 @@
 ## Running
 
 - Clone the project in Android Studio
-- Simply run the project using pre added app configuration
+- Create a Github personal access token with user and repo as scope
+- Create a GitHub OAuth app. You will get a clientID and clientSecret
+- Add the Personal Access Token as "token" to your "System Variables" under "Environment Variables" in your pc
+- Add the ClientID as "clientID" to your "System Variables" under "Environment Variables" in your pc
+- Add the ClientSecret as "clientSecret" to your "System Variables" under "Environment Variables" in your pc
+- Simply restart your pc and run the project
 
 
 ## Contributors
