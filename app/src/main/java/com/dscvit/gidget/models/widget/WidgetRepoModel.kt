@@ -10,6 +10,7 @@ data class WidgetRepoModel(
     @SerializedName("public") val public: Boolean,
     @SerializedName("created_at") val created_at: String,
     @SerializedName("payload") val payload: Payload? = null,
+    @SerializedName("org") val org: Org? = null
 )
 
 data class Actor(
@@ -26,6 +27,10 @@ data class Repo(
     @SerializedName("url") val url: String
 )
 
+data class Org(
+    @SerializedName("avatar_url") val avatar_url: String? = null
+)
+
 data class Payload(
     @SerializedName("commits") val commits: Array<Commits>? = null,
     @SerializedName("forkee") val forkee: Forkee? = null,
@@ -33,7 +38,7 @@ data class Payload(
     @SerializedName("pull_request") val pull_request: PullRequest? = null,
     @SerializedName("review") val review: Review? = null,
     @SerializedName("comment") val comment: Comment? = null,
-
+    @SerializedName("release") val release: Release? = null,
 )
 
 // Payload subclasses
@@ -59,5 +64,9 @@ data class Review(
 )
 
 data class Comment(
+    @SerializedName("html_url") val html_url: String? = null
+)
+
+data class Release(
     @SerializedName("html_url") val html_url: String? = null
 )

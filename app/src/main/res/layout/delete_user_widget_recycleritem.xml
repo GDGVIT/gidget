@@ -10,27 +10,20 @@
     tools:background="@android:color/transparent">
 
     <ImageView
-        android:id="@+id/searchPageRecyclerItemProfilePhoto"
+        android:id="@+id/deleteUserFromGidgetRecyclerItemProfilePhoto"
         android:layout_width="@dimen/_30sdp"
         android:layout_height="@dimen/_30sdp"
         android:layout_alignParentStart="true"
         android:layout_centerVertical="true"
         android:background="@color/darkestBlue"
-        android:clickable="true"
-        android:focusable="true"
-        android:foreground="?android:attr/selectableItemBackground"
         android:src="@drawable/ic_baseline_person_24"
         tools:ignore="ContentDescription" />
 
     <androidx.cardview.widget.CardView
-        android:id="@+id/searchPageCardView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/_10sdp"
-        android:layout_toEndOf="@+id/searchPageRecyclerItemProfilePhoto"
-        android:clickable="true"
-        android:focusable="true"
-        android:foreground="?android:attr/selectableItemBackground"
+        android:layout_toEndOf="@+id/deleteUserFromGidgetRecyclerItemProfilePhoto"
         app:cardBackgroundColor="@color/feedPageRecyclerItemColor"
         app:cardCornerRadius="@dimen/_8sdp">
 
@@ -44,7 +37,7 @@
             android:paddingVertical="@dimen/_10sdp">
 
             <TextView
-                android:id="@+id/searchPageRecyclerItemNameText"
+                android:id="@+id/deleteUserFromGidgetRecyclerItemNameText"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/nexa_bold"
@@ -59,15 +52,16 @@
                 android:orientation="horizontal">
 
                 <androidx.cardview.widget.CardView
-                    android:id="@+id/searchPageRecyclerItemSection2"
+                    android:id="@+id/deleteUserFromGidgetRecyclerItemSection2"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentEnd="true"
                     android:layout_centerVertical="true"
+                    tools:foreground="?android:attr/selectableItemBackground"
                     app:cardCornerRadius="@dimen/_6sdp">
 
                     <androidx.appcompat.widget.AppCompatButton
-                        android:id="@+id/searchPageAddToHomeButton"
+                        android:id="@+id/deleteUserFromGidgetAddToHomeButton"
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
                         android:background="@color/darkestBlue"
@@ -75,11 +69,11 @@
                         android:drawableEnd="@drawable/gidget_icon_small"
                         android:fontFamily="@font/montserrat"
                         android:gravity="center"
-                        android:minWidth="@dimen/_55sdp"
+                        android:minWidth="@dimen/_74sdp"
                         android:minHeight="@dimen/_22sdp"
                         android:paddingHorizontal="@dimen/_6sdp"
                         android:scaleType="fitCenter"
-                        android:text="@string/add"
+                        android:text="@string/remove"
                         android:textAllCaps="false"
                         android:textColor="@color/blue"
                         android:textSize="@dimen/_10sdp"
@@ -90,11 +84,11 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentStart="true"
-                    android:layout_toStartOf="@+id/searchPageRecyclerItemSection2"
+                    android:layout_toStartOf="@+id/deleteUserFromGidgetRecyclerItemSection2"
                     android:orientation="vertical">
 
                     <TextView
-                        android:id="@+id/searchPageRecyclerItemUsernameText"
+                        android:id="@+id/deleteUserFromGidgetRecyclerItemUsernameText"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:fontFamily="@font/montserrat"
@@ -102,7 +96,7 @@
                         android:textSize="@dimen/_10sdp" />
 
                     <TextView
-                        android:id="@+id/searchPageRecyclerItemLocationText"
+                        android:id="@+id/deleteUserFromGidgetRecyclerItemIsUserText"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="@dimen/_5sdp"

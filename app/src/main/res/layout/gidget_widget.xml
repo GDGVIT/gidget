@@ -47,15 +47,26 @@
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
             android:layout_marginHorizontal="@dimen/_5sdp"
-            android:layout_toStartOf="@+id/appwidgetRefreshButton"
+            android:layout_toStartOf="@+id/appwidgetDeleteButton"
             android:fontFamily="@font/montserrat"
             android:textColor="@color/white"
             android:textSize="@dimen/_8sdp" />
 
         <ImageButton
+            android:id="@+id/appwidgetDeleteButton"
+            android:layout_width="@dimen/_15sdp"
+            android:layout_height="@dimen/_15sdp"
+            android:layout_marginEnd="@dimen/_5sdp"
+            android:layout_toStartOf="@+id/appwidgetRefreshButton"
+            android:background="@android:color/transparent"
+            android:contentDescription="@string/picture"
+            android:scaleType="fitCenter"
+            android:src="@drawable/ic_baseline_delete_24" />
+
+        <ImageButton
             android:id="@+id/appwidgetRefreshButton"
-            android:layout_width="@dimen/_17sdp"
-            android:layout_height="@dimen/_17sdp"
+            android:layout_width="@dimen/_15sdp"
+            android:layout_height="@dimen/_15sdp"
             android:layout_alignParentEnd="true"
             android:background="@android:color/transparent"
             android:contentDescription="@string/picture"

@@ -67,13 +67,12 @@ class FeedPageAdapter(
         setDate(holder, currentItem)
 
         // Custom Animation
-        var lastPosition: Int = -1
+        val lastPosition: Int = -1
         val animation: Animation = AnimationUtils.loadAnimation(
             context,
             if (position > lastPosition) R.anim.up_from_bottom else R.anim.down_from_top
         )
         holder.itemView.startAnimation(animation)
-        // lastPosition = position
 
         // Open Repository
         holder.feedPageRecyclerViewItem.setOnClickListener {
@@ -174,9 +173,12 @@ class FeedPageAdapter(
         val currentDate = LocalDateTime.now(ZoneId.of("Etc/UTC"))
         val differenceTime = Duration.between(currentDate, createDate).abs()
         val finalResult: String = when {
-            differenceTime.toMinutes() < 60 -> "${differenceTime.toMinutes()} minutes ago"
-            differenceTime.toHours() < 24 -> "${differenceTime.toHours()} hours ago"
-            differenceTime.toDays() <= 1 -> "${differenceTime.toDays()} day ago"
+            differenceTime.seconds < 60 -> "${differenceTime.seconds} secs ago"
+            differenceTime.toMinutes().toInt() == 1 -> "${differenceTime.toMinutes()} min ago"
+            differenceTime.toMinutes() < 60 -> "${differenceTime.toMinutes()} mins ago"
+            differenceTime.toHours().toInt() == 1 -> "${differenceTime.toHours()} hr ago"
+            differenceTime.toHours() < 24 -> "${differenceTime.toHours()} hrs ago"
+            differenceTime.toDays().toInt() == 1 -> "${differenceTime.toDays()} day ago"
             else -> "${differenceTime.toDays()} days ago"
         }
         holder.dateText.text = finalResult
@@ -197,7 +199,7 @@ class FeedPageAdapter(
             "PullRequestReviewEvent" -> currentItem.payload!!.review!!.html_url!!
             "PullRequestReviewCommentEvent" -> currentItem.payload!!.comment!!.html_url!!
             "PushEvent" -> "https://github.com/${currentItem.repo.name}/commit/${currentItem.payload!!.commits!![0].sha!!}"
-            "ReleaseEvent" -> "https://github.com/${currentItem.repo.name}"
+            "ReleaseEvent" -> currentItem.payload!!.release!!.html_url!!
             "SponsorshipEvent" -> "https://github.com/${currentItem.repo.name}"
             "WatchEvent" -> "https://github.com/${currentItem.repo.name}"
             else -> "https://github.com/${currentItem.repo.name}"

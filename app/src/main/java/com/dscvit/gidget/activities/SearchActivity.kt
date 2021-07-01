@@ -5,6 +5,7 @@ import android.graphics.Color
 import android.os.Bundle
 import android.view.View
 import android.view.inputmethod.EditorInfo
+import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import android.widget.ImageButton
 import android.widget.ProgressBar
@@ -40,7 +41,7 @@ class SearchActivity : AppCompatActivity() {
         mService = Common.retroFitService
 
         val backButton: ImageButton = findViewById(R.id.searchPageBackButton)
-        val emptySearchTextView: TextView = findViewById(R.id.searchPageNoItemsSearchedText)
+        val emptySearchTextView: TextView = findViewById(R.id.searchPageNoItemsEmptyTextView)
         val searchText: EditText = findViewById(R.id.searchPageSearchText)
         val searchButton: ImageButton = findViewById(R.id.searchPageSearchButton)
         val orgButton: CardView = findViewById(R.id.searchPageOrganizationButton)
@@ -61,6 +62,15 @@ class SearchActivity : AppCompatActivity() {
             repoButtonText.setTextColor(Color.WHITE)
             orgButtonText.setTextColor(Color.parseColor("#61B1FF"))
             recyclerView.removeAllViewsInLayout()
+            recyclerView.visibility = View.INVISIBLE
+            if (searchText.text.toString().isNotEmpty()) getSearchData(
+                this,
+                searchText.text.toString(),
+                searchType,
+                recyclerView,
+                emptySearchTextView,
+                progressBar
+            )
         }
         repoButton.setOnClickListener {
             searchType = "repositories"
@@ -68,8 +78,19 @@ class SearchActivity : AppCompatActivity() {
             orgButtonText.setTextColor(Color.WHITE)
             repoButtonText.setTextColor(Color.parseColor("#61B1FF"))
             recyclerView.removeAllViewsInLayout()
+            recyclerView.visibility = View.INVISIBLE
+            if (searchText.text.toString().isNotEmpty())
+                getSearchData(
+                    this,
+                    searchText.text.toString(),
+                    searchType,
+                    recyclerView,
+                    emptySearchTextView,
+                    progressBar
+                )
         }
         searchButton.setOnClickListener {
+            recyclerView.visibility = View.INVISIBLE
             if (searchText.text.isNullOrEmpty() || searchText.text.isBlank())
                 Toast.makeText(this, "Empty search field", Toast.LENGTH_LONG).show()
             else
@@ -84,6 +105,7 @@ class SearchActivity : AppCompatActivity() {
         }
         searchText.setOnEditorActionListener { _, actionId, _ ->
             if (actionId == EditorInfo.IME_ACTION_SEARCH) {
+                recyclerView.visibility = View.INVISIBLE
                 getSearchData(
                     this,
                     searchText.text.toString(),
@@ -106,6 +128,7 @@ class SearchActivity : AppCompatActivity() {
         emptySearchTextView: TextView,
         progressBar: ProgressBar,
     ) {
+        hideKeyBoard()
         emptySearchTextView.visibility = View.GONE
         progressBar.visibility = View.VISIBLE
         if (searchType == "users") {
@@ -118,8 +141,15 @@ class SearchActivity : AppCompatActivity() {
                         call: Call<SearchPageUserModel>,
                         response: Response<SearchPageUserModel>
                     ) {
-                        if (response.body() != null) {
+                        if (response.body()!!.total_count <= 0) {
+                            val emptyResults = "No results found!"
                             progressBar.visibility = View.GONE
+                            emptySearchTextView.text = emptyResults
+                            emptySearchTextView.visibility = View.VISIBLE
+                        } else if (response.body() != null) {
+                            progressBar.visibility = View.GONE
+                            emptySearchTextView.visibility = View.GONE
+
                             userAdapter = SearchPageUserAdapter(
                                 this@SearchActivity,
                                 response.body()!!.items as MutableList<Items>,
@@ -127,11 +157,14 @@ class SearchActivity : AppCompatActivity() {
                             )
                             userAdapter.notifyDataSetChanged()
                             recyclerView.adapter = userAdapter
+                            recyclerView.visibility = View.VISIBLE
                         }
                     }
 
                     override fun onFailure(call: Call<SearchPageUserModel>, t: Throwable) {
+                        val notFoundResults = "No items searched…"
                         progressBar.visibility = View.GONE
+                        emptySearchTextView.text = notFoundResults
                         emptySearchTextView.visibility = View.VISIBLE
                         Toast.makeText(
                             context,
@@ -150,19 +183,30 @@ class SearchActivity : AppCompatActivity() {
                     call: Call<SearchPageRepoModel>,
                     response: Response<SearchPageRepoModel>
                 ) {
-                    if (response.body() != null) {
+                    if (response.body()!!.total_count <= 0) {
+                        val emptyResults = "No results found!"
                         progressBar.visibility = View.GONE
+                        emptySearchTextView.text = emptyResults
+                        emptySearchTextView.visibility = View.VISIBLE
+                    } else if (response.body() != null) {
+                        progressBar.visibility = View.GONE
+                        emptySearchTextView.visibility = View.GONE
+
                         repoAdapter = SearchPageRepoAdapter(
                             this@SearchActivity,
                             response.body()!!.items as MutableList<ItemsRepo>
                         )
                         repoAdapter.notifyDataSetChanged()
                         recyclerView.adapter = repoAdapter
+                        recyclerView.visibility = View.VISIBLE
                     }
                 }
 
                 override fun onFailure(call: Call<SearchPageRepoModel>, t: Throwable) {
+                    val notFoundResults = "No items searched…"
                     progressBar.visibility = View.GONE
+                    emptySearchTextView.text = notFoundResults
+                    emptySearchTextView.visibility = View.VISIBLE
                     Toast.makeText(
                         context,
                         "Something went wrong! Please try again later",
@@ -171,6 +215,13 @@ class SearchActivity : AppCompatActivity() {
                     println("Error - ${t.message}")
                 }
             })
+        }
+    }
+
+    private fun hideKeyBoard() {
+        this.currentFocus?.let { view ->
+            val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
+            imm?.hideSoftInputFromWindow(view.windowToken, 0)
         }
     }
 }

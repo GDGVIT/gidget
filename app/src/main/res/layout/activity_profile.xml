@@ -76,7 +76,7 @@
             android:id="@+id/profilePageSection1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginHorizontal="30dp"
+            android:layout_marginHorizontal="@dimen/_20sdp"
             android:layout_marginVertical="20dp">
 
             <androidx.cardview.widget.CardView
@@ -136,7 +136,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@+id/profilePageSection1"
-            android:layout_marginHorizontal="30dp"
+            android:layout_marginHorizontal="@dimen/_20sdp"
             android:layout_marginVertical="15dp">
 
             <LinearLayout
@@ -196,7 +196,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@+id/profilePageSection2"
-            android:layout_marginHorizontal="30dp"
+            android:layout_marginHorizontal="@dimen/_20sdp"
             android:layout_marginVertical="15dp"
             android:orientation="vertical">
 
@@ -213,7 +213,8 @@
                 android:id="@+id/profilePageBio"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
+                android:layout_marginTop="@dimen/_6sdp"
+                android:layout_marginStart="@dimen/_2sdp"
                 android:fontFamily="@font/montserrat"
                 android:text="@string/lorem_ipsum"
                 android:textColor="@color/white"
@@ -225,7 +226,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@+id/profilePageSection3"
-            android:layout_marginHorizontal="30dp"
+            android:layout_marginHorizontal="@dimen/_20sdp"
             android:layout_marginVertical="15dp"
             android:orientation="horizontal"
             tools:ignore="UseCompoundDrawables">
@@ -247,6 +248,35 @@
                 android:textColor="@color/white"
                 android:textSize="20sp" />
         </LinearLayout>
+
+        <RelativeLayout
+            android:id="@+id/profilePageSection5"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/profilePageSection4"
+            android:layout_marginHorizontal="@dimen/_20sdp"
+            android:layout_marginVertical="15dp">
+
+            <TextView
+                android:id="@+id/profilePageRepoText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:fontFamily="@font/montserrat"
+                android:text="@string/public_repositories"
+                android:textColor="@color/white"
+                android:textSize="@dimen/_14sdp" />
+
+            <TextView
+                android:id="@+id/profilePageRepoCount"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_toEndOf="@+id/profilePageRepoText"
+                android:layout_marginStart="@dimen/_8sdp"
+                android:text="@string/numbersCount"
+                android:textColor="@color/blue"
+                android:textSize="@dimen/_14sdp" />
+        </RelativeLayout>
 
         <androidx.cardview.widget.CardView
             android:id="@+id/profilePageLogoutButton"

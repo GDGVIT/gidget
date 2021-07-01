@@ -20,7 +20,6 @@ import com.dscvit.gidget.interfaces.RetroFitService
 import com.dscvit.gidget.models.profilePage.ProfilePageModel
 import com.dscvit.gidget.widget.GidgetWidget
 import com.squareup.picasso.Picasso
-import io.realm.Realm
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -81,9 +80,12 @@ class ProfileActivity : AppCompatActivity() {
         cityTV: TextView,
         logoutButton: CardView,
         logoutButtonText: TextView,
-        progressBar: ProgressBar
+        progressBar: ProgressBar,
     ) {
         val profilePageView: RelativeLayout = findViewById(R.id.profilePageSection0)
+        val rlSection2: RelativeLayout = findViewById(R.id.profilePageSection2)
+        val profilePageRepoCount: TextView = findViewById(R.id.profilePageRepoCount)
+
         profilePageView.visibility = View.GONE
         progressBar.visibility = View.VISIBLE
         mService.getProfileInfo(
@@ -96,13 +98,17 @@ class ProfileActivity : AppCompatActivity() {
                     call: Call<ProfilePageModel>,
                     response: Response<ProfilePageModel>
                 ) {
+                    if (response.body()!!.type == "Organization") {
+                        rlSection2.visibility = View.GONE
+                    }
                     Picasso.get().load(response.body()!!.avatar_url).into(profilePhotoIV)
-                    nameTV.text = response.body()!!.name
+                    nameTV.text = response.body()!!.name ?: "..."
                     usernameTV.text = "@${response.body()!!.login}"
                     followersTV.text = response.body()!!.followers.toString()
                     followingTV.text = response.body()!!.following.toString()
-                    bioTV.text = response.body()!!.bio
-                    cityTV.text = response.body()!!.location
+                    bioTV.text = response.body()!!.bio ?: "..."
+                    cityTV.text = response.body()!!.location ?: "..."
+                    profilePageRepoCount.text = response.body()!!.public_repos.toString()
 
                     progressBar.visibility = View.GONE
                     profilePageView.visibility = View.VISIBLE
@@ -110,12 +116,12 @@ class ProfileActivity : AppCompatActivity() {
                     if (owner) {
                         logoutButtonText.text = "Logout"
                         logoutButton.setOnClickListener {
-                            Realm.removeDefaultConfiguration()
                             val widgetIntent = Intent(context, GidgetWidget::class.java)
                             widgetIntent.action = Utils.getDeleteWidgetAction()
                             context.sendBroadcast(widgetIntent)
 
-                            Toast.makeText(applicationContext, "Logged out", Toast.LENGTH_LONG).show()
+                            Toast.makeText(applicationContext, "Logged out", Toast.LENGTH_LONG)
+                                .show()
                             startActivity(Intent(applicationContext, MainActivity::class.java))
                             finishAffinity()
                         }
@@ -123,9 +129,11 @@ class ProfileActivity : AppCompatActivity() {
                         logoutButtonText.text = "Add to widget"
                         logoutButton.setOnClickListener {
                             Utils().addToWidget(
-                                mService, true,
-                                username = username,
-                                name = "",
+                                mService,
+                                true,
+                                username = "$username,true",
+                                name = (if (response.body()!!.name.isNullOrEmpty()) "" else response.body()!!.name)!!,
+                                ownerAvatarUrl = response.body()!!.avatar_url!!,
                                 context = context
                             )
                         }

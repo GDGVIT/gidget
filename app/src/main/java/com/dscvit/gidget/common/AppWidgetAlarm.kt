@@ -9,25 +9,38 @@ import java.util.Calendar
 
 class AppWidgetAlarm(private val context: Context) {
     private val alarmID = 0
-    private val intervalMillis: Long = 1200000
+    private val intervalMillis: Long = 300000
 
     fun startGidgetRefresh() {
-        val calendar: Calendar = Calendar.getInstance()
-        calendar.add(Calendar.MILLISECOND, intervalMillis.toInt())
+        try {
+            val calendar: Calendar = Calendar.getInstance()
+            calendar.add(Calendar.MILLISECOND, intervalMillis.toInt())
 
-        val alarmIntent = Intent(context, GidgetWidget::class.java).let { intent ->
-            intent.action = Utils.getOnRefreshButtonClicked()
-            PendingIntent.getBroadcast(context, 0, intent, 0)
-        }
-        with(context.getSystemService(Context.ALARM_SERVICE) as AlarmManager) {
-            setRepeating(AlarmManager.RTC, calendar.timeInMillis, intervalMillis, alarmIntent)
+            val alarmIntent = Intent(context, GidgetWidget::class.java).let { intent ->
+                intent.action = Utils.getOnRefreshButtonClicked()
+                PendingIntent.getBroadcast(context, 0, intent, 0)
+            }
+            with(context.getSystemService(Context.ALARM_SERVICE) as AlarmManager) {
+                setRepeating(AlarmManager.RTC, calendar.timeInMillis, intervalMillis, alarmIntent)
+            }
+        } catch (e: Exception) {
+            println(e.message)
         }
     }
 
     fun stopGidgetRefresh() {
-        val alarmIntent = Intent(Utils.getUpdateWidgetAction())
-        val pendingIntent = PendingIntent.getBroadcast(context, alarmID, alarmIntent, PendingIntent.FLAG_CANCEL_CURRENT)
-        val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
-        alarmManager.cancel(pendingIntent)
+        try {
+            val alarmIntent = Intent(Utils.getUpdateWidgetAction())
+            val pendingIntent = PendingIntent.getBroadcast(
+                context,
+                alarmID,
+                alarmIntent,
+                PendingIntent.FLAG_CANCEL_CURRENT
+            )
+            val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
+            alarmManager.cancel(pendingIntent)
+        } catch (e: Exception) {
+            println(e.message)
+        }
     }
 }

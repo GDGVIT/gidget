@@ -8,14 +8,15 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
-import android.widget.ImageButton
+import android.widget.Button
 import android.widget.ImageView
-import android.widget.RelativeLayout
 import android.widget.TextView
-import android.widget.Toast
+import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.RecyclerView
 import com.dscvit.gidget.R
+import com.dscvit.gidget.activities.ProfileActivity
 import com.dscvit.gidget.common.Common
+import com.dscvit.gidget.common.RoundedTransformation
 import com.dscvit.gidget.common.Security
 import com.dscvit.gidget.common.Utils
 import com.dscvit.gidget.interfaces.RetroFitService
@@ -43,7 +44,9 @@ class SearchPageUserAdapter(
         val username = "@${currentItem.login}"
 
         // Profile Photo
-        Picasso.get().load(currentItem.avatar_url).into(holderUser.profilePhoto)
+        Picasso.get().load(currentItem.avatar_url).error(R.drawable.github_logo).transform(
+            RoundedTransformation(300, 0)
+        ).into(holderUser.profilePhoto)
         holderUser.username.text = username
 
         // getProfileDetails
@@ -68,21 +71,19 @@ class SearchPageUserAdapter(
             })
 
         // Custom Animation
-        var lastPosition: Int = -1
+        val lastPosition: Int = -1
         val animation: Animation = AnimationUtils.loadAnimation(
             context,
             if (position > lastPosition) R.anim.up_from_bottom else R.anim.down_from_top
         )
         holderUser.itemView.startAnimation(animation)
-        // lastPosition = position
 
         // Add to widget
-        holderUser.addToWidgetButton.setOnClickListener {
-            addToWidget(currentItem)
-        }
+        holderUser.addToWidgetButton.setOnClickListener { addToWidget(currentItem) }
 
         // onClick
         holderUser.currentView.setOnClickListener { navigateToExternal(currentItem.login) }
+        holderUser.profilePhoto.setOnClickListener { openProfilePage(currentItem) }
     }
 
     override fun getItemCount(): Int = searchPageDataList.size
@@ -92,17 +93,24 @@ class SearchPageUserAdapter(
         Utils().addToWidget(
             mService,
             isUser = true,
-            username = currentItem.login,
+            username = "${currentItem.login},true",
             name = "",
+            ownerAvatarUrl = currentItem.avatar_url,
             context = context
         )
     }
 
     private fun navigateToExternal(username: String) {
-        Toast.makeText(context, username, Toast.LENGTH_LONG).show()
         val uri: Uri = Uri.parse("https://github.com/$username")
         val clickIntent = Intent(Intent.ACTION_VIEW, uri).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
         context.startActivity(clickIntent)
+    }
+
+    private fun openProfilePage(currentItem: Items) {
+        val intent = Intent(context, ProfileActivity::class.java)
+        intent.putExtra("username", currentItem.login)
+        intent.putExtra("owner", false)
+        context.startActivity(intent)
     }
 
     class SearchPageUserViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
@@ -110,7 +118,7 @@ class SearchPageUserAdapter(
         val name: TextView = itemView.findViewById(R.id.searchPageRecyclerItemNameText)
         val username: TextView = itemView.findViewById(R.id.searchPageRecyclerItemUsernameText)
         val location: TextView = itemView.findViewById(R.id.searchPageRecyclerItemLocationText)
-        val addToWidgetButton: ImageButton = itemView.findViewById(R.id.searchPageAddToHomeButton)
-        val currentView: RelativeLayout = itemView.findViewById(R.id.searchPageRecyclerViewRL)
+        val addToWidgetButton: Button = itemView.findViewById(R.id.searchPageAddToHomeButton)
+        val currentView: CardView = itemView.findViewById(R.id.searchPageCardView)
     }
 }
