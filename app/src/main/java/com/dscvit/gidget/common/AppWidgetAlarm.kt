@@ -41,7 +41,7 @@ class AppWidgetAlarm {
                     context,
                     alarmID,
                     alarmIntent,
-                    PendingIntent.FLAG_CANCEL_CURRENT
+                    0
                 )
                 val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
                 alarmManager.cancel(pendingIntent)
