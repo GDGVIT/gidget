@@ -97,9 +97,6 @@ class GidgetWidget : AppWidgetProvider() {
         views.setViewVisibility(R.id.appwidgetProgressBar, View.VISIBLE)
         appWidgetManager.updateAppWidget(appWidgetIds, views)
 
-        views.setViewVisibility(R.id.appwidgetProgressBar, View.GONE)
-        views.setTextViewText(R.id.appwidgetDate, utils.getTime())
-
         try {
             val key: String = userMap.keys.elementAt(i)
             val map: MutableMap<String, String> = userMap[key]!!
@@ -152,6 +149,8 @@ class GidgetWidget : AppWidgetProvider() {
                             t: Throwable
                         ) {
                             println("ERROR - ${t.message}")
+                            views.setViewVisibility(R.id.appwidgetProgressBar, View.GONE)
+                            views.setTextViewText(R.id.appwidgetDate, utils.getTime())
                             appWidgetManager.updateAppWidget(appWidgetIds, views)
                             throw Exception("Failed to fetch data")
                         }
@@ -203,6 +202,8 @@ class GidgetWidget : AppWidgetProvider() {
                             t: Throwable
                         ) {
                             println("ERROR - ${t.message}")
+                            views.setViewVisibility(R.id.appwidgetProgressBar, View.GONE)
+                            views.setTextViewText(R.id.appwidgetDate, utils.getTime())
                             appWidgetManager.updateAppWidget(appWidgetIds, views)
                             throw Exception("Failed to fetch data")
                         }
@@ -211,6 +212,12 @@ class GidgetWidget : AppWidgetProvider() {
         } catch (e: Exception) {
             println(e.message)
             Toast.makeText(context, "Error refreshing Gidget", Toast.LENGTH_LONG).show()
+            views.setViewVisibility(R.id.appwidgetProgressBar, View.GONE)
+            views.setTextViewText(R.id.appwidgetDate, utils.getTime())
+            appWidgetManager.updateAppWidget(appWidgetIds, views)
+        } finally {
+            views.setViewVisibility(R.id.appwidgetProgressBar, View.GONE)
+            views.setTextViewText(R.id.appwidgetDate, utils.getTime())
             appWidgetManager.updateAppWidget(appWidgetIds, views)
         }
     }
@@ -275,6 +282,9 @@ internal fun updateAppWidget(
         PendingIntent.getActivity(context, 0, deleteIntent, 0)
     views.setOnClickPendingIntent(R.id.appwidgetDeleteButton, deletePendingIntent)
 
+    // Removing ProgressBar
+    views.setViewVisibility(R.id.appwidgetProgressBar, View.GONE)
+
     // Main Widget
     val clickIntent = Intent(context, GidgetWidget::class.java)
     val clickPendingIntent = PendingIntent.getBroadcast(context, 0, clickIntent, 0)
@@ -283,7 +293,6 @@ internal fun updateAppWidget(
     if (utils.isEmpty(context)) {
         views.setEmptyView(R.id.appwidgetListView, R.id.appwidgetEmptyViewText)
         views.setOnClickPendingIntent(R.id.appwidgetEmptyViewText, buttonPendingIntent)
-        views.setViewVisibility(R.id.appwidgetProgressBar, View.GONE)
     } else {
         // Date Widget
         views.setTextViewText(R.id.appwidgetDate, utils.getTime())

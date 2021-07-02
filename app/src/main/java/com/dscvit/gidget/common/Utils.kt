@@ -84,20 +84,23 @@ class Utils {
 
                                     dataSource.add(addToWidget)
                                 }
-
-                                saveArrayList(
-                                    dataSource = dataSource,
-                                    context = context,
-                                    username = username,
-                                    name = name,
-                                    photoUrl = ownerAvatarUrl,
-                                    isUser = isUser
-                                )
-                                val widgetIntent = Intent(context, GidgetWidget::class.java)
-                                widgetIntent.action = getUpdateWidgetAction()
-                                context.sendBroadcast(widgetIntent)
-                                val appwidgetAlarm = AppWidgetAlarm(context.applicationContext)
-                                appwidgetAlarm.startGidgetRefresh()
+                                if (dataSource.isNullOrEmpty())
+                                    Toast.makeText(context, "No activity found for this user", Toast.LENGTH_SHORT).show()
+                                else {
+                                    saveArrayList(
+                                        dataSource = dataSource,
+                                        context = context,
+                                        username = username,
+                                        name = name,
+                                        photoUrl = ownerAvatarUrl,
+                                        isUser = isUser
+                                    )
+                                    val widgetIntent = Intent(context, GidgetWidget::class.java)
+                                    widgetIntent.action = getUpdateWidgetAction()
+                                    context.sendBroadcast(widgetIntent)
+                                    val appwidgetAlarm = AppWidgetAlarm(context.applicationContext)
+                                    appwidgetAlarm.startGidgetRefresh()
+                                }
 
                                 if (alertDialog.isShowing)
                                     alertDialog.dismiss()
@@ -147,19 +150,23 @@ class Utils {
                                     dataSource.add(addToWidget)
                                 }
 
-                                saveArrayList(
-                                    dataSource = dataSource,
-                                    context = context,
-                                    username = username,
-                                    name = name,
-                                    photoUrl = ownerAvatarUrl,
-                                    isUser = isUser
-                                )
-                                val widgetIntent = Intent(context, GidgetWidget::class.java)
-                                widgetIntent.action = getUpdateWidgetAction()
-                                context.sendBroadcast(widgetIntent)
-                                val appwidgetAlarm = AppWidgetAlarm(context.applicationContext)
-                                appwidgetAlarm.startGidgetRefresh()
+                                if (dataSource.isNullOrEmpty())
+                                    Toast.makeText(context, "No activity found for this repo", Toast.LENGTH_SHORT).show()
+                                else {
+                                    saveArrayList(
+                                        dataSource = dataSource,
+                                        context = context,
+                                        username = username,
+                                        name = name,
+                                        photoUrl = ownerAvatarUrl,
+                                        isUser = isUser
+                                    )
+                                    val widgetIntent = Intent(context, GidgetWidget::class.java)
+                                    widgetIntent.action = getUpdateWidgetAction()
+                                    context.sendBroadcast(widgetIntent)
+                                    val appwidgetAlarm = AppWidgetAlarm(context.applicationContext)
+                                    appwidgetAlarm.startGidgetRefresh()
+                                }
 
                                 if (alertDialog.isShowing)
                                     alertDialog.dismiss()
@@ -203,26 +210,31 @@ class Utils {
                 val userDetailsMap: MutableMap<String, MutableMap<String, String>>? =
                     getUserDetails(context)
                 if (!userDetailsMap.isNullOrEmpty()) {
-                    var userDataSource: ArrayList<AddToWidget> = getArrayList(context)
+                    var userDataSource: ArrayList<AddToWidget>? = getArrayList(context)
 
-                    if (userDetailsMap.containsKey(username)) {
-                        userDetailsMap.remove(username)
-                        userDataSource =
-                            userDataSource.filter { it.username!! == username } as ArrayList<AddToWidget>
+                    if (!userDataSource.isNullOrEmpty()) {
+                        if (userDetailsMap.containsKey(username)) {
+                            userDetailsMap.remove(username)
+                            userDataSource =
+                                userDataSource.filter { it.username!! == username } as ArrayList<AddToWidget>
+                        }
+
+                        userDetailsMap[username] = mutableMapOf(
+                            "name" to name,
+                            "photoUrl" to photoUrl,
+                            "isUser" to isUser.toString()
+                        )
+                        userDataSource.addAll(dataSource)
+                        userDataSource.sortWith(SortByDate())
+                        if (userDataSource.size > 50) userDataSource.subList(
+                            51,
+                            userDataSource.size
+                        )
+                            .clear()
+                        editor.putString("dataSource", gson.toJson(userDataSource))
+                        editor.putString("userDetails", gson.toJson(userDetailsMap))
+                        editor.apply()
                     }
-
-                    userDetailsMap[username] = mutableMapOf(
-                        "name" to name,
-                        "photoUrl" to photoUrl,
-                        "isUser" to isUser.toString()
-                    )
-                    userDataSource.addAll(dataSource)
-                    userDataSource.sortWith(SortByDate())
-                    if (userDataSource.size > 50) userDataSource.subList(51, userDataSource.size)
-                        .clear()
-                    editor.putString("dataSource", gson.toJson(userDataSource))
-                    editor.putString("userDetails", gson.toJson(userDetailsMap))
-                    editor.apply()
                 }
             } else {
                 val userDetails: MutableMap<String, MutableMap<String, String>> = mutableMapOf(
@@ -242,12 +254,16 @@ class Utils {
         }
     }
 
-    fun getArrayList(context: Context): ArrayList<AddToWidget> {
-        val prefs: SharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
-        val gson = Gson()
-        val json: String = prefs.getString("dataSource", null).toString()
-        val type: Type = object : TypeToken<ArrayList<AddToWidget?>?>() {}.type
-        return gson.fromJson(json, type)
+    fun getArrayList(context: Context): ArrayList<AddToWidget>? {
+        return try {
+            val prefs: SharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
+            val gson = Gson()
+            val json: String = prefs.getString("dataSource", null).toString()
+            val type: Type = object : TypeToken<ArrayList<AddToWidget?>?>() {}.type
+            gson.fromJson(json, type)
+        } catch (e: Exception) {
+            null
+        }
     }
 
     fun deleteAllData(context: Context) {
@@ -370,24 +386,28 @@ class Utils {
     }
 
     fun getHtmlUrl(currentItem: WidgetRepoModel): String {
-        return when (currentItem.type) {
-            "CommitCommentEvent" -> "https://github.com/${currentItem.repo.name}"
-            "CreateEvent" -> "https://github.com/${currentItem.repo.name}"
-            "ForkEvent" -> currentItem.payload!!.forkee!!.html_url!!
-            "DeleteEvent" -> "https://github.com/${currentItem.repo.name}"
-            "GollumEvent" -> "https://github.com/${currentItem.repo.name}"
-            "IssueCommentEvent" -> currentItem.payload!!.issue!!.html_url!!
-            "IssuesEvent" -> currentItem.payload!!.issue!!.html_url!!
-            "MemberEvent" -> "https://github.com/${currentItem.repo.name}"
-            "PublicEvent" -> "https://github.com/${currentItem.repo.name}"
-            "PullRequestEvent" -> currentItem.payload!!.pull_request!!.html_url!!
-            "PullRequestReviewEvent" -> currentItem.payload!!.review!!.html_url!!
-            "PullRequestReviewCommentEvent" -> currentItem.payload!!.comment!!.html_url!!
-            "PushEvent" -> "https://github.com/${currentItem.repo.name}/commit/${currentItem.payload!!.commits!![0].sha!!}"
-            "ReleaseEvent" -> currentItem.payload!!.release!!.html_url!!
-            "SponsorshipEvent" -> "https://github.com/${currentItem.repo.name}"
-            "WatchEvent" -> "https://github.com/${currentItem.repo.name}"
-            else -> "https://github.com/${currentItem.repo.name}"
+        return try {
+            when (currentItem.type) {
+                "CommitCommentEvent" -> "https://github.com/${currentItem.repo.name}"
+                "CreateEvent" -> "https://github.com/${currentItem.repo.name}"
+                "ForkEvent" -> currentItem.payload!!.forkee!!.html_url!!
+                "DeleteEvent" -> "https://github.com/${currentItem.repo.name}"
+                "GollumEvent" -> "https://github.com/${currentItem.repo.name}"
+                "IssueCommentEvent" -> currentItem.payload!!.issue!!.html_url!!
+                "IssuesEvent" -> currentItem.payload!!.issue!!.html_url!!
+                "MemberEvent" -> "https://github.com/${currentItem.repo.name}"
+                "PublicEvent" -> "https://github.com/${currentItem.repo.name}"
+                "PullRequestEvent" -> currentItem.payload!!.pull_request!!.html_url!!
+                "PullRequestReviewEvent" -> currentItem.payload!!.review!!.html_url!!
+                "PullRequestReviewCommentEvent" -> currentItem.payload!!.comment!!.html_url!!
+                "PushEvent" -> try { "https://github.com/${currentItem.repo.name}/commit/${currentItem.payload?.commits?.get(0)?.sha}" } catch (e: Exception) { "https://github.com/${currentItem.repo.name}/commit" }
+                "ReleaseEvent" -> currentItem.payload!!.release!!.html_url!!
+                "SponsorshipEvent" -> "https://github.com/${currentItem.repo.name}"
+                "WatchEvent" -> "https://github.com/${currentItem.repo.name}"
+                else -> "https://github.com/${currentItem.repo.name}"
+            }
+        } catch (e: Exception) {
+            "https://github.com/${currentItem.repo.name}"
         }
     }
 

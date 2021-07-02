@@ -48,7 +48,8 @@ class DeleteGidgetItemAdapter(
             val photoUrl: String = currentMap["photoUrl"]!!
             val isUser: Boolean = currentMap["isUser"]!!.toBoolean()
 
-            holder.name.text = if (name.isEmpty()) username.substring(0, username.indexOf(",")) else name
+            holder.name.text =
+                if (name.isEmpty()) username.substring(0, username.indexOf(",")) else name
             holder.username.text = username.substring(0, username.indexOf(","))
             holder.isUser.text = if (isUser) "User/Org" else "Repo"
 
@@ -100,30 +101,33 @@ internal fun updateGidget(
 ) {
     try {
         val utils = Utils()
-        var dataSource: ArrayList<AddToWidget> = utils.getArrayList(context)
-        dataSource = dataSource.filter { !it.name!!.contains(name) } as ArrayList<AddToWidget>
+        var dataSource: ArrayList<AddToWidget>? = utils.getArrayList(context)
+        if (!dataSource.isNullOrEmpty()) {
+            dataSource = dataSource.filter { !it.name!!.contains(name) } as ArrayList<AddToWidget>
 
-        if (userMap.isNullOrEmpty()) {
-            utils.deleteArrayList(context)
-            val widgetIntent = Intent(context, GidgetWidget::class.java)
-            widgetIntent.action = Utils.getClearWidgetItems()
-            context.sendBroadcast(widgetIntent)
-            (context as DeleteUserFromGidgetActivity).finish()
-        } else {
-            val prefs: SharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
-            val editor: SharedPreferences.Editor = prefs.edit()
-            val gson = Gson()
-            if (prefs.contains("dataSource") && prefs.contains("userDetails")) {
-                editor.putString("dataSource", gson.toJson(dataSource))
-                editor.putString("userDetails", gson.toJson(userMap))
-                editor.apply()
+            if (userMap.isNullOrEmpty()) {
+                utils.deleteArrayList(context)
+                val widgetIntent = Intent(context, GidgetWidget::class.java)
+                widgetIntent.action = Utils.getClearWidgetItems()
+                context.sendBroadcast(widgetIntent)
+                (context as DeleteUserFromGidgetActivity).finish()
+            } else {
+                val prefs: SharedPreferences =
+                    PreferenceManager.getDefaultSharedPreferences(context)
+                val editor: SharedPreferences.Editor = prefs.edit()
+                val gson = Gson()
+                if (prefs.contains("dataSource") && prefs.contains("userDetails")) {
+                    editor.putString("dataSource", gson.toJson(dataSource))
+                    editor.putString("userDetails", gson.toJson(userMap))
+                    editor.apply()
+                }
+
+                val widgetIntent = Intent(context, GidgetWidget::class.java)
+                widgetIntent.action = Utils.getOnRefreshButtonClicked()
+                context.sendBroadcast(widgetIntent)
             }
-
-            val widgetIntent = Intent(context, GidgetWidget::class.java)
-            widgetIntent.action = Utils.getOnRefreshButtonClicked()
-            context.sendBroadcast(widgetIntent)
+            Toast.makeText(context, "Items removed from Gidget", Toast.LENGTH_SHORT).show()
         }
-        Toast.makeText(context, "Items removed from Gidget", Toast.LENGTH_SHORT).show()
     } catch (e: Exception) {
         println(e.message)
     }

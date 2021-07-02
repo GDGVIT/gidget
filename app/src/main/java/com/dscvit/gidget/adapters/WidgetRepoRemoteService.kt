@@ -29,7 +29,7 @@ class WidgetRepoRemoteViewsFactory(
     override fun onDataSetChanged() {
         try {
             dataSource = if (!utils.isEmpty(context))
-                utils.getArrayList(context)
+                utils.getArrayList(context) ?: arrayListOf()
             else
                 arrayListOf()
         } catch (error: Exception) {

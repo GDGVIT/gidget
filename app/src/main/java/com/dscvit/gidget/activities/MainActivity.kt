@@ -45,62 +45,120 @@ class MainActivity : AppCompatActivity() {
             progressBar.visibility = View.VISIBLE
             loginButton.visibility = View.INVISIBLE
 
-            val intent = Intent(
-                Intent.ACTION_VIEW,
-                Uri.parse("https://github.com/login/oauth/authorize?client_id=$clientID&scope=user:email&redirect_uri=$redirectUrl")
-            )
-            startActivity(intent)
+            try {
+                val intent = Intent(
+                    Intent.ACTION_VIEW,
+                    Uri.parse("https://github.com/login/oauth/authorize?client_id=$clientID&scope=user:email&redirect_uri=$redirectUrl")
+                )
+                startActivity(intent)
+            } catch (e: Exception) {
+                Toast.makeText(this, "Check your Internet connection!", Toast.LENGTH_SHORT).show()
+            }
         }
     }
 
     override fun onResume() {
-        val uri: Uri? = intent.data
-        if (uri != null && uri.toString().startsWith(redirectUrl)) {
-            val code: String? = uri.getQueryParameter("code")
+        progressBar.visibility = View.INVISIBLE
+        loginButton.visibility = View.VISIBLE
+        try {
+            val uri: Uri? = intent.data
+            if (uri != null && uri.toString().startsWith(redirectUrl)) {
+                val code: String? = uri.getQueryParameter("code")
 
-            if (code != null) {
-                Common.authService.getAccessToken(clientID, clientSecret, code, redirectUrl)
-                    .enqueue(object : Callback<AccessToken> {
-                        override fun onResponse(
-                            call: Call<AccessToken>,
-                            response: Response<AccessToken>
-                        ) {
-                            if (response.body()!!.access_token != null) {
-                                val accessToken: String = response.body()!!.access_token!!
-                                Common.retroFitService.getAuthenticatedUser("token $accessToken")
-                                    .enqueue(object : Callback<ProfilePageModel> {
-                                        override fun onResponse(
-                                            call: Call<ProfilePageModel>,
-                                            response: Response<ProfilePageModel>
-                                        ) {
-                                            val user = response.body()
-                                            if (user != null) {
-                                                if (signUp.signUpUser(this@MainActivity, user.login!!, user.name!!, user.avatar_url!!)) {
-                                                    Toast.makeText(this@MainActivity, "Logged in", Toast.LENGTH_LONG).show()
-                                                    startActivity(Intent(this@MainActivity, FeedActivity::class.java))
-                                                    finish()
-                                                } else
-                                                    Toast.makeText(this@MainActivity, "We ran into some error!", Toast.LENGTH_LONG).show()
+                if (code != null) {
+                    progressBar.visibility = View.VISIBLE
+                    loginButton.visibility = View.INVISIBLE
+
+                    Common.authService.getAccessToken(clientID, clientSecret, code, redirectUrl)
+                        .enqueue(object : Callback<AccessToken> {
+                            override fun onResponse(
+                                call: Call<AccessToken>,
+                                response: Response<AccessToken>
+                            ) {
+                                if (response.body()!!.access_token != null) {
+                                    val accessToken: String = response.body()!!.access_token!!
+                                    Common.retroFitService.getAuthenticatedUser("token $accessToken")
+                                        .enqueue(object : Callback<ProfilePageModel> {
+                                            override fun onResponse(
+                                                call: Call<ProfilePageModel>,
+                                                response: Response<ProfilePageModel>
+                                            ) {
+                                                val user = response.body()
+                                                if (user != null) {
+                                                    if (signUp.signUpUser(
+                                                            this@MainActivity,
+                                                            user.login!!,
+                                                            user.name!!,
+                                                            user.avatar_url!!
+                                                        )
+                                                    ) {
+                                                        Toast.makeText(
+                                                            this@MainActivity,
+                                                            "Logged in",
+                                                            Toast.LENGTH_SHORT
+                                                        ).show()
+                                                        startActivity(
+                                                            Intent(
+                                                                this@MainActivity,
+                                                                FeedActivity::class.java
+                                                            )
+                                                        )
+                                                        finish()
+                                                    } else
+                                                        Toast.makeText(
+                                                            this@MainActivity,
+                                                            "We ran into some error!",
+                                                            Toast.LENGTH_SHORT
+                                                        ).show()
+                                                }
                                             }
-                                        }
 
-                                        override fun onFailure(
-                                            call: Call<ProfilePageModel>,
-                                            t: Throwable
-                                        ) {
-                                            Toast.makeText(this@MainActivity, "Could not fetch user", Toast.LENGTH_SHORT).show()
-                                            println(t.message)
-                                        }
-                                    })
+                                            override fun onFailure(
+                                                call: Call<ProfilePageModel>,
+                                                t: Throwable
+                                            ) {
+                                                progressBar.visibility = View.INVISIBLE
+                                                loginButton.visibility = View.VISIBLE
+                                                Toast.makeText(
+                                                    this@MainActivity,
+                                                    "Could not fetch user",
+                                                    Toast.LENGTH_SHORT
+                                                ).show()
+                                                println(t.message)
+                                            }
+                                        })
+                                }
                             }
-                        }
 
-                        override fun onFailure(call: Call<AccessToken>, t: Throwable) {
-                            Toast.makeText(this@MainActivity, "Access token error", Toast.LENGTH_SHORT).show()
-                            println(t.message)
-                        }
-                    })
-            } else if (uri.getQueryParameter("error") != null) Toast.makeText(this@MainActivity, "We ran into some error!", Toast.LENGTH_LONG).show()
+                            override fun onFailure(call: Call<AccessToken>, t: Throwable) {
+                                progressBar.visibility = View.INVISIBLE
+                                loginButton.visibility = View.VISIBLE
+                                Toast.makeText(
+                                    this@MainActivity,
+                                    "Access token error",
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                                println(t.message)
+                            }
+                        })
+                } else if (uri.getQueryParameter("error") != null) {
+                    progressBar.visibility = View.INVISIBLE
+                    loginButton.visibility = View.VISIBLE
+                    Toast.makeText(
+                        this@MainActivity,
+                        "We ran into some error!",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+            }
+        } catch (e: Exception) {
+            progressBar.visibility = View.INVISIBLE
+            loginButton.visibility = View.VISIBLE
+            Toast.makeText(
+                this,
+                "Something went wrong. Please check your GitHub settings",
+                Toast.LENGTH_SHORT
+            ).show()
         }
         super.onResume()
     }
