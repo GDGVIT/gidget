@@ -215,10 +215,6 @@ class GidgetWidget : AppWidgetProvider() {
             views.setViewVisibility(R.id.appwidgetProgressBar, View.GONE)
             views.setTextViewText(R.id.appwidgetDate, utils.getTime())
             appWidgetManager.updateAppWidget(appWidgetIds, views)
-        } finally {
-            views.setViewVisibility(R.id.appwidgetProgressBar, View.GONE)
-            views.setTextViewText(R.id.appwidgetDate, utils.getTime())
-            appWidgetManager.updateAppWidget(appWidgetIds, views)
         }
     }
 
@@ -236,6 +232,8 @@ class GidgetWidget : AppWidgetProvider() {
         if (dataSource.size > 50) dataSource.subList(51, dataSource.size).clear()
         editor.putString("dataSource", gson.toJson(dataSource))
         editor.apply()
+        views.setViewVisibility(R.id.appwidgetProgressBar, View.GONE)
+        views.setTextViewText(R.id.appwidgetDate, utils.getTime())
         appWidgetManager.updateAppWidget(appWidgetIds, views)
         widgetActionUpdate(context, utils)
     }

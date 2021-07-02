@@ -75,7 +75,7 @@ class MainActivity : AppCompatActivity() {
                                 call: Call<AccessToken>,
                                 response: Response<AccessToken>
                             ) {
-                                if (response.body()!!.access_token != null) {
+                                if (response.body()?.access_token != null) {
                                     val accessToken: String = response.body()!!.access_token!!
                                     Common.retroFitService.getAuthenticatedUser("token $accessToken")
                                         .enqueue(object : Callback<ProfilePageModel> {
@@ -127,7 +127,7 @@ class MainActivity : AppCompatActivity() {
                                                 println(t.message)
                                             }
                                         })
-                                }
+                                } else throw Exception("Null access token")
                             }
 
                             override fun onFailure(call: Call<AccessToken>, t: Throwable) {
