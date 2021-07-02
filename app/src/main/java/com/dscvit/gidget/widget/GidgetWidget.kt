@@ -61,10 +61,9 @@ class GidgetWidget : AppWidgetProvider() {
     }
 
     override fun onEnabled(context: Context) {
-        val appwidgetAlarm = AppWidgetAlarm(context.applicationContext)
         if (!utils.isEmpty(context)) {
             onWidgetRefresh(context, Intent(Utils.getOnRefreshButtonClicked()))
-            appwidgetAlarm.startGidgetRefresh()
+            AppWidgetAlarm.startGidgetRefresh(context.applicationContext)
         }
     }
 
@@ -79,7 +78,7 @@ class GidgetWidget : AppWidgetProvider() {
             )
         )
             addToWidget(context, userMap)
-        else if (userMap.isNullOrEmpty() && intent.action != Utils.automaticUpdateWidget())
+        else if (userMap.isNullOrEmpty() && intent.action == Utils.getOnRefreshButtonClicked())
             Toast.makeText(context, "Cannot refresh empty widget", Toast.LENGTH_SHORT).show()
     }
 
@@ -211,7 +210,7 @@ class GidgetWidget : AppWidgetProvider() {
             }
         } catch (e: Exception) {
             println(e.message)
-            Toast.makeText(context, "Error refreshing Gidget", Toast.LENGTH_LONG).show()
+            Toast.makeText(context, "Error refreshing Gidget", Toast.LENGTH_SHORT).show()
             views.setViewVisibility(R.id.appwidgetProgressBar, View.GONE)
             views.setTextViewText(R.id.appwidgetDate, utils.getTime())
             appWidgetManager.updateAppWidget(appWidgetIds, views)
@@ -239,8 +238,7 @@ class GidgetWidget : AppWidgetProvider() {
     }
 
     private fun deleteWidgetData(context: Context) {
-        val appwidgetAlarm = AppWidgetAlarm(context.applicationContext)
-        appwidgetAlarm.stopGidgetRefresh()
+        AppWidgetAlarm.stopGidgetRefresh(context.applicationContext)
         utils.deleteAllData(context)
         val appWidgetManager = AppWidgetManager.getInstance(context)
         val appWidgetIds =
@@ -309,7 +307,7 @@ internal fun onItemClicked(intent: Intent, context: Context) {
         val uri: Uri = Uri.parse(clickedItem.htmlUrl)
         val clickIntent =
             Intent(Intent.ACTION_VIEW, uri).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-        Toast.makeText(context, clickedItem.name, Toast.LENGTH_LONG).show()
+        Toast.makeText(context, clickedItem.name, Toast.LENGTH_SHORT).show()
         context.startActivity(clickIntent)
     }
 }
@@ -325,7 +323,6 @@ internal fun widgetActionUpdate(context: Context, utils: Utils) {
 }
 
 internal fun clearWidgetItems(context: Context, utils: Utils) {
-    val appwidgetAlarm = AppWidgetAlarm(context.applicationContext)
-    appwidgetAlarm.stopGidgetRefresh()
+    AppWidgetAlarm.stopGidgetRefresh(context.applicationContext)
     widgetActionUpdate(context, utils)
 }

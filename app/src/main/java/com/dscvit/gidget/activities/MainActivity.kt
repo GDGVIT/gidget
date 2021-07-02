@@ -46,6 +46,7 @@ class MainActivity : AppCompatActivity() {
             loginButton.visibility = View.INVISIBLE
 
             try {
+                Toast.makeText(this, "Please open in browser", Toast.LENGTH_SHORT).show()
                 val intent = Intent(
                     Intent.ACTION_VIEW,
                     Uri.parse("https://github.com/login/oauth/authorize?client_id=$clientID&scope=user:email&redirect_uri=$redirectUrl")
@@ -83,33 +84,30 @@ class MainActivity : AppCompatActivity() {
                                                 call: Call<ProfilePageModel>,
                                                 response: Response<ProfilePageModel>
                                             ) {
-                                                val user = response.body()
-                                                if (user != null) {
-                                                    if (signUp.signUpUser(
-                                                            this@MainActivity,
-                                                            user.login!!,
-                                                            user.name!!,
-                                                            user.avatar_url!!
-                                                        )
-                                                    ) {
-                                                        Toast.makeText(
-                                                            this@MainActivity,
-                                                            "Logged in",
-                                                            Toast.LENGTH_SHORT
-                                                        ).show()
-                                                        startActivity(
-                                                            Intent(
+                                                try {
+                                                    val user = response.body()
+                                                    if (user != null) {
+                                                        if (signUp.signUpUser(
                                                                 this@MainActivity,
-                                                                FeedActivity::class.java
+                                                                user.login
+                                                                    ?: throw Exception("Gidget is unable access your username"),
+                                                                user.name
+                                                                    ?: throw Exception("Gidget is unable access your name"),
+                                                                user.avatar_url
+                                                                    ?: throw Exception("Gidget is unable access your avatar")
                                                             )
-                                                        )
-                                                        finish()
-                                                    } else
-                                                        Toast.makeText(
-                                                            this@MainActivity,
-                                                            "We ran into some error!",
-                                                            Toast.LENGTH_SHORT
-                                                        ).show()
+                                                        ) {
+                                                            Toast.makeText(this@MainActivity, "Logged in", Toast.LENGTH_SHORT).show()
+                                                            startActivity(Intent(this@MainActivity, FeedActivity::class.java))
+                                                            finish()
+                                                        } else
+                                                            throw Exception()
+                                                    }
+                                                } catch (e: Exception) {
+                                                    progressBar.visibility = View.INVISIBLE
+                                                    loginButton.visibility = View.VISIBLE
+                                                    if (e.message.isNullOrEmpty()) Toast.makeText(this@MainActivity, "We ran into some error!", Toast.LENGTH_SHORT).show()
+                                                    else Toast.makeText(this@MainActivity, e.message, Toast.LENGTH_SHORT).show()
                                                 }
                                             }
 
@@ -119,11 +117,7 @@ class MainActivity : AppCompatActivity() {
                                             ) {
                                                 progressBar.visibility = View.INVISIBLE
                                                 loginButton.visibility = View.VISIBLE
-                                                Toast.makeText(
-                                                    this@MainActivity,
-                                                    "Could not fetch user",
-                                                    Toast.LENGTH_SHORT
-                                                ).show()
+                                                Toast.makeText(this@MainActivity, "Could not fetch user", Toast.LENGTH_SHORT).show()
                                                 println(t.message)
                                             }
                                         })

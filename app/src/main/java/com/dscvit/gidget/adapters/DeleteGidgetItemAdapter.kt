@@ -70,7 +70,7 @@ class DeleteGidgetItemAdapter(
                     userMap.remove(username)
                     updateGidget(name, context, userMap)
                     notifyItemRemoved(position)
-                    notifyDataSetChanged()
+                    notifyItemRangeChanged(position, userMap.size)
                 } catch (e: Exception) {
                     println(e.message)
                     Toast.makeText(context, "Failed to remove items", Toast.LENGTH_SHORT).show()

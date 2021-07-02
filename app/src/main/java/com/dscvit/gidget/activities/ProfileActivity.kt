@@ -120,7 +120,7 @@ class ProfileActivity : AppCompatActivity() {
                             widgetIntent.action = Utils.getDeleteWidgetAction()
                             context.sendBroadcast(widgetIntent)
 
-                            Toast.makeText(applicationContext, "Logged out", Toast.LENGTH_LONG)
+                            Toast.makeText(applicationContext, "Logged out", Toast.LENGTH_SHORT)
                                 .show()
                             startActivity(Intent(applicationContext, MainActivity::class.java))
                             finishAffinity()
@@ -144,7 +144,7 @@ class ProfileActivity : AppCompatActivity() {
                     progressBar.visibility = View.GONE
                     profilePageView.visibility = View.VISIBLE
                     println("Error occurred - $t")
-                    Toast.makeText(baseContext, "Something went wrong...", Toast.LENGTH_LONG).show()
+                    Toast.makeText(baseContext, "Something went wrong...", Toast.LENGTH_SHORT).show()
                 }
             })
     }

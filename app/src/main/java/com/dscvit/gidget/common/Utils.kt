@@ -98,8 +98,7 @@ class Utils {
                                     val widgetIntent = Intent(context, GidgetWidget::class.java)
                                     widgetIntent.action = getUpdateWidgetAction()
                                     context.sendBroadcast(widgetIntent)
-                                    val appwidgetAlarm = AppWidgetAlarm(context.applicationContext)
-                                    appwidgetAlarm.startGidgetRefresh()
+                                    AppWidgetAlarm.startGidgetRefresh(context.applicationContext)
                                 }
 
                                 if (alertDialog.isShowing)
@@ -164,8 +163,7 @@ class Utils {
                                     val widgetIntent = Intent(context, GidgetWidget::class.java)
                                     widgetIntent.action = getUpdateWidgetAction()
                                     context.sendBroadcast(widgetIntent)
-                                    val appwidgetAlarm = AppWidgetAlarm(context.applicationContext)
-                                    appwidgetAlarm.startGidgetRefresh()
+                                    AppWidgetAlarm.startGidgetRefresh(context.applicationContext)
                                 }
 
                                 if (alertDialog.isShowing)
