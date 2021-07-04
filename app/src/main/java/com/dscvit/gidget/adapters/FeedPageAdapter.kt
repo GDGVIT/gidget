@@ -7,8 +7,6 @@ import android.net.Uri
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.animation.Animation
-import android.view.animation.AnimationUtils
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.cardview.widget.CardView
@@ -69,14 +67,6 @@ class FeedPageAdapter(
         // Date Text
         setDate(holder, currentItem)
 
-        // Custom Animation
-        val lastPosition: Int = -1
-        val animation: Animation = AnimationUtils.loadAnimation(
-            context,
-            if (position > lastPosition) R.anim.up_from_bottom else R.anim.down_from_top
-        )
-        holder.itemView.startAnimation(animation)
-
         // Open Repository
         holder.feedPageRecyclerViewItem.setOnClickListener {
             val uri: Uri = Uri.parse(getHtmlUrl(currentItem))
@@ -94,45 +84,6 @@ class FeedPageAdapter(
     override fun onViewDetachedFromWindow(holder: FeedPageUserActivityViewHolder) {
         super.onViewDetachedFromWindow(holder)
         holder.itemView.clearAnimation()
-    }
-
-    private fun setDate(holder: FeedPageUserActivityViewHolder, currentItem: FeedPageModel) {
-        val dateTimePattern = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss'Z'")
-        val createDate = LocalDateTime.parse(currentItem.created_at, dateTimePattern)
-        val currentDate = LocalDateTime.now(ZoneId.of("Etc/UTC"))
-        val differenceTime = Duration.between(currentDate, createDate).abs()
-        val finalResult: String = when {
-            differenceTime.seconds < 60 -> "${differenceTime.seconds} secs ago"
-            differenceTime.toMinutes().toInt() == 1 -> "${differenceTime.toMinutes()} min ago"
-            differenceTime.toMinutes() < 60 -> "${differenceTime.toMinutes()} mins ago"
-            differenceTime.toHours().toInt() == 1 -> "${differenceTime.toHours()} hr ago"
-            differenceTime.toHours() < 24 -> "${differenceTime.toHours()} hrs ago"
-            differenceTime.toDays().toInt() == 1 -> "${differenceTime.toDays()} day ago"
-            else -> "${differenceTime.toDays()} days ago"
-        }
-        holder.dateText.text = finalResult
-    }
-
-    private fun getHtmlUrl(currentItem: FeedPageModel): String {
-        return when (currentItem.type) {
-            "CommitCommentEvent" -> "https://github.com/${currentItem.repo.name}"
-            "CreateEvent" -> "https://github.com/${currentItem.repo.name}"
-            "ForkEvent" -> currentItem.payload!!.forkee!!.html_url!!
-            "DeleteEvent" -> "https://github.com/${currentItem.repo.name}"
-            "GollumEvent" -> "https://github.com/${currentItem.repo.name}"
-            "IssueCommentEvent" -> currentItem.payload!!.issue!!.html_url!!
-            "IssuesEvent" -> currentItem.payload!!.issue!!.html_url!!
-            "MemberEvent" -> "https://github.com/${currentItem.repo.name}"
-            "PublicEvent" -> "https://github.com/${currentItem.repo.name}"
-            "PullRequestEvent" -> currentItem.payload!!.pull_request!!.html_url!!
-            "PullRequestReviewEvent" -> currentItem.payload!!.review!!.html_url!!
-            "PullRequestReviewCommentEvent" -> currentItem.payload!!.comment!!.html_url!!
-            "PushEvent" -> "https://github.com/${currentItem.repo.name}/commit/${currentItem.payload!!.commits!![0].sha!!}"
-            "ReleaseEvent" -> currentItem.payload!!.release!!.html_url!!
-            "SponsorshipEvent" -> "https://github.com/${currentItem.repo.name}"
-            "WatchEvent" -> "https://github.com/${currentItem.repo.name}"
-            else -> "https://github.com/${currentItem.repo.name}"
-        }
     }
 
     class FeedPageUserActivityViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
@@ -343,5 +294,44 @@ internal fun setEventDetails(
         }
     } catch (e: Throwable) {
         holder.details.visibility = View.GONE
+    }
+}
+
+internal fun setDate(holder: FeedPageAdapter.FeedPageUserActivityViewHolder, currentItem: FeedPageModel) {
+    val dateTimePattern = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss'Z'")
+    val createDate = LocalDateTime.parse(currentItem.created_at, dateTimePattern)
+    val currentDate = LocalDateTime.now(ZoneId.of("Etc/UTC"))
+    val differenceTime = Duration.between(currentDate, createDate).abs()
+    val finalResult: String = when {
+        differenceTime.seconds < 60 -> "${differenceTime.seconds} secs ago"
+        differenceTime.toMinutes().toInt() == 1 -> "${differenceTime.toMinutes()} min ago"
+        differenceTime.toMinutes() < 60 -> "${differenceTime.toMinutes()} mins ago"
+        differenceTime.toHours().toInt() == 1 -> "${differenceTime.toHours()} hr ago"
+        differenceTime.toHours() < 24 -> "${differenceTime.toHours()} hrs ago"
+        differenceTime.toDays().toInt() == 1 -> "${differenceTime.toDays()} day ago"
+        else -> "${differenceTime.toDays()} days ago"
+    }
+    holder.dateText.text = finalResult
+}
+
+internal fun getHtmlUrl(currentItem: FeedPageModel): String {
+    return when (currentItem.type) {
+        "CommitCommentEvent" -> "https://github.com/${currentItem.repo.name}"
+        "CreateEvent" -> "https://github.com/${currentItem.repo.name}"
+        "ForkEvent" -> currentItem.payload!!.forkee!!.html_url!!
+        "DeleteEvent" -> "https://github.com/${currentItem.repo.name}"
+        "GollumEvent" -> "https://github.com/${currentItem.repo.name}"
+        "IssueCommentEvent" -> currentItem.payload!!.issue!!.html_url!!
+        "IssuesEvent" -> currentItem.payload!!.issue!!.html_url!!
+        "MemberEvent" -> "https://github.com/${currentItem.repo.name}"
+        "PublicEvent" -> "https://github.com/${currentItem.repo.name}"
+        "PullRequestEvent" -> currentItem.payload!!.pull_request!!.html_url!!
+        "PullRequestReviewEvent" -> currentItem.payload!!.review!!.html_url!!
+        "PullRequestReviewCommentEvent" -> currentItem.payload!!.comment!!.html_url!!
+        "PushEvent" -> "https://github.com/${currentItem.repo.name}/commit/${currentItem.payload!!.commits!![0].sha!!}"
+        "ReleaseEvent" -> currentItem.payload!!.release!!.html_url!!
+        "SponsorshipEvent" -> "https://github.com/${currentItem.repo.name}"
+        "WatchEvent" -> "https://github.com/${currentItem.repo.name}"
+        else -> "https://github.com/${currentItem.repo.name}"
     }
 }

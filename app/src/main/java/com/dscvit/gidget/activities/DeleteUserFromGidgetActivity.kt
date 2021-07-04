@@ -10,11 +10,11 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.dscvit.gidget.R
 import com.dscvit.gidget.adapters.DeleteGidgetItemAdapter
+import com.dscvit.gidget.animations.BounceEdgeEffectFactory
 import com.dscvit.gidget.common.Utils
 
 class DeleteUserFromGidgetActivity : AppCompatActivity() {
     private lateinit var layoutManager: LinearLayoutManager
-    private lateinit var deleteGidgetItemAdapter: DeleteGidgetItemAdapter
     private lateinit var adapter: DeleteGidgetItemAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -27,8 +27,9 @@ class DeleteUserFromGidgetActivity : AppCompatActivity() {
         val backButton: ImageView = findViewById(R.id.deleteUserFromGidgetBackButton)
 
         recyclerView.setHasFixedSize(true)
-        layoutManager = LinearLayoutManager(this)
+        layoutManager = LinearLayoutManager(this, RecyclerView.VERTICAL, false)
         recyclerView.layoutManager = layoutManager
+        recyclerView.edgeEffectFactory = BounceEdgeEffectFactory()
 
         populateData(progressBar, emptyTextView, recyclerView)
         backButton.setOnClickListener { finish() }

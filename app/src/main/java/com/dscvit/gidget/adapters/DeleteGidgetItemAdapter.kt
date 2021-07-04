@@ -6,8 +6,6 @@ import android.content.SharedPreferences
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.animation.Animation
-import android.view.animation.AnimationUtils
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
@@ -56,14 +54,6 @@ class DeleteGidgetItemAdapter(
             Picasso.get().load(photoUrl).error(R.drawable.github_logo).transform(
                 RoundedTransformation(300, 0)
             ).into(holder.profilePhoto)
-
-            // Custom Animation
-            val lastPosition: Int = -1
-            val animation: Animation = AnimationUtils.loadAnimation(
-                context,
-                if (position > lastPosition) R.anim.up_from_bottom else R.anim.down_from_top
-            )
-            holder.itemView.startAnimation(animation)
 
             holder.addToWidgetButton.setOnClickListener {
                 try {
