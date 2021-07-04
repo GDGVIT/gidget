@@ -185,7 +185,7 @@ internal fun setEventData(
                 holder.eventPhoto.setImageResource(R.drawable.ic_baseline_cloud_upload_24)
                 holder.message.text =
                     if (currentItem.payload?.commits.isNullOrEmpty()) "User made a push request"
-                    else "User made a push request\n\"$message\""
+                    else "User made a push event\n\"$message\""
             }
             "ReleaseEvent" -> {
                 holder.eventPhoto.setImageResource(R.drawable.ic_baseline_new_releases_24)

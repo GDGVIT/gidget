@@ -40,17 +40,17 @@
                 android:resource="@xml/gidget_widget_info" />
         </receiver>
 
-        <activity android:name=".activities.SearchActivity" />
+        <activity
+            android:name=".activities.SearchActivity"
+            android:windowSoftInputMode="adjustNothing" />
         <activity android:name=".activities.ProfileActivity" />
         <activity android:name=".activities.FeedActivity" />
 
         <activity android:name=".activities.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
-
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
-
                 <data
                     android:host="auth"
                     android:scheme="gidget" />

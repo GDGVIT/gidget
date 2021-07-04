@@ -435,7 +435,7 @@ class Utils {
                     }
                     listOf(
                         if (currentItem.payload?.commits.isNullOrEmpty()) "User made a push request"
-                        else "User made a push request\n\"$message\"",
+                        else "User made a push event\n\"$message\"",
                         R.drawable.ic_baseline_cloud_upload_24.toString()
                     )
                 }
