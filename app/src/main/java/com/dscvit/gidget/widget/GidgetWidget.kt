@@ -63,7 +63,7 @@ class GidgetWidget : AppWidgetProvider() {
     override fun onEnabled(context: Context) {
         if (!utils.isEmpty(context)) {
             onWidgetRefresh(context, Intent(Utils.getOnRefreshButtonClicked()))
-            AppWidgetAlarm.startGidgetRefresh(context.applicationContext)
+            // AppWidgetAlarm.startGidgetRefresh(context)
         }
     }
 
@@ -115,13 +115,14 @@ class GidgetWidget : AppWidgetProvider() {
                             if (response.body() != null) {
                                 for (res in response.body()!!) {
                                     val addToWidget = AddToWidget()
-                                    val eventsList: List<String> = utils.getEventData(res)
+                                    val eventsList: List<String> = utils.getEventMessageAndIcon(res)
 
                                     addToWidget.username = res.actor.login
                                     addToWidget.name = res.repo.name
                                     addToWidget.avatarUrl = res.actor.avatar_url
                                     addToWidget.icon = eventsList[1].toInt()
                                     addToWidget.message = eventsList[0]
+                                    addToWidget.details = utils.getEventDetails(res)
                                     addToWidget.date = utils.getDate(res)
                                     addToWidget.dateISO = res.created_at
                                     addToWidget.htmlUrl = utils.getHtmlUrl(res)
@@ -168,13 +169,14 @@ class GidgetWidget : AppWidgetProvider() {
                             if (response.body() != null) {
                                 for (res in response.body()!!) {
                                     val addToWidget = AddToWidget()
-                                    val eventsList: List<String> = utils.getEventData(res)
+                                    val eventsList: List<String> = utils.getEventMessageAndIcon(res)
 
                                     addToWidget.username = res.actor.login
                                     addToWidget.name = res.repo.name
                                     addToWidget.avatarUrl = res.actor.avatar_url
                                     addToWidget.icon = eventsList[1].toInt()
                                     addToWidget.message = eventsList[0]
+                                    addToWidget.details = utils.getEventDetails(res)
                                     addToWidget.date = utils.getDate(res)
                                     addToWidget.dateISO = res.created_at
                                     addToWidget.htmlUrl = utils.getHtmlUrl(res)
@@ -238,11 +240,10 @@ class GidgetWidget : AppWidgetProvider() {
     }
 
     private fun deleteWidgetData(context: Context) {
-        AppWidgetAlarm.stopGidgetRefresh(context.applicationContext)
+        AppWidgetAlarm.stopGidgetRefresh(context)
         utils.deleteAllData(context)
         val appWidgetManager = AppWidgetManager.getInstance(context)
-        val appWidgetIds =
-            appWidgetManager.getAppWidgetIds(ComponentName(context, GidgetWidget::class.java))
+        val appWidgetIds = appWidgetManager.getAppWidgetIds(ComponentName(context, GidgetWidget::class.java))
         appWidgetManager.notifyAppWidgetViewDataChanged(appWidgetIds, R.id.appwidgetListView)
         widgetActionUpdate(context, utils)
     }
@@ -319,10 +320,12 @@ internal fun widgetActionUpdate(context: Context, utils: Utils) {
     if (appWidgetIds.isNotEmpty()) {
         appWidgetManager.notifyAppWidgetViewDataChanged(appWidgetIds, R.id.appwidgetListView)
         updateAppWidget(context, appWidgetManager, appWidgetIds.first(), utils)
+        if (!utils.isEmpty(context))
+            AppWidgetAlarm.startGidgetRefresh(context)
     }
 }
 
 internal fun clearWidgetItems(context: Context, utils: Utils) {
-    AppWidgetAlarm.stopGidgetRefresh(context.applicationContext)
+    AppWidgetAlarm.stopGidgetRefresh(context)
     widgetActionUpdate(context, utils)
 }

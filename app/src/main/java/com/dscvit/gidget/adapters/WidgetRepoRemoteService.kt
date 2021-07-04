@@ -3,6 +3,7 @@ package com.dscvit.gidget.adapters
 import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
+import android.view.View
 import android.widget.RemoteViews
 import android.widget.RemoteViewsService
 import com.dscvit.gidget.R
@@ -50,6 +51,11 @@ class WidgetRepoRemoteViewsFactory(
         views.setTextViewText(R.id.appwidgetRecyclerViewItemRepoName, currentItem.name)
         views.setTextViewText(R.id.appwidgetRecyclerViewItemMessage, currentItem.message)
         views.setTextViewText(R.id.appwidgetRecyclerViewItemDate, currentItem.date)
+        if (currentItem.details.isNullOrEmpty()) views.setViewVisibility(R.id.appwidgetRecyclerViewItemDetails, View.GONE)
+        else {
+            views.setViewVisibility(R.id.appwidgetRecyclerViewItemDetails, View.VISIBLE)
+            views.setTextViewText(R.id.appwidgetRecyclerViewItemDetails, currentItem.details)
+        }
 
         // setting profilePhoto
         val profilePhotoBitmap: Bitmap =

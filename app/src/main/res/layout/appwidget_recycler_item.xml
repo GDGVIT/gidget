@@ -4,8 +4,8 @@
     android:id="@+id/appWidgetRecyclerItem"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginVertical="@dimen/_12sdp"
-    android:layout_marginHorizontal="@dimen/_1sdp">
+    android:layout_marginHorizontal="@dimen/_1sdp"
+    android:layout_marginVertical="@dimen/_6sdp">
 
     <RelativeLayout
         android:id="@+id/appwidgetRecyclerViewItemSection1"
@@ -85,7 +85,10 @@
                     android:layout_height="wrap_content"
                     android:layout_alignParentStart="true"
                     android:layout_toStartOf="@+id/appwidgetRecyclerViewItemDate"
+                    android:ellipsize="end"
                     android:fontFamily="@font/nexa_bold"
+                    android:maxLines="1"
+                    android:textStyle="bold"
                     android:text="@string/repo_name"
                     android:textColor="@color/white"
                     android:textSize="@dimen/_11sdp" />
@@ -109,10 +112,25 @@
                 android:layout_below="@+id/appwidgetRecyclerViewItemRepoNameRL"
                 android:layout_marginTop="@dimen/_5sdp"
                 android:fontFamily="@font/montserrat"
-                android:maxLines="3"
+                android:maxLines="1"
+                android:textStyle="normal"
                 android:text="@string/appwidget_commit_message"
                 android:textColor="@color/lightGrey"
                 android:textSize="@dimen/_10sdp" />
+
+            <TextView
+                android:id="@+id/appwidgetRecyclerViewItemDetails"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/appwidgetRecyclerViewItemMessage"
+                android:layout_marginTop="@dimen/_5sdp"
+                android:ellipsize="end"
+                android:fontFamily="@font/montserrat"
+                android:maxLines="1"
+                android:textStyle="italic"
+                android:text="@string/appwidget_commit_message"
+                android:textColor="@color/blue"
+                android:textSize="@dimen/_9sdp" />
         </RelativeLayout>
     </RelativeLayout>
 

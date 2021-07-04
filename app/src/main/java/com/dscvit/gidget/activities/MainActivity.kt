@@ -92,7 +92,7 @@ class MainActivity : AppCompatActivity() {
                                                                 user.login
                                                                     ?: throw Exception("Gidget is unable access your username"),
                                                                 user.name
-                                                                    ?: throw Exception("Gidget is unable access your name"),
+                                                                    ?: "...",
                                                                 user.avatar_url
                                                                     ?: throw Exception("Gidget is unable access your avatar")
                                                             )

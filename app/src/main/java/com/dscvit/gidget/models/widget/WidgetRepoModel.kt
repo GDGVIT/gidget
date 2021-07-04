@@ -32,6 +32,7 @@ data class Org(
 )
 
 data class Payload(
+    @SerializedName("action") val action: String? = null,
     @SerializedName("commits") val commits: Array<Commits>? = null,
     @SerializedName("forkee") val forkee: Forkee? = null,
     @SerializedName("issue") val issue: Issue? = null,
@@ -44,7 +45,8 @@ data class Payload(
 // Payload subclasses
 
 data class Commits(
-    @SerializedName("sha") val sha: String? = null
+    @SerializedName("sha") val sha: String? = null,
+    @SerializedName("message") val message: String? = null
 )
 
 data class Forkee(
@@ -52,11 +54,13 @@ data class Forkee(
 )
 
 data class Issue(
-    @SerializedName("html_url") val html_url: String? = null
+    @SerializedName("html_url") val html_url: String? = null,
+    @SerializedName("title") val title: String? = null
 )
 
 data class PullRequest(
-    @SerializedName("html_url") val html_url: String? = null
+    @SerializedName("html_url") val html_url: String? = null,
+    @SerializedName("title") val title: String? = null
 )
 
 data class Review(
@@ -64,9 +68,11 @@ data class Review(
 )
 
 data class Comment(
-    @SerializedName("html_url") val html_url: String? = null
+    @SerializedName("html_url") val html_url: String? = null,
+    @SerializedName("body") val body: String? = null
 )
 
 data class Release(
-    @SerializedName("html_url") val html_url: String? = null
+    @SerializedName("html_url") val html_url: String? = null,
+    @SerializedName("name") val name: String? = null
 )
