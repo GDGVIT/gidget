@@ -6,8 +6,6 @@ import android.content.SharedPreferences
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.animation.Animation
-import android.view.animation.AnimationUtils
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
@@ -48,7 +46,8 @@ class DeleteGidgetItemAdapter(
             val photoUrl: String = currentMap["photoUrl"]!!
             val isUser: Boolean = currentMap["isUser"]!!.toBoolean()
 
-            holder.name.text = if (name.isEmpty()) username.substring(0, username.indexOf(",")) else name
+            holder.name.text =
+                if (name.isEmpty()) username.substring(0, username.indexOf(",")) else name
             holder.username.text = username.substring(0, username.indexOf(","))
             holder.isUser.text = if (isUser) "User/Org" else "Repo"
 
@@ -56,20 +55,12 @@ class DeleteGidgetItemAdapter(
                 RoundedTransformation(300, 0)
             ).into(holder.profilePhoto)
 
-            // Custom Animation
-            val lastPosition: Int = -1
-            val animation: Animation = AnimationUtils.loadAnimation(
-                context,
-                if (position > lastPosition) R.anim.up_from_bottom else R.anim.down_from_top
-            )
-            holder.itemView.startAnimation(animation)
-
             holder.addToWidgetButton.setOnClickListener {
                 try {
                     userMap.remove(username)
                     updateGidget(name, context, userMap)
                     notifyItemRemoved(position)
-                    notifyDataSetChanged()
+                    notifyItemRangeChanged(position, userMap.size)
                 } catch (e: Exception) {
                     println(e.message)
                     Toast.makeText(context, "Failed to remove items", Toast.LENGTH_SHORT).show()
@@ -100,30 +91,33 @@ internal fun updateGidget(
 ) {
     try {
         val utils = Utils()
-        var dataSource: ArrayList<AddToWidget> = utils.getArrayList(context)
-        dataSource = dataSource.filter { !it.name!!.contains(name) } as ArrayList<AddToWidget>
+        var dataSource: ArrayList<AddToWidget>? = utils.getArrayList(context)
+        if (!dataSource.isNullOrEmpty()) {
+            dataSource = dataSource.filter { !it.name!!.contains(name) } as ArrayList<AddToWidget>
 
-        if (userMap.isNullOrEmpty()) {
-            utils.deleteArrayList(context)
-            val widgetIntent = Intent(context, GidgetWidget::class.java)
-            widgetIntent.action = Utils.getClearWidgetItems()
-            context.sendBroadcast(widgetIntent)
-            (context as DeleteUserFromGidgetActivity).finish()
-        } else {
-            val prefs: SharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
-            val editor: SharedPreferences.Editor = prefs.edit()
-            val gson = Gson()
-            if (prefs.contains("dataSource") && prefs.contains("userDetails")) {
-                editor.putString("dataSource", gson.toJson(dataSource))
-                editor.putString("userDetails", gson.toJson(userMap))
-                editor.apply()
+            if (userMap.isNullOrEmpty()) {
+                utils.deleteArrayList(context)
+                val widgetIntent = Intent(context, GidgetWidget::class.java)
+                widgetIntent.action = Utils.getClearWidgetItems()
+                context.sendBroadcast(widgetIntent)
+                (context as DeleteUserFromGidgetActivity).finish()
+            } else {
+                val prefs: SharedPreferences =
+                    PreferenceManager.getDefaultSharedPreferences(context)
+                val editor: SharedPreferences.Editor = prefs.edit()
+                val gson = Gson()
+                if (prefs.contains("dataSource") && prefs.contains("userDetails")) {
+                    editor.putString("dataSource", gson.toJson(dataSource))
+                    editor.putString("userDetails", gson.toJson(userMap))
+                    editor.apply()
+                }
+
+                val widgetIntent = Intent(context, GidgetWidget::class.java)
+                widgetIntent.action = Utils.getOnRefreshButtonClicked()
+                context.sendBroadcast(widgetIntent)
             }
-
-            val widgetIntent = Intent(context, GidgetWidget::class.java)
-            widgetIntent.action = Utils.getOnRefreshButtonClicked()
-            context.sendBroadcast(widgetIntent)
+            Toast.makeText(context, "Items removed from Gidget", Toast.LENGTH_SHORT).show()
         }
-        Toast.makeText(context, "Items removed from Gidget", Toast.LENGTH_SHORT).show()
     } catch (e: Exception) {
         println(e.message)
     }

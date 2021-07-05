@@ -61,10 +61,9 @@ class GidgetWidget : AppWidgetProvider() {
     }
 
     override fun onEnabled(context: Context) {
-        val appwidgetAlarm = AppWidgetAlarm(context.applicationContext)
         if (!utils.isEmpty(context)) {
             onWidgetRefresh(context, Intent(Utils.getOnRefreshButtonClicked()))
-            appwidgetAlarm.startGidgetRefresh()
+            // AppWidgetAlarm.startGidgetRefresh(context)
         }
     }
 
@@ -79,7 +78,7 @@ class GidgetWidget : AppWidgetProvider() {
             )
         )
             addToWidget(context, userMap)
-        else if (userMap.isNullOrEmpty() && intent.action != Utils.automaticUpdateWidget())
+        else if (userMap.isNullOrEmpty() && intent.action == Utils.getOnRefreshButtonClicked())
             Toast.makeText(context, "Cannot refresh empty widget", Toast.LENGTH_SHORT).show()
     }
 
@@ -96,9 +95,6 @@ class GidgetWidget : AppWidgetProvider() {
 
         views.setViewVisibility(R.id.appwidgetProgressBar, View.VISIBLE)
         appWidgetManager.updateAppWidget(appWidgetIds, views)
-
-        views.setViewVisibility(R.id.appwidgetProgressBar, View.GONE)
-        views.setTextViewText(R.id.appwidgetDate, utils.getTime())
 
         try {
             val key: String = userMap.keys.elementAt(i)
@@ -119,13 +115,14 @@ class GidgetWidget : AppWidgetProvider() {
                             if (response.body() != null) {
                                 for (res in response.body()!!) {
                                     val addToWidget = AddToWidget()
-                                    val eventsList: List<String> = utils.getEventData(res)
+                                    val eventsList: List<String> = utils.getEventMessageAndIcon(res)
 
                                     addToWidget.username = res.actor.login
                                     addToWidget.name = res.repo.name
                                     addToWidget.avatarUrl = res.actor.avatar_url
                                     addToWidget.icon = eventsList[1].toInt()
                                     addToWidget.message = eventsList[0]
+                                    addToWidget.details = utils.getEventDetails(res)
                                     addToWidget.date = utils.getDate(res)
                                     addToWidget.dateISO = res.created_at
                                     addToWidget.htmlUrl = utils.getHtmlUrl(res)
@@ -152,6 +149,8 @@ class GidgetWidget : AppWidgetProvider() {
                             t: Throwable
                         ) {
                             println("ERROR - ${t.message}")
+                            views.setViewVisibility(R.id.appwidgetProgressBar, View.GONE)
+                            views.setTextViewText(R.id.appwidgetDate, utils.getTime())
                             appWidgetManager.updateAppWidget(appWidgetIds, views)
                             throw Exception("Failed to fetch data")
                         }
@@ -170,13 +169,14 @@ class GidgetWidget : AppWidgetProvider() {
                             if (response.body() != null) {
                                 for (res in response.body()!!) {
                                     val addToWidget = AddToWidget()
-                                    val eventsList: List<String> = utils.getEventData(res)
+                                    val eventsList: List<String> = utils.getEventMessageAndIcon(res)
 
                                     addToWidget.username = res.actor.login
                                     addToWidget.name = res.repo.name
                                     addToWidget.avatarUrl = res.actor.avatar_url
                                     addToWidget.icon = eventsList[1].toInt()
                                     addToWidget.message = eventsList[0]
+                                    addToWidget.details = utils.getEventDetails(res)
                                     addToWidget.date = utils.getDate(res)
                                     addToWidget.dateISO = res.created_at
                                     addToWidget.htmlUrl = utils.getHtmlUrl(res)
@@ -203,6 +203,8 @@ class GidgetWidget : AppWidgetProvider() {
                             t: Throwable
                         ) {
                             println("ERROR - ${t.message}")
+                            views.setViewVisibility(R.id.appwidgetProgressBar, View.GONE)
+                            views.setTextViewText(R.id.appwidgetDate, utils.getTime())
                             appWidgetManager.updateAppWidget(appWidgetIds, views)
                             throw Exception("Failed to fetch data")
                         }
@@ -210,7 +212,9 @@ class GidgetWidget : AppWidgetProvider() {
             }
         } catch (e: Exception) {
             println(e.message)
-            Toast.makeText(context, "Error refreshing Gidget", Toast.LENGTH_LONG).show()
+            Toast.makeText(context, "Error refreshing Gidget", Toast.LENGTH_SHORT).show()
+            views.setViewVisibility(R.id.appwidgetProgressBar, View.GONE)
+            views.setTextViewText(R.id.appwidgetDate, utils.getTime())
             appWidgetManager.updateAppWidget(appWidgetIds, views)
         }
     }
@@ -229,17 +233,17 @@ class GidgetWidget : AppWidgetProvider() {
         if (dataSource.size > 50) dataSource.subList(51, dataSource.size).clear()
         editor.putString("dataSource", gson.toJson(dataSource))
         editor.apply()
+        views.setViewVisibility(R.id.appwidgetProgressBar, View.GONE)
+        views.setTextViewText(R.id.appwidgetDate, utils.getTime())
         appWidgetManager.updateAppWidget(appWidgetIds, views)
         widgetActionUpdate(context, utils)
     }
 
     private fun deleteWidgetData(context: Context) {
-        val appwidgetAlarm = AppWidgetAlarm(context.applicationContext)
-        appwidgetAlarm.stopGidgetRefresh()
+        AppWidgetAlarm.stopGidgetRefresh(context)
         utils.deleteAllData(context)
         val appWidgetManager = AppWidgetManager.getInstance(context)
-        val appWidgetIds =
-            appWidgetManager.getAppWidgetIds(ComponentName(context, GidgetWidget::class.java))
+        val appWidgetIds = appWidgetManager.getAppWidgetIds(ComponentName(context, GidgetWidget::class.java))
         appWidgetManager.notifyAppWidgetViewDataChanged(appWidgetIds, R.id.appwidgetListView)
         widgetActionUpdate(context, utils)
     }
@@ -275,6 +279,9 @@ internal fun updateAppWidget(
         PendingIntent.getActivity(context, 0, deleteIntent, 0)
     views.setOnClickPendingIntent(R.id.appwidgetDeleteButton, deletePendingIntent)
 
+    // Removing ProgressBar
+    views.setViewVisibility(R.id.appwidgetProgressBar, View.GONE)
+
     // Main Widget
     val clickIntent = Intent(context, GidgetWidget::class.java)
     val clickPendingIntent = PendingIntent.getBroadcast(context, 0, clickIntent, 0)
@@ -283,7 +290,6 @@ internal fun updateAppWidget(
     if (utils.isEmpty(context)) {
         views.setEmptyView(R.id.appwidgetListView, R.id.appwidgetEmptyViewText)
         views.setOnClickPendingIntent(R.id.appwidgetEmptyViewText, buttonPendingIntent)
-        views.setViewVisibility(R.id.appwidgetProgressBar, View.GONE)
     } else {
         // Date Widget
         views.setTextViewText(R.id.appwidgetDate, utils.getTime())
@@ -302,7 +308,7 @@ internal fun onItemClicked(intent: Intent, context: Context) {
         val uri: Uri = Uri.parse(clickedItem.htmlUrl)
         val clickIntent =
             Intent(Intent.ACTION_VIEW, uri).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-        Toast.makeText(context, clickedItem.name, Toast.LENGTH_LONG).show()
+        Toast.makeText(context, clickedItem.name, Toast.LENGTH_SHORT).show()
         context.startActivity(clickIntent)
     }
 }
@@ -314,11 +320,12 @@ internal fun widgetActionUpdate(context: Context, utils: Utils) {
     if (appWidgetIds.isNotEmpty()) {
         appWidgetManager.notifyAppWidgetViewDataChanged(appWidgetIds, R.id.appwidgetListView)
         updateAppWidget(context, appWidgetManager, appWidgetIds.first(), utils)
+        if (!utils.isEmpty(context))
+            AppWidgetAlarm.startGidgetRefresh(context)
     }
 }
 
 internal fun clearWidgetItems(context: Context, utils: Utils) {
-    val appwidgetAlarm = AppWidgetAlarm(context.applicationContext)
-    appwidgetAlarm.stopGidgetRefresh()
+    AppWidgetAlarm.stopGidgetRefresh(context)
     widgetActionUpdate(context, utils)
 }

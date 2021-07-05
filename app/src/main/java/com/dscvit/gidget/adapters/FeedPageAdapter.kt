@@ -7,8 +7,6 @@ import android.net.Uri
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.animation.Animation
-import android.view.animation.AnimationUtils
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.cardview.widget.CardView
@@ -48,8 +46,11 @@ class FeedPageAdapter(
             context.startActivity(intent)
         }
 
-        // Event Photo
+        // Event Message & Photo
         setEventData(currentItem, holder)
+
+        // Event Details
+        setEventDetails(currentItem, holder)
 
         // Username Text
         holder.username.text = currentItem.actor.login
@@ -65,14 +66,6 @@ class FeedPageAdapter(
 
         // Date Text
         setDate(holder, currentItem)
-
-        // Custom Animation
-        val lastPosition: Int = -1
-        val animation: Animation = AnimationUtils.loadAnimation(
-            context,
-            if (position > lastPosition) R.anim.up_from_bottom else R.anim.down_from_top
-        )
-        holder.itemView.startAnimation(animation)
 
         // Open Repository
         holder.feedPageRecyclerViewItem.setOnClickListener {
@@ -93,12 +86,34 @@ class FeedPageAdapter(
         holder.itemView.clearAnimation()
     }
 
-    @SuppressLint("SetTextI18n")
-    private fun setEventData(currentItem: FeedPageModel, holder: FeedPageUserActivityViewHolder) {
+    class FeedPageUserActivityViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+        val profilePhoto: ImageView =
+            itemView.findViewById(R.id.feedPageRecyclerViewItemProfilePhoto)
+        val profilePhotoCard: CardView =
+            itemView.findViewById(R.id.feedPageRecyclerViewItemProfilePhotoCard)
+        val eventPhoto: ImageView = itemView.findViewById(R.id.feedPageEventTypeIcon)
+        val username: TextView = itemView.findViewById(R.id.feedPageRecyclerViewItemUsername)
+        val repositoryName: TextView = itemView.findViewById(R.id.feedPageRecyclerViewItemRepoName)
+        val dateText: TextView = itemView.findViewById(R.id.feedPageRecyclerViewItemDate)
+        val feedPageRecyclerViewItem: CardView =
+            itemView.findViewById(R.id.feedPageRecyclerViewItem)
+        val message: TextView = itemView.findViewById(R.id.feedPageRecyclerViewItemMessage)
+        val details: TextView = itemView.findViewById(R.id.feedPageRecyclerViewItemDetails)
+    }
+}
+
+@SuppressLint("SetTextI18n")
+internal fun setEventData(
+    currentItem: FeedPageModel,
+    holder: FeedPageAdapter.FeedPageUserActivityViewHolder
+) {
+    try {
         when (currentItem.type) {
             "CommitCommentEvent" -> {
                 holder.eventPhoto.setImageResource(R.drawable.ic_baseline_comment_24)
-                holder.message.text = "User commented on a commit"
+                holder.message.text = if (currentItem.payload?.comment?.body.isNullOrEmpty())
+                    "User commented on a commit"
+                else "User commented on a commit\n\"${currentItem.payload?.comment?.body}\""
             }
             "CreateEvent" -> {
                 holder.eventPhoto.setImageResource(R.drawable.ic_git_branch)
@@ -118,11 +133,20 @@ class FeedPageAdapter(
             }
             "IssueCommentEvent" -> {
                 holder.eventPhoto.setImageResource(R.drawable.ic_baseline_comment_24)
-                holder.message.text = "User commented on an issue"
+                holder.message.text =
+                    if (currentItem.payload?.action.isNullOrEmpty()) "User commented on an issue"
+                    else when (currentItem.payload?.action) {
+                        "edited" -> "User edited a comment"
+                        "deleted" -> "User deleted a comment"
+                        "created" -> "User commented on an issue\n\"${currentItem.payload.comment?.body}\""
+                        else -> "User commented on an issue"
+                    }
             }
             "IssuesEvent" -> {
                 holder.eventPhoto.setImageResource(R.drawable.ic_github_issue)
-                holder.message.text = "Activity related to an issue"
+                holder.message.text =
+                    if (currentItem.payload?.action.isNullOrEmpty()) "Activity related to an issue"
+                    else "User ${currentItem.payload?.action} a issue\n\"${currentItem.payload?.issue?.title}\""
             }
             "MemberEvent" -> {
                 holder.eventPhoto.setImageResource(R.drawable.ic_baseline_group_24)
@@ -134,19 +158,34 @@ class FeedPageAdapter(
             }
             "PullRequestEvent" -> {
                 holder.eventPhoto.setImageResource(R.drawable.ic_github_pull_request)
-                holder.message.text = "User made a pull request"
+                holder.message.text =
+                    if (currentItem.payload?.action.isNullOrEmpty() || currentItem.payload?.pull_request?.title.isNullOrEmpty())
+                        "User made a pull request"
+                    else "User ${currentItem.payload?.action} a pull request\n\"${currentItem.payload?.pull_request?.title}\""
             }
-            "PullRequestReviewEvent" -> listOf(
-                "User reviewed a pull request",
-                R.drawable.pull_request_review_event.toString()
-            )
+            "PullRequestReviewEvent" -> {
+                holder.eventPhoto.setImageResource(R.drawable.pull_request_review_event)
+                holder.message.text =
+                    if (currentItem.payload?.pull_request?.title.isNullOrEmpty()) "User reviewed a pull request"
+                    else "User reviewed a pull request\n\"${currentItem.payload?.pull_request?.title}\""
+            }
             "PullRequestReviewCommentEvent" -> {
                 holder.eventPhoto.setImageResource(R.drawable.ic_baseline_comment_24)
-                holder.message.text = "User commented on a pull request review"
+                holder.message.text =
+                    if (currentItem.payload?.comment?.body.isNullOrEmpty()) "User commented on a pull request review"
+                    else "User commented on a pull request review\n\"${currentItem.payload?.comment?.body}\""
             }
             "PushEvent" -> {
+                var message = ""
+                currentItem.payload?.commits?.forEach {
+                    if (!it.message.isNullOrEmpty()) {
+                        message += if (currentItem.payload.commits.last() != it) "${it.message}, " else it.message
+                    }
+                }
                 holder.eventPhoto.setImageResource(R.drawable.ic_baseline_cloud_upload_24)
-                holder.message.text = "User made a push request"
+                holder.message.text =
+                    if (currentItem.payload?.commits.isNullOrEmpty()) "User made a push request"
+                    else "User made a push event\n\"$message\""
             }
             "ReleaseEvent" -> {
                 holder.eventPhoto.setImageResource(R.drawable.ic_baseline_new_releases_24)
@@ -165,58 +204,134 @@ class FeedPageAdapter(
                 holder.message.text = "Unidentified event"
             }
         }
+    } catch (e: Throwable) {
+        holder.eventPhoto.setImageResource(R.drawable.github_logo)
+        holder.message.text = "Unidentified event"
     }
+}
 
-    private fun setDate(holder: FeedPageUserActivityViewHolder, currentItem: FeedPageModel) {
-        val dateTimePattern = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss'Z'")
-        val createDate = LocalDateTime.parse(currentItem.created_at, dateTimePattern)
-        val currentDate = LocalDateTime.now(ZoneId.of("Etc/UTC"))
-        val differenceTime = Duration.between(currentDate, createDate).abs()
-        val finalResult: String = when {
-            differenceTime.seconds < 60 -> "${differenceTime.seconds} secs ago"
-            differenceTime.toMinutes().toInt() == 1 -> "${differenceTime.toMinutes()} min ago"
-            differenceTime.toMinutes() < 60 -> "${differenceTime.toMinutes()} mins ago"
-            differenceTime.toHours().toInt() == 1 -> "${differenceTime.toHours()} hr ago"
-            differenceTime.toHours() < 24 -> "${differenceTime.toHours()} hrs ago"
-            differenceTime.toDays().toInt() == 1 -> "${differenceTime.toDays()} day ago"
-            else -> "${differenceTime.toDays()} days ago"
+@SuppressLint("SetTextI18n")
+internal fun setEventDetails(
+    currentItem: FeedPageModel,
+    holder: FeedPageAdapter.FeedPageUserActivityViewHolder
+) {
+    try {
+        when (currentItem.type) {
+            "CommitCommentEvent" -> {
+                holder.details.text =
+                    if (currentItem.payload?.comment?.body.isNullOrEmpty()) null
+                    else "\"${currentItem.payload?.comment?.body}\""
+            }
+            "CreateEvent" -> holder.details.visibility = View.GONE
+            "ForkEvent" -> holder.details.visibility = View.GONE
+            "DeleteEvent" -> holder.details.visibility = View.GONE
+            "GollumEvent" -> holder.details.visibility = View.GONE
+            "IssueCommentEvent" -> {
+                if (currentItem.payload?.action.isNullOrEmpty()) holder.details.visibility = View.GONE
+                else when (currentItem.payload?.action) {
+                    "created" -> {
+                        holder.details.visibility = View.VISIBLE
+                        holder.details.text = "\"${currentItem.payload.comment?.body}\""
+                    }
+                    else -> holder.details.visibility = View.GONE
+                }
+            }
+            "IssuesEvent" -> {
+                if (currentItem.payload?.action.isNullOrEmpty()) holder.details.visibility = View.GONE
+                else {
+                    holder.details.visibility = View.VISIBLE
+                    holder.details.text = "\"${currentItem.payload?.issue?.title}\""
+                }
+            }
+            "MemberEvent" -> holder.details.visibility = View.GONE
+            "PublicEvent" -> holder.details.visibility = View.GONE
+            "PullRequestEvent" -> {
+                if (currentItem.payload?.action.isNullOrEmpty() || currentItem.payload?.pull_request?.title.isNullOrEmpty()) holder.details.visibility = View.GONE
+                else {
+                    holder.details.visibility = View.VISIBLE
+                    holder.details.text = "\"${currentItem.payload?.pull_request?.title}\""
+                }
+            }
+            "PullRequestReviewEvent" -> {
+                if (currentItem.payload?.pull_request?.title.isNullOrEmpty()) holder.details.visibility = View.GONE
+                else {
+                    holder.details.visibility = View.VISIBLE
+                    holder.details.text = "\"${currentItem.payload?.pull_request?.title}\""
+                }
+            }
+            "PullRequestReviewCommentEvent" -> {
+                if (currentItem.payload?.comment?.body.isNullOrEmpty()) holder.details.visibility = View.GONE
+                else {
+                    holder.details.visibility = View.VISIBLE
+                    holder.details.text = "\"${currentItem.payload?.comment?.body}\""
+                }
+            }
+            "PushEvent" -> {
+                var message = ""
+                currentItem.payload?.commits?.forEach {
+                    if (!it.message.isNullOrEmpty()) {
+                        message += if (currentItem.payload.commits.last() != it) "${it.message}, "
+                        else it.message
+                    }
+                }
+                if (currentItem.payload?.commits.isNullOrEmpty()) holder.details.visibility =
+                    View.GONE
+                else {
+                    holder.details.visibility = View.VISIBLE
+                    holder.details.text = "\"$message\""
+                }
+            }
+            "ReleaseEvent" -> {
+                if (currentItem.payload?.release?.name.isNullOrEmpty()) holder.details.visibility = View.GONE
+                else {
+                    holder.details.visibility = View.VISIBLE
+                    holder.details.text = "Release - ${currentItem.payload?.release?.name}"
+                }
+            }
+            "SponsorshipEvent" -> holder.details.visibility = View.GONE
+            "WatchEvent" -> holder.details.visibility = View.GONE
+            else -> holder.details.visibility = View.GONE
         }
-        holder.dateText.text = finalResult
+    } catch (e: Throwable) {
+        holder.details.visibility = View.GONE
     }
+}
 
-    private fun getHtmlUrl(currentItem: FeedPageModel): String {
-        return when (currentItem.type) {
-            "CommitCommentEvent" -> "https://github.com/${currentItem.repo.name}"
-            "CreateEvent" -> "https://github.com/${currentItem.repo.name}"
-            "ForkEvent" -> currentItem.payload!!.forkee!!.html_url!!
-            "DeleteEvent" -> "https://github.com/${currentItem.repo.name}"
-            "GollumEvent" -> "https://github.com/${currentItem.repo.name}"
-            "IssueCommentEvent" -> currentItem.payload!!.issue!!.html_url!!
-            "IssuesEvent" -> currentItem.payload!!.issue!!.html_url!!
-            "MemberEvent" -> "https://github.com/${currentItem.repo.name}"
-            "PublicEvent" -> "https://github.com/${currentItem.repo.name}"
-            "PullRequestEvent" -> currentItem.payload!!.pull_request!!.html_url!!
-            "PullRequestReviewEvent" -> currentItem.payload!!.review!!.html_url!!
-            "PullRequestReviewCommentEvent" -> currentItem.payload!!.comment!!.html_url!!
-            "PushEvent" -> "https://github.com/${currentItem.repo.name}/commit/${currentItem.payload!!.commits!![0].sha!!}"
-            "ReleaseEvent" -> currentItem.payload!!.release!!.html_url!!
-            "SponsorshipEvent" -> "https://github.com/${currentItem.repo.name}"
-            "WatchEvent" -> "https://github.com/${currentItem.repo.name}"
-            else -> "https://github.com/${currentItem.repo.name}"
-        }
+internal fun setDate(holder: FeedPageAdapter.FeedPageUserActivityViewHolder, currentItem: FeedPageModel) {
+    val dateTimePattern = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss'Z'")
+    val createDate = LocalDateTime.parse(currentItem.created_at, dateTimePattern)
+    val currentDate = LocalDateTime.now(ZoneId.of("Etc/UTC"))
+    val differenceTime = Duration.between(currentDate, createDate).abs()
+    val finalResult: String = when {
+        differenceTime.seconds < 60 -> "${differenceTime.seconds} secs ago"
+        differenceTime.toMinutes().toInt() == 1 -> "${differenceTime.toMinutes()} min ago"
+        differenceTime.toMinutes() < 60 -> "${differenceTime.toMinutes()} mins ago"
+        differenceTime.toHours().toInt() == 1 -> "${differenceTime.toHours()} hr ago"
+        differenceTime.toHours() < 24 -> "${differenceTime.toHours()} hrs ago"
+        differenceTime.toDays().toInt() == 1 -> "${differenceTime.toDays()} day ago"
+        else -> "${differenceTime.toDays()} days ago"
     }
+    holder.dateText.text = finalResult
+}
 
-    class FeedPageUserActivityViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        val profilePhoto: ImageView =
-            itemView.findViewById(R.id.feedPageRecyclerViewItemProfilePhoto)
-        val profilePhotoCard: CardView =
-            itemView.findViewById(R.id.feedPageRecyclerViewItemProfilePhotoCard)
-        val eventPhoto: ImageView = itemView.findViewById(R.id.feedPageEventTypeIcon)
-        val username: TextView = itemView.findViewById(R.id.feedPageRecyclerViewItemUsername)
-        val repositoryName: TextView = itemView.findViewById(R.id.feedPageRecyclerViewItemRepoName)
-        val dateText: TextView = itemView.findViewById(R.id.feedPageRecyclerViewItemDate)
-        val feedPageRecyclerViewItem: CardView =
-            itemView.findViewById(R.id.feedPageRecyclerViewItem)
-        val message: TextView = itemView.findViewById(R.id.feedPageRecyclerViewItemMessage)
+internal fun getHtmlUrl(currentItem: FeedPageModel): String {
+    return when (currentItem.type) {
+        "CommitCommentEvent" -> "https://github.com/${currentItem.repo.name}"
+        "CreateEvent" -> "https://github.com/${currentItem.repo.name}"
+        "ForkEvent" -> currentItem.payload!!.forkee!!.html_url!!
+        "DeleteEvent" -> "https://github.com/${currentItem.repo.name}"
+        "GollumEvent" -> "https://github.com/${currentItem.repo.name}"
+        "IssueCommentEvent" -> currentItem.payload!!.issue!!.html_url!!
+        "IssuesEvent" -> currentItem.payload!!.issue!!.html_url!!
+        "MemberEvent" -> "https://github.com/${currentItem.repo.name}"
+        "PublicEvent" -> "https://github.com/${currentItem.repo.name}"
+        "PullRequestEvent" -> currentItem.payload!!.pull_request!!.html_url!!
+        "PullRequestReviewEvent" -> currentItem.payload!!.review!!.html_url!!
+        "PullRequestReviewCommentEvent" -> currentItem.payload!!.comment!!.html_url!!
+        "PushEvent" -> "https://github.com/${currentItem.repo.name}/commit/${currentItem.payload!!.commits!![0].sha!!}"
+        "ReleaseEvent" -> currentItem.payload!!.release!!.html_url!!
+        "SponsorshipEvent" -> "https://github.com/${currentItem.repo.name}"
+        "WatchEvent" -> "https://github.com/${currentItem.repo.name}"
+        else -> "https://github.com/${currentItem.repo.name}"
     }
 }

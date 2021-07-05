@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.dscvit.gidget.R
 import com.dscvit.gidget.adapters.FeedPageAdapter
+import com.dscvit.gidget.animations.BounceEdgeEffectFactory
 import com.dscvit.gidget.common.Common
 import com.dscvit.gidget.common.Security
 import com.dscvit.gidget.common.SignUp
@@ -44,8 +45,9 @@ class FeedActivity : AppCompatActivity() {
         val pullRefresh: SwipeRefreshLayout = findViewById(R.id.feedPagePullRefresh)
         recyclerView.setHasFixedSize(true)
 
-        layoutManager = LinearLayoutManager(this)
+        layoutManager = LinearLayoutManager(this, RecyclerView.VERTICAL, false)
         recyclerView.layoutManager = layoutManager
+        recyclerView.edgeEffectFactory = BounceEdgeEffectFactory()
 
         getFeedList(recyclerView, progressBar, emptyTextView, signedUpUserMap)
         getProfilePhoto(profilePhoto, signedUpUserMap)

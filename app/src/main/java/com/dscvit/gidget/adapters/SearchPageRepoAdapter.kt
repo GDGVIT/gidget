@@ -6,8 +6,6 @@ import android.net.Uri
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.animation.Animation
-import android.view.animation.AnimationUtils
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
@@ -48,14 +46,6 @@ class SearchPageRepoAdapter(
         holderRepo.name.text = currentItem.name
         holderRepo.username.text = username
         holderRepo.location.text = type
-
-        // Custom Animation
-        val lastPosition: Int = -1
-        val animation: Animation = AnimationUtils.loadAnimation(
-            context,
-            if (position > lastPosition) R.anim.up_from_bottom else R.anim.down_from_top
-        )
-        holderRepo.itemView.startAnimation(animation)
 
         // Add to widget
         holderRepo.addToWidgetButton.setOnClickListener {

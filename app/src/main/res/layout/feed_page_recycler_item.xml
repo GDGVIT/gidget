@@ -53,6 +53,7 @@
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
                 android:layout_marginStart="@dimen/_10sdp"
+                android:layout_toStartOf="@+id/feedPageRecyclerViewItemDate"
                 android:layout_toEndOf="@+id/feedPageRecyclerViewItemProfilePhotoCard"
                 android:background="?selectableItemBackground"
                 android:clickable="true"
@@ -60,7 +61,6 @@
                 android:fontFamily="@font/montserrat"
                 android:maxLines="1"
                 android:text="john doe"
-                android:layout_toStartOf="@+id/feedPageRecyclerViewItemDate"
                 android:textColor="@color/blue"
                 android:textSize="@dimen/_12sdp"
                 android:textStyle="bold" />
@@ -135,9 +135,24 @@
                         android:layout_below="@+id/feedPageRecyclerViewItemRepoName"
                         android:layout_marginTop="@dimen/_10sdp"
                         android:fontFamily="@font/montserrat"
-                        android:maxLines="3"
+                        android:maxLines="1"
                         android:text="@string/appwidget_commit_message"
-                        android:textColor="@color/lightGrey" />
+                        android:textColor="@color/lightGrey"
+                        android:textStyle="normal" />
+
+                    <TextView
+                        android:id="@+id/feedPageRecyclerViewItemDetails"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/feedPageRecyclerViewItemMessage"
+                        android:layout_marginTop="@dimen/_5sdp"
+                        android:ellipsize="end"
+                        android:fontFamily="@font/montserrat"
+                        android:maxLines="1"
+                        android:text="@string/appwidget_commit_message"
+                        android:textStyle="italic"
+                        android:textColor="@color/blue"
+                        android:textSize="@dimen/_9sdp" />
                 </RelativeLayout>
             </androidx.cardview.widget.CardView>
         </RelativeLayout>

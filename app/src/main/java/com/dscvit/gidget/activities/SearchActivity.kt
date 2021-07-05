@@ -18,6 +18,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.dscvit.gidget.R
 import com.dscvit.gidget.adapters.SearchPageRepoAdapter
 import com.dscvit.gidget.adapters.SearchPageUserAdapter
+import com.dscvit.gidget.animations.BounceEdgeEffectFactory
 import com.dscvit.gidget.common.Common
 import com.dscvit.gidget.common.Security
 import com.dscvit.gidget.interfaces.RetroFitService
@@ -52,8 +53,9 @@ class SearchActivity : AppCompatActivity() {
         val progressBar: ProgressBar = findViewById(R.id.searchPageProgressBar)
 
         recyclerView.setHasFixedSize(true)
-        layoutManager = LinearLayoutManager(this)
+        layoutManager = LinearLayoutManager(this, RecyclerView.VERTICAL, false)
         recyclerView.layoutManager = layoutManager
+        recyclerView.edgeEffectFactory = BounceEdgeEffectFactory()
 
         var searchType = "users"
         orgButton.setOnClickListener {
