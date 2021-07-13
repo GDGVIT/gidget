@@ -152,7 +152,7 @@ class GidgetWidget : AppWidgetProvider() {
                             views.setViewVisibility(R.id.appwidgetProgressBar, View.GONE)
                             views.setTextViewText(R.id.appwidgetDate, utils.getTime())
                             appWidgetManager.updateAppWidget(appWidgetIds, views)
-                            throw Exception("Failed to fetch data")
+                            println("Failed to fetch data")
                         }
                     })
             } else {
@@ -206,7 +206,7 @@ class GidgetWidget : AppWidgetProvider() {
                             views.setViewVisibility(R.id.appwidgetProgressBar, View.GONE)
                             views.setTextViewText(R.id.appwidgetDate, utils.getTime())
                             appWidgetManager.updateAppWidget(appWidgetIds, views)
-                            throw Exception("Failed to fetch data")
+                            println("Failed to fetch data")
                         }
                     })
             }

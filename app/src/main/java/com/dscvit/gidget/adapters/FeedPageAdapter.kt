@@ -111,9 +111,7 @@ internal fun setEventData(
         when (currentItem.type) {
             "CommitCommentEvent" -> {
                 holder.eventPhoto.setImageResource(R.drawable.ic_baseline_comment_24)
-                holder.message.text = if (currentItem.payload?.comment?.body.isNullOrEmpty())
-                    "User commented on a commit"
-                else "User commented on a commit\n\"${currentItem.payload?.comment?.body}\""
+                holder.message.text = "User commented on a commit"
             }
             "CreateEvent" -> {
                 holder.eventPhoto.setImageResource(R.drawable.ic_git_branch)
@@ -138,19 +136,20 @@ internal fun setEventData(
                     else when (currentItem.payload?.action) {
                         "edited" -> "User edited a comment"
                         "deleted" -> "User deleted a comment"
-                        "created" -> "User commented on an issue\n\"${currentItem.payload.comment?.body}\""
                         else -> "User commented on an issue"
                     }
             }
             "IssuesEvent" -> {
                 holder.eventPhoto.setImageResource(R.drawable.ic_github_issue)
-                holder.message.text = if (currentItem.payload?.action.isNullOrEmpty()) "Activity related to an issue"
-                else "User ${currentItem.payload?.action} a issue\n\"${currentItem.payload?.issue?.title}\""
+                holder.message.text =
+                    if (currentItem.payload?.action.isNullOrEmpty()) "Activity related to an issue"
+                    else "User ${currentItem.payload?.action} a issue"
             }
             "MemberEvent" -> {
                 holder.eventPhoto.setImageResource(R.drawable.ic_baseline_group_24)
-                holder.message.text = if (currentItem.payload?.action.isNullOrEmpty()) "A collaborator was added or removed"
-                else "A collaborator was ${currentItem.payload?.action}"
+                holder.message.text =
+                    if (currentItem.payload?.action.isNullOrEmpty()) "A collaborator was added or removed"
+                    else "A collaborator was ${currentItem.payload?.action}"
             }
             "PublicEvent" -> {
                 holder.eventPhoto.setImageResource(R.drawable.ic_baseline_public_24)
@@ -161,31 +160,19 @@ internal fun setEventData(
                 holder.message.text =
                     if (currentItem.payload?.action.isNullOrEmpty() || currentItem.payload?.pull_request?.title.isNullOrEmpty())
                         "User made a pull request"
-                    else "User ${currentItem.payload?.action} a pull request\n\"${currentItem.payload?.pull_request?.title}\""
+                    else "User ${currentItem.payload?.action} a pull request"
             }
             "PullRequestReviewEvent" -> {
                 holder.eventPhoto.setImageResource(R.drawable.pull_request_review_event)
-                holder.message.text =
-                    if (currentItem.payload?.pull_request?.title.isNullOrEmpty()) "User reviewed a pull request"
-                    else "User reviewed a pull request\n\"${currentItem.payload?.pull_request?.title}\""
+                holder.message.text = "User reviewed a pull request"
             }
             "PullRequestReviewCommentEvent" -> {
                 holder.eventPhoto.setImageResource(R.drawable.ic_baseline_comment_24)
-                holder.message.text =
-                    if (currentItem.payload?.comment?.body.isNullOrEmpty()) "User commented on a pull request review"
-                    else "User commented on a pull request review\n\"${currentItem.payload?.comment?.body}\""
+                holder.message.text = "User commented on a pull request review"
             }
             "PushEvent" -> {
-                var message = ""
-                currentItem.payload?.commits?.forEach {
-                    if (!it.message.isNullOrEmpty()) {
-                        message += if (currentItem.payload.commits.last() != it) "${it.message}, " else it.message
-                    }
-                }
                 holder.eventPhoto.setImageResource(R.drawable.ic_baseline_cloud_upload_24)
-                holder.message.text =
-                    if (currentItem.payload?.commits.isNullOrEmpty()) "User made a push request"
-                    else "User made a push event\n\"$message\""
+                holder.message.text = "User made a push event"
             }
             "ReleaseEvent" -> {
                 holder.eventPhoto.setImageResource(R.drawable.ic_baseline_new_releases_24)
@@ -220,7 +207,7 @@ internal fun setEventDetails(
             "CommitCommentEvent" -> {
                 holder.details.text =
                     if (currentItem.payload?.comment?.body.isNullOrEmpty()) null
-                    else "\"${currentItem.payload?.comment?.body}\""
+                    else "${currentItem.payload?.comment?.body}"
             }
             "CreateEvent" -> holder.details.visibility = View.GONE
             "ForkEvent" -> holder.details.visibility = View.GONE
@@ -232,7 +219,7 @@ internal fun setEventDetails(
                 else when (currentItem.payload?.action) {
                     "created" -> {
                         holder.details.visibility = View.VISIBLE
-                        holder.details.text = "\"${currentItem.payload.comment?.body}\""
+                        holder.details.text = "${currentItem.payload.comment?.body}"
                     }
                     else -> holder.details.visibility = View.GONE
                 }
@@ -242,7 +229,7 @@ internal fun setEventDetails(
                     View.GONE
                 else {
                     holder.details.visibility = View.VISIBLE
-                    holder.details.text = "\"${currentItem.payload?.issue?.title}\""
+                    holder.details.text = "${currentItem.payload?.issue?.title}"
                 }
             }
             "MemberEvent" -> {
@@ -250,16 +237,16 @@ internal fun setEventDetails(
                     View.GONE
                 else {
                     holder.details.visibility = View.VISIBLE
-                    holder.details.text = "\"${currentItem.payload?.member?.login}\""
+                    holder.details.text = "${currentItem.payload?.member?.login}"
                 }
             }
             "PublicEvent" -> holder.details.visibility = View.GONE
             "PullRequestEvent" -> {
-                if (currentItem.payload?.action.isNullOrEmpty() || currentItem.payload?.pull_request?.title.isNullOrEmpty()) holder.details.visibility =
-                    View.GONE
+                if (currentItem.payload?.action.isNullOrEmpty() || currentItem.payload?.pull_request?.title.isNullOrEmpty())
+                    holder.details.visibility = View.GONE
                 else {
                     holder.details.visibility = View.VISIBLE
-                    holder.details.text = "\"${currentItem.payload?.pull_request?.title}\""
+                    holder.details.text = "${currentItem.payload?.pull_request?.title}"
                 }
             }
             "PullRequestReviewEvent" -> {
@@ -267,7 +254,7 @@ internal fun setEventDetails(
                     View.GONE
                 else {
                     holder.details.visibility = View.VISIBLE
-                    holder.details.text = "\"${currentItem.payload?.pull_request?.title}\""
+                    holder.details.text = "${currentItem.payload?.pull_request?.title}"
                 }
             }
             "PullRequestReviewCommentEvent" -> {
@@ -275,7 +262,7 @@ internal fun setEventDetails(
                     View.GONE
                 else {
                     holder.details.visibility = View.VISIBLE
-                    holder.details.text = "\"${currentItem.payload?.comment?.body}\""
+                    holder.details.text = "${currentItem.payload?.comment?.body}"
                 }
             }
             "PushEvent" -> {
@@ -290,7 +277,7 @@ internal fun setEventDetails(
                     View.GONE
                 else {
                     holder.details.visibility = View.VISIBLE
-                    holder.details.text = "\"$message\""
+                    holder.details.text = message
                 }
             }
             "ReleaseEvent" -> {
