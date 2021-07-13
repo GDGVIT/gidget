@@ -2,8 +2,8 @@
 <layer-list xmlns:android="http://schemas.android.com/apk/res/android">
     <item android:drawable="@color/black" />
     <item
-        android:width="@dimen/_60sdp"
-        android:height="@dimen/_60sdp"
+        android:width="@dimen/_100sdp"
+        android:height="@dimen/_100sdp"
         android:gravity="center"
         android:drawable="@drawable/gidget_icon" />
 </layer-list>

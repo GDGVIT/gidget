@@ -24,7 +24,6 @@
             android:id="@+id/feedPageRecyclerViewItemSection1"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/_10sdp"
             android:layout_marginBottom="@dimen/_10sdp">
 
             <androidx.cardview.widget.CardView
@@ -80,8 +79,7 @@
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/feedPageRecyclerViewItemSection1"
-            android:layout_marginStart="@dimen/_10sdp">
+            android:layout_below="@+id/feedPageRecyclerViewItemSection1">
 
             <androidx.cardview.widget.CardView
                 android:id="@+id/feedPageEventTypeIconCard"
@@ -135,7 +133,8 @@
                         android:layout_below="@+id/feedPageRecyclerViewItemRepoName"
                         android:layout_marginTop="@dimen/_10sdp"
                         android:fontFamily="@font/montserrat"
-                        android:maxLines="1"
+                        android:maxLines="2"
+                        android:ellipsize="end"
                         android:text="@string/appwidget_commit_message"
                         android:textColor="@color/lightGrey"
                         android:textStyle="normal" />
@@ -148,11 +147,11 @@
                         android:layout_marginTop="@dimen/_5sdp"
                         android:ellipsize="end"
                         android:fontFamily="@font/montserrat"
-                        android:maxLines="1"
+                        android:maxLines="2"
                         android:text="@string/appwidget_commit_message"
-                        android:textStyle="italic"
                         android:textColor="@color/blue"
-                        android:textSize="@dimen/_9sdp" />
+                        android:textSize="@dimen/_9sdp"
+                        android:textStyle="italic" />
                 </RelativeLayout>
             </androidx.cardview.widget.CardView>
         </RelativeLayout>

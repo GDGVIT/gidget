@@ -13,12 +13,13 @@ import android.graphics.Paint
 import android.graphics.RectF
 import android.graphics.Shader
 import android.view.LayoutInflater
+import android.view.View
 import android.widget.Toast
 import androidx.preference.PreferenceManager
 import com.dscvit.gidget.R
 import com.dscvit.gidget.interfaces.RetroFitService
-import com.dscvit.gidget.models.widget.AddToWidget
-import com.dscvit.gidget.models.widget.WidgetRepoModel
+import com.dscvit.gidget.models.activity.widget.AddToWidget
+import com.dscvit.gidget.models.activity.widget.WidgetRepoModel
 import com.dscvit.gidget.widget.GidgetWidget
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
@@ -321,7 +322,10 @@ class Utils {
                     if (currentItem.payload?.action.isNullOrEmpty()) null
                     else "\"${currentItem.payload?.issue?.title}\""
                 }
-                "MemberEvent" -> null
+                "MemberEvent" -> {
+                    if (currentItem.payload?.action.isNullOrEmpty()) null
+                    else "\"${currentItem.payload?.member?.login}\""
+                }
                 "PublicEvent" -> null
                 "PullRequestEvent" -> {
                     if (currentItem.payload?.action.isNullOrEmpty() || currentItem.payload?.pull_request?.title.isNullOrEmpty()) null
@@ -401,7 +405,8 @@ class Utils {
                     R.drawable.ic_github_issue.toString()
                 )
                 "MemberEvent" -> listOf(
-                    "A collaborator was added or removed",
+                    if (currentItem.payload?.action.isNullOrEmpty()) "A collaborator was added or removed"
+                    else "A collaborator was ${currentItem.payload?.action}",
                     R.drawable.ic_baseline_group_24.toString()
                 )
                 "PublicEvent" -> listOf(
@@ -497,9 +502,9 @@ class Utils {
                 "PullRequestReviewCommentEvent" -> currentItem.payload!!.comment!!.html_url!!
                 "PushEvent" -> try {
                     "https://github.com/${currentItem.repo.name}/commit/${
-                    currentItem.payload?.commits?.get(
-                        0
-                    )?.sha
+                        currentItem.payload?.commits?.get(
+                            0
+                        )?.sha
                     }"
                 } catch (e: Exception) {
                     "https://github.com/${currentItem.repo.name}/commit"

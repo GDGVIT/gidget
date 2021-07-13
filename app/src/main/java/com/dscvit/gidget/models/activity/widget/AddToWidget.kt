@@ -1,4 +1,4 @@
-package com.dscvit.gidget.models.widget
+package com.dscvit.gidget.models.activity.widget
 
 import android.os.Parcel
 import android.os.Parcelable

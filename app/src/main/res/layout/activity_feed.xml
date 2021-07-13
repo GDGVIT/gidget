@@ -85,7 +85,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/feedPageAppBar"
         android:layout_centerVertical="true"
-        android:layout_marginHorizontal="30dp"
+        android:layout_marginHorizontal="@dimen/_17sdp"
         android:layout_marginTop="@dimen/_20sdp"
         android:layout_marginBottom="@dimen/_5sdp"
         android:fontFamily="@font/montserrat"

@@ -22,8 +22,8 @@ import com.dscvit.gidget.common.PhoneState
 import com.dscvit.gidget.common.Security
 import com.dscvit.gidget.common.SortByDate
 import com.dscvit.gidget.common.Utils
-import com.dscvit.gidget.models.widget.AddToWidget
-import com.dscvit.gidget.models.widget.WidgetRepoModel
+import com.dscvit.gidget.models.activity.widget.AddToWidget
+import com.dscvit.gidget.models.activity.widget.WidgetRepoModel
 import com.google.gson.Gson
 import retrofit2.Call
 import retrofit2.Callback

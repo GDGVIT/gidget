@@ -13,7 +13,7 @@ import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.RecyclerView
 import com.dscvit.gidget.R
 import com.dscvit.gidget.activities.ProfileActivity
-import com.dscvit.gidget.models.feedPage.FeedPageModel
+import com.dscvit.gidget.models.activity.feedPage.FeedPageModel
 import com.squareup.picasso.Picasso
 import java.time.Duration
 import java.time.LocalDateTime
@@ -144,13 +144,13 @@ internal fun setEventData(
             }
             "IssuesEvent" -> {
                 holder.eventPhoto.setImageResource(R.drawable.ic_github_issue)
-                holder.message.text =
-                    if (currentItem.payload?.action.isNullOrEmpty()) "Activity related to an issue"
+                holder.message.text = if (currentItem.payload?.action.isNullOrEmpty()) "Activity related to an issue"
                     else "User ${currentItem.payload?.action} a issue\n\"${currentItem.payload?.issue?.title}\""
             }
             "MemberEvent" -> {
                 holder.eventPhoto.setImageResource(R.drawable.ic_baseline_group_24)
-                holder.message.text = "A collaborator was added or removed"
+                holder.message.text = if (currentItem.payload?.action.isNullOrEmpty()) "A collaborator was added or removed"
+                    else "A collaborator was ${currentItem.payload?.action}"
             }
             "PublicEvent" -> {
                 holder.eventPhoto.setImageResource(R.drawable.ic_baseline_public_24)
@@ -227,7 +227,8 @@ internal fun setEventDetails(
             "DeleteEvent" -> holder.details.visibility = View.GONE
             "GollumEvent" -> holder.details.visibility = View.GONE
             "IssueCommentEvent" -> {
-                if (currentItem.payload?.action.isNullOrEmpty()) holder.details.visibility = View.GONE
+                if (currentItem.payload?.action.isNullOrEmpty()) holder.details.visibility =
+                    View.GONE
                 else when (currentItem.payload?.action) {
                     "created" -> {
                         holder.details.visibility = View.VISIBLE
@@ -237,30 +238,41 @@ internal fun setEventDetails(
                 }
             }
             "IssuesEvent" -> {
-                if (currentItem.payload?.action.isNullOrEmpty()) holder.details.visibility = View.GONE
+                if (currentItem.payload?.action.isNullOrEmpty()) holder.details.visibility =
+                    View.GONE
                 else {
                     holder.details.visibility = View.VISIBLE
                     holder.details.text = "\"${currentItem.payload?.issue?.title}\""
                 }
             }
-            "MemberEvent" -> holder.details.visibility = View.GONE
+            "MemberEvent" -> {
+                if (currentItem.payload?.action.isNullOrEmpty()) holder.details.visibility =
+                    View.GONE
+                else {
+                    holder.details.visibility = View.VISIBLE
+                    holder.details.text = "\"${currentItem.payload?.member?.login}\""
+                }
+            }
             "PublicEvent" -> holder.details.visibility = View.GONE
             "PullRequestEvent" -> {
-                if (currentItem.payload?.action.isNullOrEmpty() || currentItem.payload?.pull_request?.title.isNullOrEmpty()) holder.details.visibility = View.GONE
+                if (currentItem.payload?.action.isNullOrEmpty() || currentItem.payload?.pull_request?.title.isNullOrEmpty()) holder.details.visibility =
+                    View.GONE
                 else {
                     holder.details.visibility = View.VISIBLE
                     holder.details.text = "\"${currentItem.payload?.pull_request?.title}\""
                 }
             }
             "PullRequestReviewEvent" -> {
-                if (currentItem.payload?.pull_request?.title.isNullOrEmpty()) holder.details.visibility = View.GONE
+                if (currentItem.payload?.pull_request?.title.isNullOrEmpty()) holder.details.visibility =
+                    View.GONE
                 else {
                     holder.details.visibility = View.VISIBLE
                     holder.details.text = "\"${currentItem.payload?.pull_request?.title}\""
                 }
             }
             "PullRequestReviewCommentEvent" -> {
-                if (currentItem.payload?.comment?.body.isNullOrEmpty()) holder.details.visibility = View.GONE
+                if (currentItem.payload?.comment?.body.isNullOrEmpty()) holder.details.visibility =
+                    View.GONE
                 else {
                     holder.details.visibility = View.VISIBLE
                     holder.details.text = "\"${currentItem.payload?.comment?.body}\""
@@ -282,7 +294,8 @@ internal fun setEventDetails(
                 }
             }
             "ReleaseEvent" -> {
-                if (currentItem.payload?.release?.name.isNullOrEmpty()) holder.details.visibility = View.GONE
+                if (currentItem.payload?.release?.name.isNullOrEmpty()) holder.details.visibility =
+                    View.GONE
                 else {
                     holder.details.visibility = View.VISIBLE
                     holder.details.text = "Release - ${currentItem.payload?.release?.name}"
@@ -297,7 +310,10 @@ internal fun setEventDetails(
     }
 }
 
-internal fun setDate(holder: FeedPageAdapter.FeedPageUserActivityViewHolder, currentItem: FeedPageModel) {
+internal fun setDate(
+    holder: FeedPageAdapter.FeedPageUserActivityViewHolder,
+    currentItem: FeedPageModel
+) {
     val dateTimePattern = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss'Z'")
     val createDate = LocalDateTime.parse(currentItem.created_at, dateTimePattern)
     val currentDate = LocalDateTime.now(ZoneId.of("Etc/UTC"))
