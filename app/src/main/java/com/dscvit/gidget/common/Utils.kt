@@ -484,11 +484,7 @@ class Utils {
                 "PullRequestReviewEvent" -> currentItem.payload!!.review!!.html_url!!
                 "PullRequestReviewCommentEvent" -> currentItem.payload!!.comment!!.html_url!!
                 "PushEvent" -> try {
-                    "https://github.com/${currentItem.repo.name}/commit/${
-                        currentItem.payload?.commits?.get(
-                            0
-                        )?.sha
-                    }"
+                    "https://github.com/${currentItem.repo.name}/commit/${currentItem.payload?.commits?.get(0)?.sha}"
                 } catch (e: Exception) {
                     "https://github.com/${currentItem.repo.name}/commit"
                 }
