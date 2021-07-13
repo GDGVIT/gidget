@@ -18,7 +18,7 @@ import com.dscvit.gidget.common.Common
 import com.dscvit.gidget.common.Security
 import com.dscvit.gidget.common.SignUp
 import com.dscvit.gidget.interfaces.RetroFitService
-import com.dscvit.gidget.models.feedPage.FeedPageModel
+import com.dscvit.gidget.models.activity.feedPage.FeedPageModel
 import com.squareup.picasso.Picasso
 import retrofit2.Call
 import retrofit2.Callback

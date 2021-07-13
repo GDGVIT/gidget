@@ -54,8 +54,8 @@
 
         <ImageButton
             android:id="@+id/appwidgetDeleteButton"
-            android:layout_width="@dimen/_15sdp"
-            android:layout_height="@dimen/_15sdp"
+            android:layout_width="@dimen/_16sdp"
+            android:layout_height="@dimen/_16sdp"
             android:layout_marginEnd="@dimen/_5sdp"
             android:layout_toStartOf="@+id/appwidgetRefreshButton"
             android:background="@android:color/transparent"
@@ -65,8 +65,8 @@
 
         <ImageButton
             android:id="@+id/appwidgetRefreshButton"
-            android:layout_width="@dimen/_15sdp"
-            android:layout_height="@dimen/_15sdp"
+            android:layout_width="@dimen/_16sdp"
+            android:layout_height="@dimen/_16sdp"
             android:layout_alignParentEnd="true"
             android:background="@android:color/transparent"
             android:contentDescription="@string/picture"
