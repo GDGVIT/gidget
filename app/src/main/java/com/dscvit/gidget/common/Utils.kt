@@ -13,7 +13,6 @@ import android.graphics.Paint
 import android.graphics.RectF
 import android.graphics.Shader
 import android.view.LayoutInflater
-import android.view.View
 import android.widget.Toast
 import androidx.preference.PreferenceManager
 import com.dscvit.gidget.R
@@ -502,9 +501,9 @@ class Utils {
                 "PullRequestReviewCommentEvent" -> currentItem.payload!!.comment!!.html_url!!
                 "PushEvent" -> try {
                     "https://github.com/${currentItem.repo.name}/commit/${
-                        currentItem.payload?.commits?.get(
-                            0
-                        )?.sha
+                    currentItem.payload?.commits?.get(
+                        0
+                    )?.sha
                     }"
                 } catch (e: Exception) {
                     "https://github.com/${currentItem.repo.name}/commit"

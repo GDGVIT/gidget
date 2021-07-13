@@ -145,12 +145,12 @@ internal fun setEventData(
             "IssuesEvent" -> {
                 holder.eventPhoto.setImageResource(R.drawable.ic_github_issue)
                 holder.message.text = if (currentItem.payload?.action.isNullOrEmpty()) "Activity related to an issue"
-                    else "User ${currentItem.payload?.action} a issue\n\"${currentItem.payload?.issue?.title}\""
+                else "User ${currentItem.payload?.action} a issue\n\"${currentItem.payload?.issue?.title}\""
             }
             "MemberEvent" -> {
                 holder.eventPhoto.setImageResource(R.drawable.ic_baseline_group_24)
                 holder.message.text = if (currentItem.payload?.action.isNullOrEmpty()) "A collaborator was added or removed"
-                    else "A collaborator was ${currentItem.payload?.action}"
+                else "A collaborator was ${currentItem.payload?.action}"
             }
             "PublicEvent" -> {
                 holder.eventPhoto.setImageResource(R.drawable.ic_baseline_public_24)
