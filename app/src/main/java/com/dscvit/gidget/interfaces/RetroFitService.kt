@@ -1,10 +1,10 @@
 package com.dscvit.gidget.interfaces
 
-import com.dscvit.gidget.models.feedPage.FeedPageModel
+import com.dscvit.gidget.models.activity.feedPage.FeedPageModel
+import com.dscvit.gidget.models.activity.widget.WidgetRepoModel
 import com.dscvit.gidget.models.profilePage.ProfilePageModel
 import com.dscvit.gidget.models.searchPage.SearchPageRepoModel
 import com.dscvit.gidget.models.searchPage.SearchPageUserModel
-import com.dscvit.gidget.models.widget.WidgetRepoModel
 import retrofit2.Call
 import retrofit2.http.GET
 import retrofit2.http.Header

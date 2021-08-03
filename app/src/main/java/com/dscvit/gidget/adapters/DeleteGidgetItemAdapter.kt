@@ -16,7 +16,7 @@ import com.dscvit.gidget.R
 import com.dscvit.gidget.activities.DeleteUserFromGidgetActivity
 import com.dscvit.gidget.common.RoundedTransformation
 import com.dscvit.gidget.common.Utils
-import com.dscvit.gidget.models.widget.AddToWidget
+import com.dscvit.gidget.models.activity.widget.AddToWidget
 import com.dscvit.gidget.widget.GidgetWidget
 import com.google.gson.Gson
 import com.squareup.picasso.Picasso

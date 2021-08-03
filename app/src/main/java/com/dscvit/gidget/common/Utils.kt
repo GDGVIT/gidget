@@ -17,8 +17,8 @@ import android.widget.Toast
 import androidx.preference.PreferenceManager
 import com.dscvit.gidget.R
 import com.dscvit.gidget.interfaces.RetroFitService
-import com.dscvit.gidget.models.widget.AddToWidget
-import com.dscvit.gidget.models.widget.WidgetRepoModel
+import com.dscvit.gidget.models.activity.widget.AddToWidget
+import com.dscvit.gidget.models.activity.widget.WidgetRepoModel
 import com.dscvit.gidget.widget.GidgetWidget
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
@@ -304,7 +304,7 @@ class Utils {
             return when (currentItem.type) {
                 "CommitCommentEvent" -> {
                     if (currentItem.payload?.comment?.body.isNullOrEmpty()) null
-                    else "\"${currentItem.payload?.comment?.body}\""
+                    else "${currentItem.payload?.comment?.body}"
                 }
                 "CreateEvent" -> null
                 "ForkEvent" -> null
@@ -313,27 +313,30 @@ class Utils {
                 "IssueCommentEvent" -> {
                     if (currentItem.payload?.action.isNullOrEmpty()) null
                     else when (currentItem.payload?.action) {
-                        "created" -> "\"${currentItem.payload.comment?.body}\""
+                        "created" -> "${currentItem.payload.comment?.body}"
                         else -> null
                     }
                 }
                 "IssuesEvent" -> {
                     if (currentItem.payload?.action.isNullOrEmpty()) null
-                    else "\"${currentItem.payload?.issue?.title}\""
+                    else "${currentItem.payload?.issue?.title}"
                 }
-                "MemberEvent" -> null
+                "MemberEvent" -> {
+                    if (currentItem.payload?.action.isNullOrEmpty()) null
+                    else "${currentItem.payload?.member?.login}"
+                }
                 "PublicEvent" -> null
                 "PullRequestEvent" -> {
                     if (currentItem.payload?.action.isNullOrEmpty() || currentItem.payload?.pull_request?.title.isNullOrEmpty()) null
-                    else "\"${currentItem.payload?.pull_request?.title}\""
+                    else "${currentItem.payload?.pull_request?.title}"
                 }
                 "PullRequestReviewEvent" -> {
                     if (currentItem.payload?.pull_request?.title.isNullOrEmpty()) null
-                    else "\"${currentItem.payload?.pull_request?.title}\""
+                    else "${currentItem.payload?.pull_request?.title}"
                 }
                 "PullRequestReviewCommentEvent" -> {
                     if (currentItem.payload?.comment?.body.isNullOrEmpty()) null
-                    else "\"${currentItem.payload?.comment?.body}\""
+                    else "${currentItem.payload?.comment?.body}"
                 }
                 "PushEvent" -> {
                     var message = ""
@@ -345,7 +348,7 @@ class Utils {
                         }
                     }
                     if (currentItem.payload?.commits.isNullOrEmpty()) null
-                    else "\"$message\""
+                    else message
                 }
                 "ReleaseEvent" -> {
                     if (currentItem.payload?.release?.name.isNullOrEmpty()) null
@@ -364,9 +367,7 @@ class Utils {
         try {
             return when (currentItem.type) {
                 "CommitCommentEvent" -> listOf(
-                    if (currentItem.payload?.comment?.body.isNullOrEmpty())
-                        "User commented on a commit"
-                    else "User commented on a commit\n\"${currentItem.payload?.comment?.body}\"",
+                    "User commented on a commit",
                     R.drawable.ic_baseline_comment_24.toString()
                 )
                 "CreateEvent" -> listOf(
@@ -390,18 +391,18 @@ class Utils {
                     else when (currentItem.payload?.action) {
                         "edited" -> "User edited a comment"
                         "deleted" -> "User deleted a comment"
-                        "created" -> "User commented on an issue\n\"${currentItem.payload.comment?.body}\""
                         else -> "User commented on an issue"
                     },
                     R.drawable.ic_baseline_comment_24.toString()
                 )
                 "IssuesEvent" -> listOf(
                     if (currentItem.payload?.action.isNullOrEmpty()) "Activity related to an issue"
-                    else "User ${currentItem.payload?.action} a issue\n\"${currentItem.payload?.issue?.title}\"",
+                    else "User ${currentItem.payload?.action} a issue",
                     R.drawable.ic_github_issue.toString()
                 )
                 "MemberEvent" -> listOf(
-                    "A collaborator was added or removed",
+                    if (currentItem.payload?.action.isNullOrEmpty()) "A collaborator was added or removed"
+                    else "A collaborator was ${currentItem.payload?.action}",
                     R.drawable.ic_baseline_group_24.toString()
                 )
                 "PublicEvent" -> listOf(
@@ -409,36 +410,23 @@ class Utils {
                     R.drawable.ic_baseline_public_24.toString()
                 )
                 "PullRequestEvent" -> listOf(
-                    if (currentItem.payload?.action.isNullOrEmpty() || currentItem.payload?.pull_request?.title.isNullOrEmpty())
+                    if (currentItem.payload?.action.isNullOrEmpty())
                         "User made a pull request"
-                    else "User ${currentItem.payload?.action} a pull request\n\"${currentItem.payload?.pull_request?.title}\"",
+                    else "User ${currentItem.payload?.action} a pull request",
                     R.drawable.ic_github_pull_request.toString()
                 )
                 "PullRequestReviewEvent" -> listOf(
-                    if (currentItem.payload?.pull_request?.title.isNullOrEmpty()) "User reviewed a pull request"
-                    else "User reviewed a pull request\n\"${currentItem.payload?.pull_request?.title}\"",
+                    "User reviewed a pull request",
                     R.drawable.pull_request_review_event.toString()
                 )
                 "PullRequestReviewCommentEvent" -> listOf(
-                    if (currentItem.payload?.comment?.body.isNullOrEmpty()) "User commented on a pull request review"
-                    else "User commented on a pull request review\n\"${currentItem.payload?.comment?.body}\"",
+                    "User commented on a pull request review",
                     R.drawable.ic_baseline_comment_24.toString()
                 )
-                "PushEvent" -> {
-                    var message = ""
-                    currentItem.payload?.commits?.forEach {
-                        if (!it.message.isNullOrEmpty()) {
-                            message += if (currentItem.payload.commits.last() != it)
-                                "${it.message}, "
-                            else it.message
-                        }
-                    }
-                    listOf(
-                        if (currentItem.payload?.commits.isNullOrEmpty()) "User made a push request"
-                        else "User made a push event\n\"$message\"",
-                        R.drawable.ic_baseline_cloud_upload_24.toString()
-                    )
-                }
+                "PushEvent" -> listOf(
+                    "User made a push request",
+                    R.drawable.ic_baseline_cloud_upload_24.toString()
+                )
                 "ReleaseEvent" -> listOf(
                     "User made a new release",
                     R.drawable.ic_baseline_new_releases_24.toString()
@@ -496,11 +484,7 @@ class Utils {
                 "PullRequestReviewEvent" -> currentItem.payload!!.review!!.html_url!!
                 "PullRequestReviewCommentEvent" -> currentItem.payload!!.comment!!.html_url!!
                 "PushEvent" -> try {
-                    "https://github.com/${currentItem.repo.name}/commit/${
-                    currentItem.payload?.commits?.get(
-                        0
-                    )?.sha
-                    }"
+                    "https://github.com/${currentItem.repo.name}/commit/${currentItem.payload?.commits?.get(0)?.sha}"
                 } catch (e: Exception) {
                     "https://github.com/${currentItem.repo.name}/commit"
                 }
