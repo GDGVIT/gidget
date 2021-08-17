@@ -16,7 +16,11 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.dscvit.gidget.R
 import com.dscvit.gidget.adapters.FeedPageAdapter
 import com.dscvit.gidget.animations.BounceEdgeEffectFactory
-import com.dscvit.gidget.common.*
+import com.dscvit.gidget.common.Common
+import com.dscvit.gidget.common.FeedType
+import com.dscvit.gidget.common.Security
+import com.dscvit.gidget.common.SignUp
+import com.dscvit.gidget.common.Utils
 import com.dscvit.gidget.interfaces.RetroFitService
 import com.dscvit.gidget.models.activity.feedPage.FeedPageModel
 import com.squareup.picasso.Picasso
@@ -104,9 +108,7 @@ class FeedActivity : AppCompatActivity() {
                     getFeedMe(signedUpUserMap, recyclerView, emptyTextView, progressBar)
                 }
             }
-
         }
-
     }
 
     private fun getFeedFollowing(
@@ -230,7 +232,7 @@ class FeedActivity : AppCompatActivity() {
         }
         swapMe.setOnClickListener {
             recyclerView.visibility = View.GONE
-            swapFollowing. backgroundTintList =
+            swapFollowing.backgroundTintList =
                 ContextCompat.getColorStateList(this, R.color.darkBlue)
             swapMe.backgroundTintList =
                 ContextCompat.getColorStateList(this, R.color.feedPageRecyclerItemColor)

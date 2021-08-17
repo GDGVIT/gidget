@@ -9,7 +9,11 @@ import android.widget.ProgressBar
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.dscvit.gidget.R
-import com.dscvit.gidget.common.*
+import com.dscvit.gidget.common.Common
+import com.dscvit.gidget.common.FeedType
+import com.dscvit.gidget.common.Security
+import com.dscvit.gidget.common.SignUp
+import com.dscvit.gidget.common.Utils
 import com.dscvit.gidget.models.authModel.AccessToken
 import com.dscvit.gidget.models.profilePage.ProfilePageModel
 import retrofit2.Call
