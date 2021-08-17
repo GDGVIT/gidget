@@ -14,6 +14,7 @@ import android.graphics.RectF
 import android.graphics.Shader
 import android.view.LayoutInflater
 import android.widget.Toast
+import androidx.core.content.edit
 import androidx.preference.PreferenceManager
 import com.dscvit.gidget.R
 import com.dscvit.gidget.interfaces.RetroFitService
@@ -33,6 +34,10 @@ import java.time.LocalTime
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 import kotlin.Exception
+
+enum class FeedType {
+    Following, Me
+}
 
 class Utils {
     companion object {
@@ -484,7 +489,11 @@ class Utils {
                 "PullRequestReviewEvent" -> currentItem.payload!!.review!!.html_url!!
                 "PullRequestReviewCommentEvent" -> currentItem.payload!!.comment!!.html_url!!
                 "PushEvent" -> try {
-                    "https://github.com/${currentItem.repo.name}/commit/${currentItem.payload?.commits?.get(0)?.sha}"
+                    "https://github.com/${currentItem.repo.name}/commit/${
+                    currentItem.payload?.commits?.get(
+                        0
+                    )?.sha
+                    }"
                 } catch (e: Exception) {
                     "https://github.com/${currentItem.repo.name}/commit"
                 }
@@ -501,6 +510,19 @@ class Utils {
     fun isEmpty(context: Context): Boolean {
         val prefs: SharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
         return !prefs.contains("userDetails")
+    }
+
+    fun saveFeedType(context: Context, feedType: FeedType) {
+        val prefs: SharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
+        prefs.edit { this.putString("feedType", feedType.name) }
+    }
+
+    fun getFeedType(context: Context): String? {
+        val prefs: SharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
+        return if (prefs.contains("feedType"))
+            prefs.getString("feedType", null)
+        else
+            null
     }
 
     private fun alertDialog(context: Context): AlertDialog {

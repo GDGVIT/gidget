@@ -53,7 +53,7 @@ class SearchPageRepoAdapter(
         }
 
         // onClick
-        holderRepo.currentView.setOnClickListener { navigateToExternal(currentItem.owner.login) }
+        holderRepo.currentView.setOnClickListener { navigateToExternal(currentItem.html_url) }
         holderRepo.profilePhoto.setOnClickListener { openProfilePage(currentItem) }
     }
 
@@ -71,8 +71,8 @@ class SearchPageRepoAdapter(
         )
     }
 
-    private fun navigateToExternal(username: String) {
-        val uri: Uri = Uri.parse("https://github.com/$username")
+    private fun navigateToExternal(url: String?) {
+        val uri: Uri = Uri.parse(url)
         val clickIntent = Intent(Intent.ACTION_VIEW, uri).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
         context.startActivity(clickIntent)
     }

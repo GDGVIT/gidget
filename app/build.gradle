@@ -7,14 +7,14 @@ plugins {
 
 android {
     compileSdkVersion 30
-    buildToolsVersion "30.0.2"
+    buildToolsVersion "30.0.3"
 
     defaultConfig {
         applicationId "com.dscvit.gidget"
         minSdkVersion 26
         targetSdkVersion 30
-        versionCode 21
-        versionName "2.1"
+        versionCode 22
+        versionName "2.2"
         buildConfigField "String", "TOKEN", "\"${System.getenv("token")}\""
         buildConfigField "String", "CLIENTID", "\"${System.getenv("clientID")}\""
         buildConfigField "String", "CLIENTSECRET", "\"${System.getenv("clientSecret")}\""
