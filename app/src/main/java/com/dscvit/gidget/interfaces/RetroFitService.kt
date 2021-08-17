@@ -17,8 +17,14 @@ interface RetroFitService {
         @Header("Authorization") token: String
     ): Call<ProfilePageModel>
 
+    @GET("users/{user}/events")
+    fun getFeedMe(
+        @Path("user") user: String,
+        @Header("Authorization") token: String
+    ): Call<MutableList<FeedPageModel>>
+
     @GET("users/{user}/received_events")
-    fun getActivityList(
+    fun getFeedFollowing(
         @Path("user") user: String,
         @Header("Authorization") token: String
     ): Call<MutableList<FeedPageModel>>

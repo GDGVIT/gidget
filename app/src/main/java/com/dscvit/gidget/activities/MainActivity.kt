@@ -9,9 +9,7 @@ import android.widget.ProgressBar
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.dscvit.gidget.R
-import com.dscvit.gidget.common.Common
-import com.dscvit.gidget.common.Security
-import com.dscvit.gidget.common.SignUp
+import com.dscvit.gidget.common.*
 import com.dscvit.gidget.models.authModel.AccessToken
 import com.dscvit.gidget.models.profilePage.ProfilePageModel
 import retrofit2.Call
@@ -25,6 +23,7 @@ class MainActivity : AppCompatActivity() {
     private val clientSecret: String = Security.getClientSecret()
     private val redirectUrl: String = "gidget://auth"
     private val signUp = SignUp()
+    private val utils = Utils()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -97,6 +96,7 @@ class MainActivity : AppCompatActivity() {
                                                                     ?: throw Exception("Gidget is unable access your avatar")
                                                             )
                                                         ) {
+                                                            utils.saveFeedType(this@MainActivity, FeedType.Following)
                                                             Toast.makeText(this@MainActivity, "Logged in", Toast.LENGTH_SHORT).show()
                                                             startActivity(Intent(this@MainActivity, FeedActivity::class.java))
                                                             finish()

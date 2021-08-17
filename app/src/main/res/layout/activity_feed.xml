@@ -58,7 +58,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentEnd="true"
-                    android:layout_marginEnd="10dp"
+                    android:layout_marginEnd="@dimen/_10sdp"
                     android:clickable="true"
                     android:focusable="true"
                     android:foreground="?android:attr/selectableItemBackground"
@@ -110,31 +110,31 @@
                 android:layout_weight="1" />
 
             <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/feedPageSwapBtnFollowing"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:background="@drawable/swap_btn_left"
-                android:backgroundTint="@color/feedPageRecyclerItemColor"
                 android:fontFamily="@font/montserrat"
                 android:minWidth="@dimen/_5sdp"
                 android:minHeight="@dimen/_10sdp"
                 android:paddingHorizontal="@dimen/_10sdp"
-                android:paddingVertical="@dimen/_2sdp"
+                android:paddingVertical="@dimen/_3sdp"
                 android:text="@string/following"
                 android:textAllCaps="false"
                 android:textColor="@color/white" />
 
             <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/feedPageSwapBtnMe"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/_2sdp"
                 android:background="@drawable/swap_btn_right"
-                android:backgroundTint="@color/feedPageRecyclerItemColor"
                 android:fontFamily="@font/montserrat"
                 android:minWidth="@dimen/_5sdp"
                 android:minHeight="@dimen/_10sdp"
                 android:paddingHorizontal="@dimen/_10sdp"
-                android:paddingVertical="@dimen/_2sdp"
-                android:text="Me"
+                android:paddingVertical="@dimen/_3sdp"
+                android:text="@string/me"
                 android:textAllCaps="false"
                 android:textColor="@color/white" />
         </LinearLayout>
